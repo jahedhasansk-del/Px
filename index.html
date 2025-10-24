@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,7 +115,6 @@ button:disabled{opacity:.3;cursor:not-allowed}
 .history-result.failed{color:#ef4444;text-shadow:0 0 10px #ef4444}
 .history-time{color:#00ff41;text-align:right;font-size:.85em;opacity:.8;letter-spacing:1px}
 @media(max-width:768px){
-h1{font-size:1.8em}
 .win-loss-grid{grid-template-columns:1fr 1fr 1fr;gap:10px}
 .wl-value{font-size:1.5em}
 .slots-grid{gap:5px}
@@ -190,20 +188,484 @@ button{padding:15px;font-size:1.2em}
 <div class="history-grid" id="historyGrid"></div>
 </div>
 </div>
-<script>
-let slots=[],showPrediction=!1,currentPrediction=null,winCount=0,lossCount=0,predictionHistory=[];
-function updateWinLoss(){document.getElementById("winCount").textContent=winCount,document.getElementById("lossCount").textContent=lossCount;const e=winCount+lossCount,t=e>0?Math.round(winCount/e*100):0;document.getElementById("winRate").textContent=t+"%"}
-function renderSlots(){const e=document.getElementById("slotsGrid"),t=slots.slice(-20),n=Math.max(0,20-t.length);e.innerHTML="";for(let t=0;t<n;t++){const t=document.createElement("div");t.className="slot empty",e.appendChild(t)}t.forEach(t=>{const n=document.createElement("div");n.className=`slot ${t.toLowerCase()}`,n.textContent="BIG"===t?"B":"S",e.appendChild(n)}),document.getElementById("totalCount").textContent=slots.length,document.getElementById("totalEntries").textContent=slots.length,document.getElementById("predictBtn").disabled=slots.length<50,document.getElementById("undoBtn").disabled=0===slots.length,updateSummary(),renderHistory()}
-function renderHistory(){const e=document.getElementById("historyGrid");if(0===predictionHistory.length)return void(e.innerHTML='<div style="text-align:center;color:#00ff41;opacity:0.6;padding:20px;letter-spacing:1px">No prediction records yet</div>');const t=[...predictionHistory].reverse().map((e,t)=>{const n=predictionHistory.length-t,s=e.success?"success":"failed",o=e.success?"✅ SUCCESS":"❌ FAILED";return`<div class="history-item ${s}"><div class="history-index">#${n}</div><div class="history-predicted ${e.predicted.toLowerCase()}">${e.predicted}</div><div class="history-actual ${e.actual.toLowerCase()}">${e.actual}</div><div class="history-result ${s}">${o}</div><div class="history-time">${e.time}</div></div>`}).join("");e.innerHTML=t}
-function updateSummary(){const e=document.getElementById("summaryBox");if(slots.length>0){e.style.display="block";const t=slots.filter(e=>"BIG"===e).length,n=slots.filter(e=>"SMALL"===e).length;if(document.getElementById("bigCount").textContent=t,document.getElementById("smallCount").textContent=n,slots.length>=11){const e=slots.slice(-11),t=e.filter(e=>"BIG"===e).length,n=e.filter(e=>"SMALL"===e).length;document.getElementById("last11Stats").style.display="block",document.getElementById("last11Big").textContent=t,document.getElementById("last11Small").textContent=n}else document.getElementById("last11Stats").style.display="none"}else e.style.display="none"}
-function highlightPrediction(e){document.getElementById("bigBtn").classList.remove("predicted"),document.getElementById("smallBtn").classList.remove("predicted"),e&&("BIG"===e?document.getElementById("bigBtn").classList.add("predicted"):document.getElementById("smallBtn").classList.add("predicted"))}
-function addPattern(e){if(currentPrediction){const t=e===currentPrediction,n=new Date,s=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");predictionHistory.push({predicted:currentPrediction,actual:e,success:t,time:s}),t?winCount++:lossCount++,updateWinLoss(),currentPrediction=null,highlightPrediction(null)}slots.push(e),renderSlots(),showPrediction&&showPredictionResult()}
-function removeLastPattern(){if(slots.length>0){slots.pop();currentPrediction&&(currentPrediction=null,highlightPrediction(null)),renderSlots(),showPrediction&&(slots.length>=50?showPredictionResult():(showPrediction=!1,document.getElementById("predictionBox").classList.remove("show"),document.getElementById("predictBtnText").textContent="AI Prediction (Need 50)"))}}
-function clearAll(){slots=[],showPrediction=!1,currentPrediction=null,winCount=0,lossCount=0,predictionHistory=[],updateWinLoss(),highlightPrediction(null),renderSlots(),document.getElementById("predictionBox").classList.remove("show"),document.getElementById("predictBtnText").textContent="AI Prediction (Need 50)"}
-function analyzePrediction(){if(slots.length<50)return{prediction:null,confidence:0,reason:"Need at least 50 entries for AI analysis"};const e=slots.slice(-50);let t=0,n=0;for(let s=0;s<e.length;s++)"BIG"===e[s]?t++:n++;const s=t>n?"BIG":"SMALL",o=Math.abs(t-n);const l=e.slice(-25),a=e.slice(-50,-25);let c=0;for(let e=0;e<25;e++)l[e]===a[e]&&c++;const i=25-c;const r=[];for(let t=0;t<e.length-1;t++)e[t]===e[t+1]&&r.push(t);const d=r.length;const u=[];let m=1,p=e[0];for(let t=1;t<e.length;t++)e[t]===p?m++:(m>=3&&u.push({type:p,count:m,position:t-m}),m=1,p=e[t]);m>=3&&u.push({type:p,count:m,position:e.length-m});const g=u.length>0?Math.max(...u.map(e=>e.count)):0,h=u.length>0?u[u.length-1]:null;const y=e.slice(-20);let f=[];for(let e=1;e<y.length;e++)f.push(y[e]===y[e-1]?"Same":"Opp");const b=[];let x={type:f[0],count:1,values:[y[0]]};for(let e=1;e<f.length;e++)f[e]===x.type?(x.count++,x.values.push(y[e])):(b.push({...x}),x={type:f[e],count:1,values:[y[e]]});x.values.push(y[y.length-1]),b.push(x);const w=b[b.length-1],v=e[e.length-1];const S=b.map(e=>`${e.count}${"Same"===e.type?"✓":"↔"}`).join(" → ");let C,k,L;if(h&&h.count>=5&&e.length-h.position-h.count<=2)C="BIG"===h.type?"SMALL":"BIG",k=94,L=`🔥 MEGA STREAK BREAK (${h.count}x ${h.type}) - Extreme Reverse!`;else if(g>=4&&h&&e.length-h.position-h.count<=3)C="BIG"===h.type?"SMALL":"BIG",k=91,L=`⚡ Long Streak Detected (${g}x) - Strong Break Signal`;else if(b.length>=4&&b.slice(-4).every(e=>1===e.count)){const e=w.type;C="Opp"===e?"BIG"===v?"SMALL":"BIG":v,k=89,L="🎯 Perfect Zigzag (1-1-1-1) - Ultra Pattern"}else if(b.length>=3&&b.slice(-3).every(e=>1===e.count)){const e=w.type;C="Opp"===e?"BIG"===v?"SMALL":"BIG":v,k=86,L="🔄 Triple Zigzag (1-1-1) - Strong Pattern"}else if(3===w.count)C="Same"===w.type?"BIG"===v?"SMALL":"BIG":v,k=84,L=`🎯 Triple Block (${w.count}${"Same"===w.type?"✓":"↔"}) - Reverse Coming`;else if(4===w.count)C="Same"===w.type?"BIG"===v?"SMALL":"BIG":v,k=88,L=`⚡ Quad Block (${w.count}${"Same"===w.type?"✓":"↔"}) - Strong Reverse`;else if(w.count>=5)C="BIG"===v?"SMALL":"BIG",k=92,L=`🔥 Massive Block (${w.count}${"Same"===w.type?"✓":"↔"}) - Critical Reverse`;else if(2===w.count)C="Opp"===w.type?"BIG"===v?"SMALL":"BIG":v,k=81,L=`📊 Double Pattern (${w.count}${"Same"===w.type?"✓":"↔"}) - Change Expected`;else if(o>=20)C=s,k=83,L=`⚖️ Huge Imbalance (${t}B/${n}S) - Follow ${s}`;else if(o>=15)C=s,k=79,L=`⚖️ Big Imbalance (${t}B/${n}S) - Lean ${s}`;else if(c>=20)C=a[0],k=82,L=`✅ Super Follow Rate (${c}/25) - History Strong`;else if(i>=20)C="BIG"===a[0]?"SMALL":"BIG",k=82,L=`❌ Super Opposite (${i}/25) - Reverse Strong`;else if(d>=30)C=v,k=78,L=`🔁 High Repetition (${d}/49) - Continue Trend`;else if(c>=18)C=a[0],k=77,L=`✅ High Follow (${c}/25) - History Pattern`;else if(i>=18)C="BIG"===a[0]?"SMALL":"BIG",k=77,L=`❌ High Opposite (${i}/25) - Reverse Pattern`;else if(b.length>=2){const e=b[b.length-2];e.count>=3&&1===w.count?(C="Opp"===w.type?"BIG"===v?"SMALL":"BIG":v,k=76,L=`🔀 After Streak (${e.count}→1) - Mix Pattern`):(C="Opp"===w.type?"BIG"===v?"SMALL":"BIG":v,k=72,L="🔄 Standard Pattern Flow")}else C="Opp"===w.type?"BIG"===v?"SMALL":"BIG":v,k=68,L="🎲 Basic Pattern Following";return{prediction:C,confidence:k,reason:L,blockInfo:S,advancedStats:{totalEntries:50,bigCount:t,smallCount:n,dominantType:s,imbalance:o,followRate:c,oppositeRate:i,repetitionCount:d,maxStreak:g,lastStreak:h,recentBlocks:b.slice(-5)}}}
-function showPredictionResult(){const e=analyzePrediction(),t=document.getElementById("predictionBox");if(e.prediction){currentPrediction=e.prediction,highlightPrediction(e.prediction);let n="";if(e.advancedStats){const{totalEntries:t,bigCount:s,smallCount:o,dominantType:l,imbalance:a,followRate:c,oppositeRate:i,repetitionCount:r,maxStreak:d,lastStreak:u}=e.advancedStats;n=`<div class="analysis-stats"><div class="analysis-title">🔬 50-ENTRY DEEP AI ANALYSIS</div><div class="analysis-grid"><div class="analysis-box"><div class="analysis-label">Total Data</div><div class="analysis-value">${t}</div></div><div class="analysis-box"><div class="analysis-label">BIG</div><div class="analysis-value">${s}</div></div><div class="analysis-box"><div class="analysis-label">SMALL</div><div class="analysis-value">${o}</div></div><div class="analysis-box"><div class="analysis-label">Dominant</div><div class="analysis-value">${l}</div></div><div class="analysis-box"><div class="analysis-label">Imbalance</div><div class="analysis-value">${a}</div></div><div class="analysis-box"><div class="analysis-label">Max Streak</div><div class="analysis-value">${d}</div></div><div class="analysis-box"><div class="analysis-label">Follow Rate</div><div class="analysis-value">${c}/25</div></div><div class="analysis-box"><div class="analysis-label">Opposite</div><div class="analysis-value">${i}/25</div></div><div class="analysis-box"><div class="analysis-label">Repetitions</div><div class="analysis-value">${r}</div></div></div>${u?`<div style="margin-top:15px;background:rgba(251,191,36,0.1);border:1px solid #fbbf24;border-radius:8px;padding:12px;text-align:center;color:#fbbf24;font-weight:bold">⚠️ Active Streak: ${u.count}x ${u.type} (Position: ${u.position})</div>`:""}</div>`}t.innerHTML=`<h2 class="prediction-title">🎯 AI PATTERN PREDICTION</h2><div class="prediction-legend">✓ = Same | ↔ = Opposite | 50 Entries Analysis</div>${e.blockInfo?`<div class="block-info">Last 20 Pattern: ${e.blockInfo}</div>`:""}${n}<div class="prediction-result ${e.prediction.toLowerCase()}"><div class="prediction-value">${e.prediction}</div><div class="prediction-confidence">AI Confidence: ${e.confidence}%</div></div><div class="prediction-reason"><div class="prediction-reason-label">🤖 AI Analysis:</div><div class="prediction-reason-text">${e.reason}</div></div><div style="background:rgba(0,255,65,0.1);border:1px solid #00ff41;border-radius:10px;padding:15px;margin-top:15px;text-align:center;color:#00ff41;font-size:0.95em;letter-spacing:1px">⬆️ Click ${e.prediction} button (glowing) ⬆️</div>`}else currentPrediction=null,highlightPrediction(null),t.innerHTML=`<div class="prediction-reason"><div class="prediction-reason-text">${e.reason}</div></div>`}
-function togglePrediction(){showPrediction=!showPrediction;const e=document.getElementById("predictionBox");showPrediction?(showPredictionResult(),e.classList.add("show"),document.getElementById("predictBtnText").textContent="Hide Prediction"):(currentPrediction=null,highlightPrediction(null),e.classList.remove("show"),document.getElementById("predictBtnText").textContent="AI Prediction (Need 50)")}
-renderSlots(),updateWinLoss();
-</script>
+let slots = [];
+let showPrediction = false;
+let currentPrediction = null;
+let winCount = 0;
+let lossCount = 0;
+let predictionHistory = [];
+
+function updateWinLoss() {
+    document.getElementById("winCount").textContent = winCount;
+    document.getElementById("lossCount").textContent = lossCount;
+    const total = winCount + lossCount;
+    const rate = total > 0 ? Math.round(winCount / total * 100) : 0;
+    document.getElementById("winRate").textContent = rate + "%";
+}
+
+function renderSlots() {
+    const grid = document.getElementById("slotsGrid");
+    const lastSlots = slots.slice(-20);
+    const emptyCount = Math.max(0, 20 - lastSlots.length);
+    
+    grid.innerHTML = "";
+    
+    for (let i = 0; i < emptyCount; i++) {
+        const slot = document.createElement("div");
+        slot.className = "slot empty";
+        grid.appendChild(slot);
+    }
+    
+    lastSlots.forEach(type => {
+        const slot = document.createElement("div");
+        slot.className = `slot ${type.toLowerCase()}`;
+        slot.textContent = type === "BIG" ? "B" : "S";
+        grid.appendChild(slot);
+    });
+    
+    document.getElementById("totalCount").textContent = slots.length;
+    document.getElementById("totalEntries").textContent = slots.length;
+    document.getElementById("predictBtn").disabled = slots.length < 50;
+    document.getElementById("undoBtn").disabled = slots.length === 0;
+    
+    updateSummary();
+    renderHistory();
+}
+
+function renderHistory() {
+    const historyGrid = document.getElementById("historyGrid");
+    
+    if (predictionHistory.length === 0) {
+        historyGrid.innerHTML = '<div style="text-align:center;color:#00ff41;opacity:0.6;padding:20px;letter-spacing:1px">No prediction records yet</div>';
+        return;
+    }
+    
+    const historyHTML = [...predictionHistory].reverse().map((record, index) => {
+        const recordNum = predictionHistory.length - index;
+        const resultClass = record.success ? "success" : "failed";
+        const resultText = record.success ? "✅ SUCCESS" : "❌ FAILED";
+        
+        return `<div class="history-item ${resultClass}">
+            <div class="history-index">#${recordNum}</div>
+            <div class="history-predicted ${record.predicted.toLowerCase()}">${record.predicted}</div>
+            <div class="history-actual ${record.actual.toLowerCase()}">${record.actual}</div>
+            <div class="history-result ${resultClass}">${resultText}</div>
+            <div class="history-time">${record.time}</div>
+        </div>`;
+    }).join("");
+    
+    historyGrid.innerHTML = historyHTML;
+}
+
+function updateSummary() {
+    const summaryBox = document.getElementById("summaryBox");
+    
+    if (slots.length > 0) {
+        summaryBox.style.display = "block";
+        
+        const bigCount = slots.filter(s => s === "BIG").length;
+        const smallCount = slots.filter(s => s === "SMALL").length;
+        
+        document.getElementById("bigCount").textContent = bigCount;
+        document.getElementById("smallCount").textContent = smallCount;
+        
+        if (slots.length >= 11) {
+            const last11 = slots.slice(-11);
+            const last11Big = last11.filter(s => s === "BIG").length;
+            const last11Small = last11.filter(s => s === "SMALL").length;
+            
+            document.getElementById("last11Stats").style.display = "block";
+            document.getElementById("last11Big").textContent = last11Big;
+            document.getElementById("last11Small").textContent = last11Small;
+        } else {
+            document.getElementById("last11Stats").style.display = "none";
+        }
+    } else {
+        summaryBox.style.display = "none";
+    }
+}
+
+function highlightPrediction(prediction) {
+    document.getElementById("bigBtn").classList.remove("predicted");
+    document.getElementById("smallBtn").classList.remove("predicted");
+    
+    if (prediction) {
+        if (prediction === "BIG") {
+            document.getElementById("bigBtn").classList.add("predicted");
+        } else {
+            document.getElementById("smallBtn").classList.add("predicted");
+        }
+    }
+}
+
+function addPattern(type) {
+    if (currentPrediction) {
+        const success = type === currentPrediction;
+        const now = new Date();
+        const time = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+        
+        predictionHistory.push({
+            predicted: currentPrediction,
+            actual: type,
+            success: success,
+            time: time
+        });
+        
+        if (success) {
+            winCount++;
+        } else {
+            lossCount++;
+        }
+        
+        updateWinLoss();
+        currentPrediction = null;
+        highlightPrediction(null);
+    }
+    
+    slots.push(type);
+    renderSlots();
+    
+    if (showPrediction) {
+        showPredictionResult();
+    }
+}
+
+function removeLastPattern() {
+    if (slots.length > 0) {
+        slots.pop();
+        
+        if (currentPrediction) {
+            currentPrediction = null;
+            highlightPrediction(null);
+        }
+        
+        renderSlots();
+        
+        if (showPrediction) {
+            if (slots.length >= 50) {
+                showPredictionResult();
+            } else {
+                showPrediction = false;
+                document.getElementById("predictionBox").classList.remove("show");
+                document.getElementById("predictBtnText").textContent = "AI Prediction (Need 50)";
+            }
+        }
+    }
+}
+
+function clearAll() {
+    slots = [];
+    showPrediction = false;
+    currentPrediction = null;
+    winCount = 0;
+    lossCount = 0;
+    predictionHistory = [];
+    
+    updateWinLoss();
+    highlightPrediction(null);
+    renderSlots();
+    
+    document.getElementById("predictionBox").classList.remove("show");
+    document.getElementById("predictBtnText").textContent = "AI Prediction (Need 50)";
+}
+
+function analyzePrediction() {
+    if (slots.length < 50) {
+        return {
+            prediction: null,
+            confidence: 0,
+            reason: "Need at least 50 entries for AI analysis"
+        };
+    }
+    
+    const last50 = slots.slice(-50);
+    
+    let bigCount = 0;
+    let smallCount = 0;
+    for (let i = 0; i < last50.length; i++) {
+        if (last50[i] === "BIG") {
+            bigCount++;
+        } else {
+            smallCount++;
+        }
+    }
+    
+    const dominantType = bigCount > smallCount ? "BIG" : "SMALL";
+    const imbalance = Math.abs(bigCount - smallCount);
+    
+    const recent25 = last50.slice(-25);
+    const previous25 = last50.slice(-50, -25);
+    
+    let followCount = 0;
+    for (let i = 0; i < 25; i++) {
+        if (recent25[i] === previous25[i]) {
+            followCount++;
+        }
+    }
+    
+    const oppositeCount = 25 - followCount;
+    
+    const repetitions = [];
+    for (let i = 0; i < last50.length - 1; i++) {
+        if (last50[i] === last50[i + 1]) {
+            repetitions.push(i);
+        }
+    }
+    const repetitionCount = repetitions.length;
+    
+    const streaks = [];
+    let currentStreak = 1;
+    let currentType = last50[0];
+    
+    for (let i = 1; i < last50.length; i++) {
+        if (last50[i] === currentType) {
+            currentStreak++;
+        } else {
+            if (currentStreak >= 3) {
+                streaks.push({
+                    type: currentType,
+                    count: currentStreak,
+                    position: i - currentStreak
+                });
+            }
+            currentStreak = 1;
+            currentType = last50[i];
+        }
+    }
+    
+    if (currentStreak >= 3) {
+        streaks.push({
+            type: currentType,
+            count: currentStreak,
+            position: last50.length - currentStreak
+        });
+    }
+    
+    const maxStreak = streaks.length > 0 ? Math.max(...streaks.map(s => s.count)) : 0;
+    const lastStreak = streaks.length > 0 ? streaks[streaks.length - 1] : null;
+    
+    const last20 = last50.slice(-20);
+    let patterns = [];
+    for (let i = 1; i < last20.length; i++) {
+        patterns.push(last20[i] === last20[i - 1] ? "Same" : "Opp");
+    }
+    
+    const blocks = [];
+    let currentBlock = {
+        type: patterns[0],
+        count: 1,
+        values: [last20[0]]
+    };
+    
+    for (let i = 1; i < patterns.length; i++) {
+        if (patterns[i] === currentBlock.type) {
+            currentBlock.count++;
+            currentBlock.values.push(last20[i]);
+        } else {
+            blocks.push({...currentBlock});
+            currentBlock = {
+                type: patterns[i],
+                count: 1,
+                values: [last20[i]]
+            };
+        }
+    }
+    
+    currentBlock.values.push(last20[last20.length - 1]);
+    blocks.push(currentBlock);
+    
+    const lastBlock = blocks[blocks.length - 1];
+    const lastValue = last50[last50.length - 1];
+    
+    const blockInfo = blocks.map(b => `${b.count}${b.type === "Same" ? "✓" : "↔"}`).join(" → ");
+    
+    let prediction, confidence, reason;
+    
+    if (lastStreak && lastStreak.count >= 5 && last50.length - lastStreak.position - lastStreak.count <= 2) {
+        prediction = lastStreak.type === "BIG" ? "SMALL" : "BIG";
+        confidence = 94;
+        reason = `🔥 MEGA STREAK BREAK (${lastStreak.count}x ${lastStreak.type}) - Extreme Reverse!`;
+    } else if (maxStreak >= 4 && lastStreak && last50.length - lastStreak.position - lastStreak.count <= 3) {
+        prediction = lastStreak.type === "BIG" ? "SMALL" : "BIG";
+        confidence = 91;
+        reason = `⚡ Long Streak Detected (${maxStreak}x) - Strong Break Signal`;
+    } else if (blocks.length >= 4 && blocks.slice(-4).every(b => b.count === 1)) {
+        const blockType = lastBlock.type;
+        prediction = blockType === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
+        confidence = 89;
+        reason = "🎯 Perfect Zigzag (1-1-1-1) - Ultra Pattern";
+    } else if (blocks.length >= 3 && blocks.slice(-3).every(b => b.count === 1)) {
+        const blockType = lastBlock.type;
+        prediction = blockType === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
+        confidence = 86;
+        reason = "🔄 Triple Zigzag (1-1-1) - Strong Pattern";
+    } else if (lastBlock.count === 3) {
+        prediction = lastBlock.type === "Same" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
+        confidence = 84;
+        reason = `🎯 Triple Block (${lastBlock.count}${lastBlock.type === "Same" ? "✓" : "↔"}) - Reverse Coming`;
+    } else if (lastBlock.count === 4) {
+        prediction = lastBlock.type === "Same" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
+        confidence = 88;
+        reason = `⚡ Quad Block (${lastBlock.count}${lastBlock.type === "Same" ? "✓" : "↔"}) - Strong Reverse`;
+    } else if (lastBlock.count >= 5) {
+        prediction = lastValue === "BIG" ? "SMALL" : "BIG";
+        confidence = 92;
+        reason = `🔥 Massive Block (${lastBlock.count}${lastBlock.type === "Same" ? "✓" : "↔"}) - Critical Reverse`;
+    } else if (lastBlock.count === 2) {
+        prediction = lastBlock.type === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
+        confidence = 81;
+        reason = `📊 Double Pattern (${lastBlock.count}${lastBlock.type === "Same" ? "✓" : "↔"}) - Change Expected`;
+    } else if (imbalance >= 20) {
+        prediction = dominantType;
+        confidence = 83;
+        reason = `⚖️ Huge Imbalance (${bigCount}B/${smallCount}S) - Follow ${dominantType}`;
+    } else if (imbalance >= 15) {
+        prediction = dominantType;
+        confidence = 79;
+        reason = `⚖️ Big Imbalance (${bigCount}B/${smallCount}S) - Lean ${dominantType}`;
+    } else if (followCount >= 20) {
+        prediction = previous25[0];
+        confidence = 82;
+        reason = `✅ Super Follow Rate (${followCount}/25) - History Strong`;
+    } else if (oppositeCount >= 20) {
+        prediction = previous25[0] === "BIG" ? "SMALL" : "BIG";
+        confidence = 82;
+        reason = `❌ Super Opposite (${oppositeCount}/25) - Reverse Strong`;
+    } else if (repetitionCount >= 30) {
+        prediction = lastValue;
+        confidence = 78;
+        reason = `🔁 High Repetition (${repetitionCount}/49) - Continue Trend`;
+    } else if (followCount >= 18) {
+        prediction = previous25[0];
+        confidence = 77;
+        reason = `✅ High Follow (${followCount}/25) - History Pattern`;
+    } else if (oppositeCount >= 18) {
+        prediction = previous25[0] === "BIG" ? "SMALL" : "BIG";
+        confidence = 77;
+        reason = `❌ High Opposite (${oppositeCount}/25) - Reverse Pattern`;
+    } else if (blocks.length >= 2) {
+        const prevBlock = blocks[blocks.length - 2];
+        if (prevBlock.count >= 3 && lastBlock.count === 1) {
+            prediction = lastBlock.type === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
+            confidence = 76;
+            reason = `🔀 After Streak (${prevBlock.count}→1) - Mix Pattern`;
+        } else {
+            prediction = lastBlock.type === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
+            confidence = 72;
+            reason = "🔄 Standard Pattern Flow";
+        }
+    } else {
+        prediction = lastBlock.type === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
+        confidence = 68;
+        reason = "🎲 Basic Pattern Following";
+    }
+    
+    return {
+        prediction: prediction,
+        confidence: confidence,
+        reason: reason,
+        blockInfo: blockInfo,
+        advancedStats: {
+            totalEntries: 50,
+            bigCount: bigCount,
+            smallCount: smallCount,
+            dominantType: dominantType,
+            imbalance: imbalance,
+            followRate: followCount,
+            oppositeRate: oppositeCount,
+            repetitionCount: repetitionCount,
+            maxStreak: maxStreak,
+            lastStreak: lastStreak,
+            recentBlocks: blocks.slice(-5)
+        }
+    };
+}
+
+function showPredictionResult() {
+    const analysis = analyzePrediction();
+    const box = document.getElementById("predictionBox");
+    
+    if (analysis.prediction) {
+        currentPrediction = analysis.prediction;
+        highlightPrediction(analysis.prediction);
+        
+        let statsHTML = "";
+        if (analysis.advancedStats) {
+            const {
+                totalEntries,
+                bigCount,
+                smallCount,
+                dominantType,
+                imbalance,
+                followRate,
+                oppositeRate,
+                repetitionCount,
+                maxStreak,
+                lastStreak
+            } = analysis.advancedStats;
+            
+            statsHTML = `<div class="analysis-stats">
+                <div class="analysis-title">🔬 50-ENTRY DEEP AI ANALYSIS</div>
+                <div class="analysis-grid">
+                    <div class="analysis-box"><div class="analysis-label">Total Data</div><div class="analysis-value">${totalEntries}</div></div>
+                    <div class="analysis-box"><div class="analysis-label">BIG</div><div class="analysis-value">${bigCount}</div></div>
+                    <div class="analysis-box"><div class="analysis-label">SMALL</div><div class="analysis-value">${smallCount}</div></div>
+                    <div class="analysis-box"><div class="analysis-label">Dominant</div><div class="analysis-value">${dominantType}</div></div>
+                    <div class="analysis-box"><div class="analysis-label">Imbalance</div><div class="analysis-value">${imbalance}</div></div>
+                    <div class="analysis-box"><div class="analysis-label">Max Streak</div><div class="analysis-value">${maxStreak}</div></div>
+                    <div class="analysis-box"><div class="analysis-label">Follow Rate</div><div class="analysis-value">${followRate}/25</div></div>
+                    <div class="analysis-box"><div class="analysis-label">Opposite</div><div class="analysis-value">${oppositeRate}/25</div></div>
+                    <div class="analysis-box"><div class="analysis-label">Repetitions</div><div class="analysis-value">${repetitionCount}</div></div>
+                </div>
+                ${lastStreak ? `<div style="margin-top:15px;background:rgba(251,191,36,0.1);border:1px solid #fbbf24;border-radius:8px;padding:12px;text-align:center;color:#fbbf24;font-weight:bold">⚠️ Active Streak: ${lastStreak.count}x ${lastStreak.type} (Position: ${lastStreak.position})</div>` : ""}
+            </div>`;
+        }
+        
+        box.innerHTML = `
+            <h2 class="prediction-title">🎯 AI PATTERN PREDICTION</h2>
+            <div class="prediction-legend">✓ = Same | ↔ = Opposite | 50 Entries Analysis</div>
+            ${analysis.blockInfo ? `<div class="block-info">Last 20 Pattern: ${analysis.blockInfo}</div>` : ""}
+            ${statsHTML}
+            <div class="prediction-result ${analysis.prediction.toLowerCase()}">
+                <div class="prediction-value">${analysis.prediction}</div>
+                <div class="prediction-confidence">AI Confidence: ${analysis.confidence}%</div>
+            </div>
+            <div class="prediction-reason">
+                <div class="prediction-reason-label">🤖 AI Analysis:</div>
+                <div class="prediction-reason-text">${analysis.reason}</div>
+            </div>
+            <div style="background:rgba(0,255,65,0.1);border:1px solid #00ff41;border-radius:10px;padding:15px;margin-top:15px;text-align:center;color:#00ff41;font-size:0.95em;letter-spacing:1px">
+                ⬆️ Click ${analysis.prediction} button (glowing) ⬆️
+            </div>
+        `;
+    } else {
+        currentPrediction = null;
+        highlightPrediction(null);
+        box.innerHTML = `
+            <div class="prediction-reason">
+                <div class="prediction-reason-text">${analysis.reason}</div>
+            </div>
+        `;
+    }
+}
+
+function togglePrediction() {
+    showPrediction = !showPrediction;
+    const box = document.getElementById("predictionBox");
+    
+    if (showPrediction) {
+        showPredictionResult();
+        box.classList.add("show");
+        document.getElementById("predictBtnText").textContent = "Hide Prediction";
+    } else {
+        currentPrediction = null;
+        highlightPrediction(null);
+        box.classList.remove("show");
+        document.getElementById("predictBtnText").textContent = "AI Prediction (Need 50)";
+    }
+}
+
+renderSlots();
+updateWinLoss();
 </body>
 </html>
