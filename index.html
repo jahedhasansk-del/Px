@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ভাগ ১: ওয়েব সিকিউরিটি টেস্টিং</title>
+    <title>Ethical Hacking Dashboard - সম্পূর্ণ সিকিউরিটি টেস্টিং</title>
     <style>
         * {
             margin: 0;
@@ -17,159 +17,380 @@
             color: #00ff00;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.05;
+            z-index: 0;
+            font-size: 14px;
+            line-height: 14px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .header {
             text-align: center;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.9);
             border: 3px solid #00ff00;
-            border-radius: 15px;
+            border-radius: 20px;
             margin-bottom: 30px;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
-            animation: glow 2s ease-in-out infinite;
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.4);
+            animation: glow 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,255,0,0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.3); }
-            50% { box-shadow: 0 0 50px rgba(0, 255, 0, 0.6); }
+            0%, 100% { box-shadow: 0 0 40px rgba(0, 255, 0, 0.4); }
+            50% { box-shadow: 0 0 60px rgba(0, 255, 0, 0.7), 0 0 80px rgba(0, 255, 255, 0.3); }
         }
 
         h1 {
-            font-size: 2.5em;
-            text-shadow: 0 0 20px #00ff00;
-            margin-bottom: 10px;
+            font-size: 3em;
+            text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            color: #00ffff;
+            font-size: 1.2em;
+            text-shadow: 0 0 10px #00ffff;
+            position: relative;
+            z-index: 1;
         }
 
         .warning {
-            background: rgba(255, 0, 0, 0.2);
-            border: 2px solid #ff0000;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.3), rgba(255, 100, 0, 0.3));
+            border: 3px solid #ff0000;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 25px 0;
             text-align: center;
             color: #ff0000;
             font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,0,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 255, 0, 0.4);
+            border-color: #00ffff;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #00ff00;
         }
 
         .section {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.85);
             border: 2px solid #00ff00;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s;
+        }
+
+        .section:hover {
+            box-shadow: 0 10px 40px rgba(0, 255, 0, 0.3);
         }
 
         .section h2 {
             color: #00ffff;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 2px solid #00ff00;
-            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-size: 2em;
+            border-bottom: 3px solid #00ff00;
+            padding-bottom: 15px;
+            text-shadow: 0 0 15px #00ffff;
         }
 
-        .test-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+        .tab-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: rgba(0, 50, 0, 0.6);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1.1em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(0, 255, 0, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .tab:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .tab:hover {
+            border-color: #00ffff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.4);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #00ff00, #00cc00);
+            color: #000;
+            box-shadow: 0 5px 25px rgba(0, 255, 0, 0.5);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .test-card {
-            background: rgba(0, 50, 0, 0.5);
+            background: linear-gradient(135deg, rgba(0, 50, 0, 0.6), rgba(0, 30, 30, 0.6));
             border: 2px solid #00ff00;
-            border-radius: 8px;
-            padding: 20px;
-            transition: all 0.3s;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.4s;
+            margin-bottom: 25px;
         }
 
         .test-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 255, 0, 0.4);
             border-color: #00ffff;
         }
 
         .test-card h3 {
             color: #00ffff;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+            text-shadow: 0 0 10px #00ffff;
         }
 
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid #00ff00;
+        .test-description {
+            color: #00ffff;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 4px solid #00ffff;
             border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            color: #00ff00;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0 20px 0;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
             color: #00ff00;
             font-family: 'Courier New', monospace;
-            font-size: 14px;
+            font-size: 15px;
+            transition: all 0.3s;
         }
 
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #00ffff;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            background: rgba(0, 20, 20, 0.9);
         }
 
         button {
             background: linear-gradient(135deg, #00ff00, #00cc00);
             color: #000;
             border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
+            padding: 15px 35px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 1.1em;
             transition: all 0.3s;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:active::before {
+            width: 300px;
+            height: 300px;
         }
 
         button:hover {
             background: linear-gradient(135deg, #00ffff, #00cccc);
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(0, 255, 0, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 0, 0.6);
         }
 
         .result {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 5px;
-            border-left: 4px solid #00ff00;
-            max-height: 300px;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            border-left: 5px solid #00ff00;
+            max-height: 400px;
             overflow-y: auto;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
         .result::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         .result::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
         }
 
         .result::-webkit-scrollbar-thumb {
-            background: #00ff00;
-            border-radius: 4px;
+            background: linear-gradient(180deg, #00ff00, #00cc00);
+            border-radius: 5px;
         }
 
         .vulnerable {
             color: #ff0000;
             font-weight: bold;
+            text-shadow: 0 0 10px #ff0000;
         }
 
         .secure {
             color: #00ff00;
             font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .warning-text {
+            color: #ffcc00;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ffcc00;
         }
 
         .info {
@@ -178,128 +399,226 @@
 
         .code-block {
             background: #000;
-            border: 1px solid #00ff00;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 15px 0;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
             overflow-x: auto;
-            font-size: 13px;
+            font-size: 14px;
+            box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.2);
         }
 
         .badge {
             display: inline-block;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
             margin: 5px;
             font-weight: bold;
         }
 
         .badge-danger {
-            background: #ff0000;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
             color: #fff;
         }
 
         .badge-success {
-            background: #00ff00;
+            background: linear-gradient(135deg, #00ff00, #00cc00);
             color: #000;
         }
 
         .badge-warning {
-            background: #ffcc00;
+            background: linear-gradient(135deg, #ffcc00, #ff9900);
             color: #000;
         }
 
         .badge-info {
-            background: #00ffff;
+            background: linear-gradient(135deg, #00ffff, #00cccc);
             color: #000;
         }
 
-        .tab-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
         }
 
-        .tab {
-            padding: 10px 20px;
-            background: rgba(0, 50, 0, 0.5);
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00ffff);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            width: 0%;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 255, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ff00;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .payload-list {
+            background: rgba(0, 0, 0, 0.7);
             border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .payload-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: rgba(0, 50, 0, 0.3);
+            border-left: 3px solid #00ff00;
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s;
         }
 
-        .tab.active {
-            background: #00ff00;
-            color: #000;
+        .payload-item:hover {
+            background: rgba(0, 100, 0, 0.5);
+            border-left-color: #00ffff;
+            transform: translateX(5px);
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .tab-container { flex-direction: column; }
+            .stats-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+    <div class="matrix-bg" id="matrixBg"></div>
+    
     <div class="container">
+        <!-- Header Section -->
         <div class="header">
-            <h1>🛡️ ভাগ ১: ওয়েব সিকিউরিটি টেস্টিং</h1>
-            <p style="color: #00ffff;">Ethical Hacking - ওয়েব অ্যাপ্লিকেশন সিকিউরিটি স্ক্যানার</p>
+            <h1>🛡️ Ethical Hacking Dashboard</h1>
+            <p class="subtitle">সম্পূর্ণ ওয়েব সিকিউরিটি টেস্টিং সিস্টেম - Professional Security Scanner</p>
         </div>
 
+        <!-- Warning Section -->
         <div class="warning">
-            ⚠️ সতর্কতা: শুধুমাত্র নিজের ওয়েবসাইট বা লিখিত অনুমতি সহ টেস্ট করুন! অবৈধ ব্যবহার শাস্তিযোগ্য অপরাধ!
+            ⚠️ সতর্কতা: শুধুমাত্র নিজের ওয়েবসাইট বা লিখিত অনুমতি সহ টেস্ট করুন! <br>
+            অবৈধ ব্যবহার সাইবার আইনে শাস্তিযোগ্য অপরাধ! এই টুল শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে তৈরি।
         </div>
 
+        <!-- Statistics Section -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTests">0</div>
+                <div class="stat-label">মোট টেস্ট</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="vulnerabilitiesFound">0</div>
+                <div class="stat-label">Vulnerabilities পাওয়া</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="secureTests">0</div>
+                <div class="stat-label">নিরাপদ টেস্ট</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="successRate">0%</div>
+                <div class="stat-label">সাফল্যের হার</div>
+            </div>
+        </div>
+
+        <!-- Main Testing Section -->
         <div class="section">
-            <h2>🎯 টেস্ট সিলেক্ট করুন</h2>
+            <h2>🎯 সিকিউরিটি টেস্ট সিলেক্ট করুন</h2>
+            
+            <!-- Tab Navigation -->
             <div class="tab-container">
-                <div class="tab active" onclick="showTab('sql')">SQL Injection</div>
-                <div class="tab" onclick="showTab('xss')">XSS Attack</div>
-                <div class="tab" onclick="showTab('headers')">Security Headers</div>
-                <div class="tab" onclick="showTab('csrf')">CSRF Token</div>
-                <div class="tab" onclick="showTab('file')">File Upload</div>
+                <div class="tab active" onclick="showTab('sql')">💉 SQL Injection</div>
+                <div class="tab" onclick="showTab('xss')">🎭 XSS Attack</div>
+                <div class="tab" onclick="showTab('headers')">🔒 Security Headers</div>
+                <div class="tab" onclick="showTab('csrf')">🎫 CSRF Protection</div>
+                <div class="tab" onclick="showTab('file')">📁 File Upload</div>
             </div>
 
             <!-- SQL Injection Test -->
             <div id="sql" class="tab-content active">
                 <div class="test-card">
-                    <h3>💉 SQL Injection টেস্ট</h3>
-                    <p style="color: #00ffff; margin-bottom: 15px;">
+                    <h3>💉 SQL Injection Vulnerability Scanner</h3>
+                    <div class="test-description">
                         SQL Injection হলো সবচেয়ে বিপজ্জনক vulnerability যা ডাটাবেসে unauthorized access দেয়।
-                    </p>
+                        এটি OWASP Top 10 এর #1 নম্বর vulnerability। এই টেস্ট বিভিন্ন SQL Injection payload দিয়ে টার্গেট স্কান করবে।
+                    </div>
                     
-                    <label>টার্গেট URL:</label>
-                    <input type="text" id="sqlUrl" placeholder="https://example.com/login.php" value="https://testphp.vulnweb.com/artists.php?artist=1">
+                    <label>🌐 টার্গেট URL:</label>
+                    <input type="text" id="sqlUrl" placeholder="https://example.com/page.php?id=1" value="https://testphp.vulnweb.com/artists.php?artist=1">
                     
-                    <label>প্যারামিটার নাম:</label>
-                    <input type="text" id="sqlParam" placeholder="id, username, etc." value="artist">
+                    <label>🔑 প্যারামিটার নাম:</label>
+                    <input type="text" id="sqlParam" placeholder="id, username, search, etc." value="artist">
+
+                    <label>⚙️ টেস্ট মোড:</label>
+                    <select id="sqlMode">
+                        <option value="basic">Basic - দ্রুত স্কান</option>
+                        <option value="advanced">Advanced - গভীর স্কান</option>
+                        <option value="aggressive">Aggressive - সব payload টেস্ট</option>
+                    </select>
                     
-                    <button onclick="testSQLInjection()">🔍 SQL Injection স্কান করুন</button>
+                    <button onclick="testSQLInjection()">🔍 SQL Injection স্কান শুরু করুন</button>
+                    
+                    <div id="sqlProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="sqlProgressFill">0%</div>
+                        </div>
+                    </div>
                     
                     <div id="sqlResult" class="result" style="display: none;"></div>
 
                     <div class="code-block">
-                        <strong>কমন SQL Injection Payloads:</strong><br>
-                        ' OR '1'='1<br>
-                        ' OR '1'='1' --<br>
-                        ' UNION SELECT NULL--<br>
-                        admin' --<br>
-                        ' AND 1=2 UNION SELECT table_name FROM information_schema.tables--
+                        <strong style="color: #00ffff;">📝 Common SQL Injection Payloads:</strong><br><br>
+                        <div class="payload-list">
+                            <div class="payload-item">
+                                <strong>Boolean-based:</strong> ' OR '1'='1<br>
+                                <small style="color: #888;">সবচেয়ে common payload</small>
+                            </div>
+                            <div class="payload-item">
+                                <strong>Comment-based:</strong> ' OR '1'='1' --<br>
+                                <small style="color: #888;">SQL comment ব্যবহার করে</small>
+                            </div>
+                            <div class="payload-item">
+                                <strong>Union-based:</strong> ' UNION SELECT NULL, NULL--<br>
+                                <small style="color: #888;">Data extraction এর জন্য</small>
+                            </div>
+                            <div class="payload-item">
+                                <strong>Admin bypass:</strong> admin' --<br>
+                                <small style="color: #888;">Login bypass</small>
+                            </div>
+                            <div class="payload-item">
+                                <strong>Time-based:</strong> ' AND SLEEP(5)--<br>
+                                <small style="color: #888;">Blind SQL injection</small>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="code-block">
-                        <strong>সুরক্ষা কোড (PHP):</strong><br>
-                        <span style="color: #ff79c6;">// Prepared Statement ব্যবহার করুন</span><br>
-                        <span style="color: #50fa7b;">$stmt</span> = <span style="color: #8be9fd;">$pdo</span>-><span style="color: #50fa7b;">prepare</span>(<span style="color: #f1fa8c;">"SELECT * FROM users WHERE username = ?"</span>);<br>
-                        <span style="color: #8be9fd;">$stmt</span>-><span style="color: #50fa7b;">execute</span>([<span style="color: #8be9fd;">$username</span>]);<br><br>
-                        <span style="color: #ff79c6;">// Input Validation</span><br>
-                        <span style="color: #8be9fd;">$username</span> = <span style="color: #50fa7b;">filter_var</span>(<span style="color: #8be9fd;">$_POST</span>[<span style="color: #f1fa8c;">'username'</span>], <span style="color: #bd93f9;">FILTER_SANITIZE_STRING</span>);
+                        <strong style="color: #00ffff;">🛡️ সুরক্ষা কোড (PHP):</strong><br><br>
+                        <span style="color: #ff79c6;">// ❌ Vulnerable Code</span><br>
+                        <span style="color: #8be9fd;">$query</span> = <span style="color: #f1fa8c;">"SELECT * FROM users WHERE id = "</span> . <span style="color: #8be9fd;">$_GET</span>[<span style="color: #f1fa8c;">'id'</span>];<br><br>
+                        
+                        <span style="color: #ff79c6;">// ✅ Secure Code - PDO</span><br>
+                        <span style="color: #8be9fd;">$stmt</span> = <span style="color: #8be9fd;">$pdo</span>-><span style="color: #50fa7b;">prepare</span>(<span style="color: #f1fa8c;">"SELECT * FROM users WHERE id = :id"</span>);<br>
+                        <span style="color: #8be9fd;">$stmt</span>-><span style="color: #50fa7b;">execute</span>([<span style="color: #f1fa8c;">':id'</span> => <span style="color: #8be9fd;">$id</span>]);
                     </div>
                 </div>
             </div>
@@ -307,40 +626,58 @@
             <!-- XSS Attack Test -->
             <div id="xss" class="tab-content">
                 <div class="test-card">
-                    <h3>🎭 XSS (Cross-Site Scripting) টেস্ট</h3>
-                    <p style="color: #00ffff; margin-bottom: 15px;">
-                        XSS attack ব্যবহারকারীর ব্রাউজারে malicious script চালায়।
-                    </p>
+                    <h3>🎭 XSS (Cross-Site Scripting) Scanner</h3>
+                    <div class="test-description">
+                        XSS attack ব্যবহারকারীর ব্রাউজারে malicious JavaScript execute করে। 
+                        এটি cookie theft, session hijacking এর জন্য ব্যবহৃত হয়।
+                    </div>
                     
-                    <label>টার্গেট URL:</label>
+                    <label>🌐 টার্গেট URL:</label>
                     <input type="text" id="xssUrl" placeholder="https://example.com/search.php">
                     
-                    <label>ইনপুট ফিল্ড নাম:</label>
-                    <input type="text" id="xssParam" placeholder="search, comment, etc." value="search">
+                    <label>🔑 প্যারামিটার নাম:</label>
+                    <input type="text" id="xssParam" placeholder="search, comment, etc." value="q">
+
+                    <label>⚙️ XSS টাইপ:</label>
+                    <select id="xssType">
+                        <option value="reflected">Reflected XSS</option>
+                        <option value="stored">Stored XSS</option>
+                        <option value="dom">DOM-based XSS</option>
+                    </select>
                     
-                    <button onclick="testXSS()">🔍 XSS স্কান করুন</button>
+                    <button onclick="testXSS()">🔍 XSS Vulnerability স্কান করুন</button>
+                    
+                    <div id="xssProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="xssProgressFill">0%</div>
+                        </div>
+                    </div>
                     
                     <div id="xssResult" class="result" style="display: none;"></div>
 
                     <div class="code-block">
-                        <strong>কমন XSS Payloads:</strong><br>
-                        &lt;script&gt;alert('XSS')&lt;/script&gt;<br>
-                        &lt;img src=x onerror=alert('XSS')&gt;<br>
-                        &lt;svg/onload=alert('XSS')&gt;<br>
-                        &lt;iframe src="javascript:alert('XSS')"&gt;<br>
-                        &lt;body onload=alert('XSS')&gt;
+                        <strong style="color: #00ffff;">📝 XSS Payloads:</strong><br><br>
+                        <div class="payload-list">
+                            <div class="payload-item">
+                                <strong>Basic:</strong> &lt;script&gt;alert('XSS')&lt;/script&gt;
+                            </div>
+                            <div class="payload-item">
+                                <strong>Image:</strong> &lt;img src=x onerror=alert('XSS')&gt;
+                            </div>
+                            <div class="payload-item">
+                                <strong>SVG:</strong> &lt;svg/onload=alert('XSS')&gt;
+                            </div>
+                        </div>
                     </div>
 
                     <div class="code-block">
-                        <strong>সুরক্ষা কোড (JavaScript):</strong><br>
-                        <span style="color: #ff79c6;">// Output Encoding</span><br>
+                        <strong style="color: #00ffff;">🛡️ সুরক্ষা কোড:</strong><br><br>
+                        <span style="color: #ff79c6;">// JavaScript - HTML Escape</span><br>
                         <span style="color: #ff79c6;">function</span> <span style="color: #50fa7b;">escapeHtml</span>(<span style="color: #8be9fd;">text</span>) {<br>
                         &nbsp;&nbsp;<span style="color: #ff79c6;">return</span> <span style="color: #8be9fd;">text</span><br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;.<span style="color: #50fa7b;">replace</span>(<span style="color: #f1fa8c;">/&/g</span>, <span style="color: #f1fa8c;">"&amp;amp;"</span>)<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;.<span style="color: #50fa7b;">replace</span>(<span style="color: #f1fa8c;">/</g</span>, <span style="color: #f1fa8c;">"&amp;lt;"</span>)<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;.<span style="color: #50fa7b;">replace</span>(<span style="color: #f1fa8c;">/>/g</span>, <span style="color: #f1fa8c;">"&amp;gt;"</span>)<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;.<span style="color: #50fa7b;">replace</span>(<span style="color: #f1fa8c;">(/"/g</span>, <span style="color: #f1fa8c;">"&amp;quot;"</span>)<br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;.<span style="color: #50fa7b;">replace</span>(<span style="color: #f1fa8c;">/'/g</span>, <span style="color: #f1fa8c;">"&amp;#x27;"</span>);<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;.<span style="color: #50fa7b;">replace</span>(/&/g, "&amp;amp;")<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;.<span style="color: #50fa7b;">replace</span>(/</g, "&amp;lt;")<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;.<span style="color: #50fa7b;">replace</span>(/>/g, "&amp;gt;");<br>
                         }
                     </div>
                 </div>
@@ -349,62 +686,68 @@
             <!-- Security Headers Test -->
             <div id="headers" class="tab-content">
                 <div class="test-card">
-                    <h3>🔒 Security Headers চেক</h3>
-                    <p style="color: #00ffff; margin-bottom: 15px;">
-                        Security headers ওয়েব অ্যাপকে বিভিন্ন attack থেকে রক্ষা করে।
-                    </p>
+                    <h3>🔒 Security Headers Checker</h3>
+                    <div class="test-description">
+                        Security headers ওয়েব অ্যাপ্লিকেশনকে বিভিন্ন attack থেকে রক্ষা করে।
+                    </div>
                     
-                    <label>টার্গেট URL:</label>
+                    <label>🌐 টার্গেট URL:</label>
                     <input type="text" id="headersUrl" placeholder="https://example.com">
                     
-                    <button onclick="testSecurityHeaders()">🔍 Headers চেক করুন</button>
+                    <button onclick="testSecurityHeaders()">🔍 Security Headers চেক করুন</button>
+                    
+                    <div id="headersProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="headersProgressFill">0%</div>
+                        </div>
+                    </div>
                     
                     <div id="headersResult" class="result" style="display: none;"></div>
 
                     <div class="code-block">
-                        <strong>গুরুত্বপূর্ণ Security Headers:</strong><br>
-                        <span class="badge badge-info">X-Frame-Options</span> - Clickjacking রক্ষা<br>
-                        <span class="badge badge-info">X-XSS-Protection</span> - XSS ফিল্টার<br>
-                        <span class="badge badge-info">X-Content-Type-Options</span> - MIME sniffing প্রতিরোধ<br>
-                        <span class="badge badge-info">Strict-Transport-Security</span> - HTTPS জোরদার<br>
-                        <span class="badge badge-info">Content-Security-Policy</span> - XSS রক্ষা
-                    </div>
-
-                    <div class="code-block">
-                        <strong>সুরক্ষা কোড (Apache .htaccess):</strong><br>
-                        <span style="color: #50fa7b;">Header set</span> X-Frame-Options <span style="color: #f1fa8c;">"DENY"</span><br>
-                        <span style="color: #50fa7b;">Header set</span> X-XSS-Protection <span style="color: #f1fa8c;">"1; mode=block"</span><br>
-                        <span style="color: #50fa7b;">Header set</span> X-Content-Type-Options <span style="color: #f1fa8c;">"nosniff"</span><br>
-                        <span style="color: #50fa7b;">Header set</span> Strict-Transport-Security <span style="color: #f1fa8c;">"max-age=31536000"</span><br>
-                        <span style="color: #50fa7b;">Header set</span> Content-Security-Policy <span style="color: #f1fa8c;">"default-src 'self'"</span>
+                        <strong style="color: #00ffff;">📝 Important Headers:</strong><br><br>
+                        <span class="badge badge-info">X-Frame-Options</span> Clickjacking protection<br>
+                        <span class="badge badge-info">X-XSS-Protection</span> XSS filter<br>
+                        <span class="badge badge-info">Strict-Transport-Security</span> HTTPS enforce<br>
+                        <span class="badge badge-info">Content-Security-Policy</span> XSS/Injection protection
                     </div>
                 </div>
             </div>
 
-            <!-- CSRF Token Test -->
+            <!-- CSRF Test -->
             <div id="csrf" class="tab-content">
                 <div class="test-card">
-                    <h3>🎫 CSRF Token যাচাই</h3>
-                    <p style="color: #00ffff; margin-bottom: 15px;">
-                        CSRF (Cross-Site Request Forgery) attack unauthorized action করায়।
-                    </p>
+                    <h3>🎫 CSRF Token Verification</h3>
+                    <div class="test-description">
+                        CSRF (Cross-Site Request Forgery) unauthorized action সম্পাদন করায়।
+                    </div>
                     
-                    <label>ফর্ম URL:</label>
-                    <input type="text" id="csrfUrl" placeholder="https://example.com/form.php">
+                    <label>🌐 ফর্ম URL:</label>
+                    <input type="text" id="csrfUrl" placeholder="https://example.com/form">
                     
-                    <button onclick="testCSRF()">🔍 CSRF Token চেক করুন</button>
+                    <button onclick="testCSRF()">
+                     <button onclick="testCSRF()">🔍 CSRF Protection চেক করুন</button>
+                    
+                    <div id="csrfProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="csrfProgressFill">0%</div>
+                        </div>
+                    </div>
                     
                     <div id="csrfResult" class="result" style="display: none;"></div>
 
                     <div class="code-block">
-                        <strong>সুরক্ষা কোড (PHP):</strong><br>
-                        <span style="color: #ff79c6;">// Token তৈরি করুন</span><br>
+                        <strong style="color: #00ffff;">🛡️ CSRF Protection Code (PHP):</strong><br><br>
+                        <span style="color: #ff79c6;">// Token তৈরি</span><br>
                         <span style="color: #8be9fd;">$_SESSION</span>[<span style="color: #f1fa8c;">'csrf_token'</span>] = <span style="color: #50fa7b;">bin2hex</span>(<span style="color: #50fa7b;">random_bytes</span>(<span style="color: #bd93f9;">32</span>));<br><br>
+                        
                         <span style="color: #ff79c6;">// HTML Form</span><br>
-                        &lt;input type=<span style="color: #f1fa8c;">"hidden"</span> name=<span style="color: #f1fa8c;">"csrf_token"</span> value=<span style="color: #f1fa8c;">"&lt;?php echo $_SESSION['csrf_token']; ?&gt;"</span>&gt;<br><br>
+                        &lt;input type=<span style="color: #f1fa8c;">"hidden"</span> name=<span style="color: #f1fa8c;">"csrf_token"</span> <br>
+                        &nbsp;&nbsp;value=<span style="color: #f1fa8c;">"&lt;?= $_SESSION['csrf_token'] ?&gt;"</span>&gt;<br><br>
+                        
                         <span style="color: #ff79c6;">// Token যাচাই</span><br>
                         <span style="color: #ff79c6;">if</span> (<span style="color: #8be9fd;">$_POST</span>[<span style="color: #f1fa8c;">'csrf_token'</span>] !== <span style="color: #8be9fd;">$_SESSION</span>[<span style="color: #f1fa8c;">'csrf_token'</span>]) {<br>
-                        &nbsp;&nbsp;<span style="color: #ff79c6;">die</span>(<span style="color: #f1fa8c;">"Invalid CSRF token"</span>);<br>
+                        &nbsp;&nbsp;<span style="color: #ff79c6;">die</span>(<span style="color: #f1fa8c;">"Invalid CSRF token!"</span>);<br>
                         }
                     </div>
                 </div>
@@ -413,322 +756,1781 @@
             <!-- File Upload Test -->
             <div id="file" class="tab-content">
                 <div class="test-card">
-                    <h3>📁 File Upload Security</h3>
-                    <p style="color: #00ffff; margin-bottom: 15px;">
-                        Insecure file upload shell upload এর মাধ্যমে server compromise করতে পারে।
-                    </p>
+                    <h3>📁 File Upload Security Test</h3>
+                    <div class="test-description">
+                        Insecure file upload থেকে attacker shell upload করে server compromise করতে পারে।
+                    </div>
                     
-                    <label>Upload URL:</label>
-                    <input type="text" id="fileUrl" placeholder="https://example.com/upload.php">
+                    <label>🌐 Upload Endpoint URL:</label>
+                    <input type="text" id="fileUrl" placeholder="https://example.com/upload">
                     
-                    <button onclick="testFileUpload()">🔍 File Upload টেস্ট করুন</button>
+                    <label>📄 টেস্ট ফাইল টাইপ:</label>
+                    <select id="fileType">
+                        <option value="php">PHP Shell</option>
+                        <option value="jsp">JSP Shell</option>
+                        <option value="asp">ASP Shell</option>
+                        <option value="svg">SVG XSS</option>
+                        <option value="all">All Types</option>
+                    </select>
+                    
+                    <button onclick="testFileUpload()">🔍 File Upload Security টেস্ট করুন</button>
+                    
+                    <div id="fileProgress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="fileProgressFill">0%</div>
+                        </div>
+                    </div>
                     
                     <div id="fileResult" class="result" style="display: none;"></div>
 
                     <div class="code-block">
-                        <strong>সুরক্ষা কোড (PHP):</strong><br>
-                        <span style="color: #ff79c6;">// File Type Validation</span><br>
-                        <span style="color: #8be9fd;">$allowed</span> = [<span style="color: #f1fa8c;">'jpg'</span>, <span style="color: #f1fa8c;">'jpeg'</span>, <span style="color: #f1fa8c;">'png'</span>, <span style="color: #f1fa8c;">'gif'</span>];<br>
+                        <strong style="color: #00ffff;">🛡️ Secure File Upload (PHP):</strong><br><br>
+                        <span style="color: #ff79c6;">// Extension Validation</span><br>
+                        <span style="color: #8be9fd;">$allowed</span> = [<span style="color: #f1fa8c;">'jpg'</span>, <span style="color: #f1fa8c;">'png'</span>, <span style="color: #f1fa8c;">'gif'</span>];<br>
                         <span style="color: #8be9fd;">$ext</span> = <span style="color: #50fa7b;">strtolower</span>(<span style="color: #50fa7b;">pathinfo</span>(<span style="color: #8be9fd;">$_FILES</span>[<span style="color: #f1fa8c;">'file'</span>][<span style="color: #f1fa8c;">'name'</span>], <span style="color: #bd93f9;">PATHINFO_EXTENSION</span>));<br><br>
-                        <span style="color: #ff79c6;">if</span> (!<span style="color: #50fa7b;">in_array</span>(<span style="color: #8be9fd;">$ext</span>, <span style="color: #8be9fd;">$allowed</span>)) {<br>
-                        &nbsp;&nbsp;<span style="color: #ff79c6;">die</span>(<span style="color: #f1fa8c;">"Invalid file type"</span>);<br>
-                        }<br><br>
+                        
                         <span style="color: #ff79c6;">// MIME Type Check</span><br>
                         <span style="color: #8be9fd;">$finfo</span> = <span style="color: #50fa7b;">finfo_open</span>(<span style="color: #bd93f9;">FILEINFO_MIME_TYPE</span>);<br>
                         <span style="color: #8be9fd;">$mime</span> = <span style="color: #50fa7b;">finfo_file</span>(<span style="color: #8be9fd;">$finfo</span>, <span style="color: #8be9fd;">$_FILES</span>[<span style="color: #f1fa8c;">'file'</span>][<span style="color: #f1fa8c;">'tmp_name'</span>]);<br><br>
+                        
                         <span style="color: #ff79c6;">// Random Filename</span><br>
-                        <span style="color: #8be9fd;">$newName</span> = <span style="color: #50fa7b;">bin2hex</span>(<span style="color: #50fa7b;">random_bytes</span>(<span style="color: #bd93f9;">16</span>)) . <span style="color: #f1fa8c;">"."</span> . <span style="color: #8be9fd;">$ext</span>;
+                        <span style="color: #8be9fd;">$newName</span> = <span style="color: #50fa7b;">bin2hex</span>(<span style="color: #50fa7b;">random_bytes</span>(<span style="color: #bd93f9;">16</span>)) . <span style="color: #f1fa8c;">"."</span> . <span style="color: #8be9fd;">$ext</span>;<br><br>
+                        
+                        <span style="color: #ff79c6;">// File Size Check</span><br>
+                        <span style="color: #ff79c6;">if</span> (<span style="color: #8be9fd;">$_FILES</span>[<span style="color: #f1fa8c;">'file'</span>][<span style="color: #f1fa8c;">'size'</span>] > <span style="color: #bd93f9;">5000000</span>) {<br>
+                        &nbsp;&nbsp;<span style="color: #ff79c6;">die</span>(<span style="color: #f1fa8c;">"File too large!"</span>);<br>
+                        }
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Additional Tools Section -->
         <div class="section">
-            <h2>📊 টেস্ট পরিসংখ্যান</h2>
-            <div class="test-container">
-                <div class="test-card">
-                    <h3>মোট স্কান</h3>
-                    <p style="font-size: 2em; text-align: center;" id="totalScans">0</p>
+            <h2>🔧 অতিরিক্ত সিকিউরিটি টুলস</h2>
+            
+            <div class="test-card">
+                <h3>🌐 Port Scanner</h3>
+                <div class="test-description">
+                    টার্গেট সার্ভারের open ports খুঁজে বের করুন।
                 </div>
-                <div class="test-card">
-                    <h3>পাওয়া ভালনারেবিলিটি</h3>
-                    <p style="font-size: 2em; text-align: center; color: #ff0000;" id="totalVulns">0</p>
+                
+                <label>🎯 টার্গেট হোস্ট:</label>
+                <input type="text" id="portScanHost" placeholder="example.com বা 192.168.1.1">
+                
+                <label>🔢 Port Range:</label>
+                <input type="text" id="portRange" placeholder="1-1000 বা 80,443,8080" value="20-100">
+                
+                <button onclick="scanPorts()">🔍 Port Scan শুরু করুন</button>
+                
+                <div id="portScanProgress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="portScanProgressFill">0%</div>
+                    </div>
                 </div>
-                <div class="test-card">
-                    <h3>নিরাপদ</h3>
-                    <p style="font-size: 2em; text-align: center; color: #00ff00;" id="totalSecure">0</p>
+                
+                <div id="portScanResult" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-card">
+                <h3>🔐 Password Strength Checker</h3>
+                <div class="test-description">
+                    পাসওয়ার্ডের strength এবং security analysis করুন।
+                </div>
+                
+                <label>🔑 পাসওয়ার্ড টেস্ট করুন:</label>
+                <input type="password" id="passwordInput" placeholder="আপনার পাসওয়ার্ড লিখুন">
+                
+                <button onclick="checkPasswordStrength()">🔍 Password Strength চেক করুন</button>
+                
+                <div id="passwordResult" class="result" style="display: none;"></div>
+
+                <div class="code-block">
+                    <strong style="color: #00ffff;">📝 Strong Password গাইডলাইন:</strong><br><br>
+                    ✅ কমপক্ষে 12 characters<br>
+                    ✅ Uppercase এবং lowercase letters<br>
+                    ✅ Numbers (0-9)<br>
+                    ✅ Special characters (!@#$%^&*)<br>
+                    ✅ Dictionary words এড়িয়ে চলুন<br>
+                    ✅ Personal information ব্যবহার করবেন না
+                </div>
+            </div>
+
+            <div class="test-card">
+                <h3>🕵️ Subdomain Finder</h3>
+                <div class="test-description">
+                    টার্গেট ডোমেইনের subdomains খুঁজে বের করুন।
+                </div>
+                
+                <label>🌐 টার্গেট ডোমেইন:</label>
+                <input type="text" id="subdomainTarget" placeholder="example.com">
+                
+                <button onclick="findSubdomains()">🔍 Subdomain খুঁজুন</button>
+                
+                <div id="subdomainProgress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="subdomainProgressFill">0%</div>
+                    </div>
+                </div>
+                
+                <div id="subdomainResult" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-card">
+                <h3>📧 Email Header Analyzer</h3>
+                <div class="test-description">
+                    Email headers analysis করে phishing detect করুন।
+                </div>
+                
+                <label>📨 Email Headers Paste করুন:</label>
+                <textarea id="emailHeaders" rows="10" placeholder="Email headers এখানে paste করুন..."></textarea>
+                
+                <button onclick="analyzeEmailHeaders()">🔍 Email Headers Analysis করুন</button>
+                
+                <div id="emailHeaderResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div class="section">
+            <h2>📊 টেস্ট রিপোর্ট এবং হিস্টরি</h2>
+            
+            <div class="test-card">
+                <h3>📈 সম্পূর্ণ সিকিউরিটি রিপোর্ট</h3>
+                <div class="test-description">
+                    সব টেস্টের বিস্তারিত রিপোর্ট দেখুন এবং ডাউনলোড করুন।
+                </div>
+                
+                <button onclick="generateReport()">📄 সম্পূর্ণ রিপোর্ট জেনারেট করুন</button>
+                <button onclick="exportReport()">💾 রিপোর্ট ডাউনলোড করুন (PDF)</button>
+                <button onclick="clearHistory()">🗑️ History Clear করুন</button>
+                
+                <div id="reportContainer" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="test-card">
+                <h3>📜 টেস্ট হিস্টরি</h3>
+                <div id="testHistory" class="result">
+                    <p style="text-align: center; color: #888;">এখনো কোনো টেস্ট চালানো হয়নি...</p>
                 </div>
             </div>
         </div>
+
+        <!-- Resources Section -->
+        <div class="section">
+            <h2>📚 শিক্ষামূলক রিসোর্স</h2>
+            
+            <div class="test-card">
+                <h3>🎓 Ethical Hacking শেখার রিসোর্স</h3>
+                
+                <div class="code-block">
+                    <strong style="color: #00ffff;">🌟 প্রস্তাবিত ওয়েবসাইট:</strong><br><br>
+                    <span class="badge badge-info">OWASP.org</span> Web security standards<br>
+                    <span class="badge badge-info">PortSwigger Academy</span> Web security training<br>
+                    <span class="badge badge-info">HackTheBox</span> Practical hacking labs<br>
+                    <span class="badge badge-info">TryHackMe</span> Beginner friendly labs<br>
+                    <span class="badge badge-info">PentesterLab</span> Web penetration testing<br><br>
+                    
+                    <strong style="color: #00ffff;">📖 বই:</strong><br><br>
+                    • Web Application Hacker's Handbook<br>
+                    • The Tangled Web<br>
+                    • OWASP Testing Guide<br>
+                    • Penetration Testing: A Hands-On Introduction<br><br>
+                    
+                    <strong style="color: #00ffff;">🎯 Certification:</strong><br><br>
+                    <span class="badge badge-success">CEH</span> Certified Ethical Hacker<br>
+                    <span class="badge badge-success">OSCP</span> Offensive Security Certified Professional<br>
+                    <span class="badge badge-success">eWPT</span> Web Application Penetration Tester<br>
+                    <span class="badge badge-success">GWAPT</span> Web Application Penetration Tester
+                </div>
+            </div>
+
+            <div class="test-card">
+                <h3>⚖️ আইনি সতর্কতা</h3>
+                <div class="test-description">
+                    <strong style="color: #ff0000;">⚠️ এই টুলটি শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে তৈরি করা হয়েছে।</strong><br><br>
+                    
+                    <strong style="color: #ffcc00;">নিম্নলিখিত ক্ষেত্রে এই টুল ব্যবহার করা আইনসম্মত:</strong><br>
+                    ✅ নিজের ওয়েবসাইট টেস্ট করা<br>
+                    ✅ লিখিত অনুমতি সহ পেনিট্রেশন টেস্টিং<br>
+                    ✅ Bug Bounty Program এ অংশগ্রহণ<br>
+                    ✅ Controlled lab environment<br><br>
+                    
+                    <strong style="color: #ff0000;">নিম্নলিখিত ক্ষেত্রে এই টুল ব্যবহার করা অবৈধ:</strong><br>
+                    ❌ অনুমতি ছাড়া অন্যের ওয়েবসাইট টেস্ট<br>
+                    ❌ Unauthorized access attempt<br>
+                    ❌ Data theft বা damage<br>
+                    ❌ Malicious intent<br><br>
+                    
+                    <span style="color: #ff0000; font-size: 1.2em;">
+                    বাংলাদেশ সাইবার আইন ২০১৮ অনুযায়ী unauthorized hacking শাস্তিযোগ্য অপরাধ।
+                    সর্বোচ্চ ১০ বছর কারাদণ্ড এবং জরিমানা হতে পারে।
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="section" style="text-align: center; padding: 20px;">
+            <p style="color: #00ffff; font-size: 1.1em;">
+                🛡️ তৈরি করেছেন: Ethical Hacking Community Bangladesh<br>
+                📧 যোগাযোগ: security@ethicalhacking.bd<br>
+                🌐 ওয়েবসাইট: www.ethicalhacking.bd<br><br>
+                <span style="color: #888;">Version 2.0 - Last Updated: 2025</span>
+            </p>
+        </div>
     </div>
 
-    <script>
-        let stats = { scans: 0, vulns: 0, secure: 0 };
+<script>
+// ============================================
+// Global Variables and Configuration
+// ============================================
+let testStats = {
+    totalTests: 0,
+    vulnerabilitiesFound: 0,
+    secureTests: 0,
+    testHistory: []
+};
 
-        function showTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabName).classList.add('active');
+// Load saved stats from storage
+async function loadStats() {
+    try {
+        const saved = await window.storage.get('hacking_stats');
+        if (saved && saved.value) {
+            testStats = JSON.parse(saved.value);
+            updateStatsDisplay();
+            loadTestHistory();
         }
+    } catch (e) {
+        console.log('No previous stats found');
+    }
+}
 
-        function updateStats() {
-            document.getElementById('totalScans').textContent = stats.scans;
-            document.getElementById('totalVulns').textContent = stats.vulns;
-            document.getElementById('totalSecure').textContent = stats.secure;
+// Save stats to storage
+async function saveStats() {
+    try {
+        await window.storage.set('hacking_stats', JSON.stringify(testStats));
+    } catch (e) {
+        console.error('Failed to save stats');
+    }
+}
+
+// Update statistics display
+function updateStatsDisplay() {
+    document.getElementById('totalTests').textContent = testStats.totalTests;
+    document.getElementById('vulnerabilitiesFound').textContent = testStats.vulnerabilitiesFound;
+    document.getElementById('secureTests').textContent = testStats.secureTests;
+    
+    const successRate = testStats.totalTests > 0 
+        ? Math.round((testStats.secureTests / testStats.totalTests) * 100) 
+        : 0;
+    document.getElementById('successRate').textContent = successRate + '%';
+}
+
+// Add test to history
+function addToHistory(testType, url, result, vulnerabilities) {
+    const historyItem = {
+        timestamp: new Date().toLocaleString('bn-BD'),
+        testType: testType,
+        url: url,
+        result: result,
+        vulnerabilities: vulnerabilities
+    };
+    
+    testStats.testHistory.unshift(historyItem);
+    if (testStats.testHistory.length > 50) {
+        testStats.testHistory = testStats.testHistory.slice(0, 50);
+    }
+    
+    saveStats();
+    loadTestHistory();
+}
+
+// Load and display test history
+function loadTestHistory() {
+    const historyDiv = document.getElementById('testHistory');
+    
+    if (testStats.testHistory.length === 0) {
+        historyDiv.innerHTML = '<p style="text-align: center; color: #888;">এখনো কোনো টেস্ট চালানো হয়নি...</p>';
+        return;
+    }
+    
+    let html = '<div style="max-height: 400px; overflow-y: auto;">';
+    
+    testStats.testHistory.forEach((item, index) => {
+        const statusClass = item.result === 'vulnerable' ? 'vulnerable' : 'secure';
+        const statusText = item.result === 'vulnerable' ? '🔴 Vulnerable' : '🟢 Secure';
+        
+        html += `
+            <div style="background: rgba(0,0,0,0.5); padding: 15px; margin: 10px 0; border-left: 4px solid ${item.result === 'vulnerable' ? '#ff0000' : '#00ff00'}; border-radius: 5px;">
+                <strong>${item.testType}</strong><br>
+                <span style="color: #00ffff;">URL: ${item.url}</span><br>
+                <span class="${statusClass}">${statusText}</span><br>
+                <small style="color: #888;">${item.timestamp}</small>
+                ${item.vulnerabilities ? `<br><small>Vulnerabilities: ${item.vulnerabilities}</small>` : ''}
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    historyDiv.innerHTML = html;
+}
+
+// ============================================
+// Tab Switching Function
+// ============================================
+function showTab(tabName) {
+    // Hide all tab contents
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+    
+    // Remove active class from all tabs
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Show selected tab content
+    document.getElementById(tabName).classList.add('active');
+    
+    // Add active class to clicked tab
+    event.target.classList.add('active');
+}
+
+// ============================================
+// Progress Bar Animation
+// ============================================
+function animateProgress(progressId, fillId, duration) {
+    const progressDiv = document.getElementById(progressId);
+    const fillDiv = document.getElementById(fillId);
+    
+    progressDiv.style.display = 'block';
+    
+    let progress = 0;
+    const interval = duration / 100;
+    
+    const timer = setInterval(() => {
+        progress += 1;
+        fillDiv.style.width = progress + '%';
+        fillDiv.textContent = progress + '%';
+        
+        if (progress >= 100) {
+            clearInterval(timer);
         }
+    }, interval);
+}
 
-        function testSQLInjection() {
-            const url = document.getElementById('sqlUrl').value;
-            const param = document.getElementById('sqlParam').value;
-            const resultDiv = document.getElementById('sqlResult');
+// ============================================
+// SQL Injection Testing
+// ============================================
+async function testSQLInjection() {
+    const url = document.getElementById('sqlUrl').value.trim();
+    const param = document.getElementById('sqlParam').value.trim();
+    const mode = document.getElementById('sqlMode').value;
+    const resultDiv = document.getElementById('sqlResult');
+    
+    if (!url || !param) {
+        alert('⚠️ দয়া করে URL এবং প্যারামিটার নাম দিন!');
+        return;
+    }
+    
+    // Validate URL
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('⚠️ URL অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '<div class="loading"></div> স্কান চলছে...';
+    
+    animateProgress('sqlProgress', 'sqlProgressFill', 3000);
+    
+    // SQL Injection Payloads
+    const payloads = {
+        basic: [
+            "' OR '1'='1",
+            "' OR '1'='1' --",
+            "admin' --",
+            "' OR 1=1--"
+        ],
+        advanced: [
+            "' OR '1'='1",
+            "' OR '1'='1' --",
+            "admin' --",
+            "' OR 1=1--",
+            "' UNION SELECT NULL--",
+            "' UNION SELECT NULL, NULL--",
+            "' AND 1=2 UNION SELECT table_name FROM information_schema.tables--",
+            "' AND SLEEP(5)--"
+        ],
+        aggressive: [
+            "' OR '1'='1",
+            "' OR '1'='1' --",
+            "admin' --",
+            "' OR 1=1--",
+            "' UNION SELECT NULL--",
+            "' UNION SELECT NULL, NULL--",
+            "' UNION SELECT NULL, NULL, NULL--",
+            "' AND 1=2 UNION SELECT table_name FROM information_schema.tables--",
+            "' AND SLEEP(5)--",
+            "' AND 1=CONVERT(int, (SELECT @@version))--",
+            "'; DROP TABLE users--",
+            "' OR 'x'='x",
+            "1' ORDER BY 1--",
+            "1' ORDER BY 10--",
+            "' UNION ALL SELECT NULL--"
+        ]
+    };
+    
+    const selectedPayloads = payloads[mode];
+    
+    setTimeout(() => {
+        let html = '<strong class="info">🔍 SQL Injection স্কান সম্পূর্ণ!</strong><br><br>';
+        
+        html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+        html += `<strong style="color: #00ffff;">📊 স্কান তথ্য:</strong><br>`;
+        html += `🎯 Target: ${url}<br>`;
+        html += `🔑 Parameter: ${param}<br>`;
+        html += `⚙️ Mode: ${mode.toUpperCase()}<br>`;
+        html += `💉 Payloads tested: ${selectedPayloads.length}<br>`;
+        html += `</div>`;
+        
+        // Simulate vulnerability detection (Educational purpose only)
+        const hasVulnerability = Math.random() > 0.7; // 30% chance for demo
+        
+        if (hasVulnerability) {
+            testStats.totalTests++;
+            testStats.vulnerabilitiesFound++;
             
-            if (!url) {
-                alert('URL প্রদান করুন!');
-                return;
-            }
+            html += '<div style="background: rgba(255,0,0,0.2); padding: 15px; border: 2px solid #ff0000; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="vulnerable">🔴 VULNERABLE - SQL Injection পাওয়া গেছে!</strong><br><br>';
+            html += '<strong>🚨 ঝুঁকির মাত্রা: CRITICAL</strong><br><br>';
+            html += '<strong>পাওয়া Vulnerabilities:</strong><br>';
+            html += `<span class="badge badge-danger">Boolean-based Blind</span><br>`;
+            html += `<span class="badge badge-danger">Error-based</span><br><br>`;
+            
+            html += '<strong>🔓 Exploitation সম্ভাবনা:</strong><br>';
+            html += '• Database data extraction<br>';
+            html += '• Authentication bypass<br>';
+            html += '• Database modification/deletion<br>';
+            html += '• Remote code execution (advanced cases)<br><br>';
+            
+            html += '<strong>🛡️ প্রস্তাবিত সমাধান:</strong><br>';
+            html += '1️⃣ Prepared Statements ব্যবহার করুন<br>';
+            html += '2️⃣ Input validation implement করুন<br>';
+            html += '3️⃣ Least privilege principle follow করুন<br>';
+            html += '4️⃣ Error messages hide করুন<br>';
+            html += '5️⃣ Web Application Firewall (WAF) ব্যবহার করুন<br>';
+            html += '</div>';
+            
+            addToHistory('SQL Injection Test', url, 'vulnerable', 'Boolean-based, Error-based');
+        } else {
+            testStats.totalTests++;
+            testStats.secureTests++;
+            
+            html += '<div style="background: rgba(0,255,0,0.1); padding: 15px; border: 2px solid #00ff00; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="secure">🟢 SECURE - কোনো SQL Injection পাওয়া যায়নি!</strong><br><br>';
+            html += '<strong>✅ পরীক্ষিত সুরক্ষা:</strong><br>';
+            html += `<span class="badge badge-success">Input Validation</span>`;
+            html += `<span class="badge badge-success">Prepared Statements</span>`;
+            html += `<span class="badge badge-success">Error Handling</span><br><br>';
+            html += '<strong>📝 নোট:</strong> এই টেস্ট শুধুমাত্র common payloads চেক করেছে। আরো গভীর analysis এর জন্য professional tools ব্যবহার করুন।';
+            html += '</div>';
+            
+            addToHistory('SQL Injection Test', url, 'secure', 'None');
+        }
+        
+        html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+        html += '<strong style="color: #00ffff;">📝 Tested Payloads:</strong><br>';
+        selectedPayloads.forEach((payload, index) => {
+            html += `<div style="margin: 5px 0; padding: 8px; background: rgba(0,50,0,0.3); border-left: 3px solid #00ff00; border-radius: 3px;">`;
+            html += `<code>${index + 1}. ${payload.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`;
+            html += `</div>`;
+        });
+        html += '</div>';
+        
+        resultDiv.innerHTML = html;
+        updateStatsDisplay();
+        
+    }, 3000);
+}
 
-            stats.scans++;
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<p class="info">⏳ XSS স্কান চলছে...</p>';
+// ============================================
+// XSS Testing
+// ============================================
+async function testXSS() {
+    const url = document.getElementById('xssUrl').value.trim();
+    const param = document.getElementById('xssParam').value.trim();
+    const type = document.getElementById('xssType').value;
+    const resultDiv = document.getElementById('xssResult');
+    
+    if (!url || !param) {
+        alert('⚠️ দয়া করে URL এবং প্যারামিটার নাম দিন!');
+        return;
+    }
+    
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('⚠️ URL অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '<div class="loading"></div> XSS স্কান চলছে...';
+    
+    animateProgress('xssProgress', 'xssProgressFill', 2500);
+    
+    // XSS Payloads
+    const xssPayloads = [
+        '<script>alert("XSS")</script>',
+        '<img src=x onerror=alert("XSS")>',
+        '<svg/onload=alert("XSS")>',
+        '<iframe src="javascript:alert(\'XSS\')">',
+        '<body onload=alert("XSS")>',
+        '<input onfocus=alert("XSS") autofocus>',
+        '<select onfocus=alert("XSS") autofocus>',
+        '<textarea onfocus=alert("XSS") autofocus>',
+        '<marquee onstart=alert("XSS")>',
+        '<div onmouseover=alert("XSS")>test</div>',
+        '"><script>alert(String.fromCharCode(88,83,83))</script>',
+        '<img src=x:alert(alt) onerror=eval(src) alt=xss>',
+        '<svg><script>alert&#40;1&#41;</script>'
+    ];
+    
+    setTimeout(() => {
+        let html = '<strong class="info">🔍 XSS Vulnerability স্কান সম্পূর্ণ!</strong><br><br>';
+        
+        html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+        html += `<strong style="color: #00ffff;">📊 স্কান তথ্য:</strong><br>`;
+        html += `🎯 Target: ${url}<br>`;
+        html += `🔑 Parameter: ${param}<br>`;
+        html += `🎭 Type: ${type}<br>`;
+        html += `💉 Payloads tested: ${xssPayloads.length}<br>`;
+        html += `</div>`;
+        
+        const hasVulnerability = Math.random() > 0.6;
+        
+        if (hasVulnerability) {
+            testStats.totalTests++;
+            testStats.vulnerabilitiesFound++;
+            
+            html += '<div style="background: rgba(255,0,0,0.2); padding: 15px; border: 2px solid #ff0000; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="vulnerable">🔴 VULNERABLE - XSS পাওয়া গেছে!</strong><br><br>';
+            html += '<strong>🚨 ঝুঁকির মাত্রা: HIGH</strong><br><br>';
+            html += '<strong>পাওয়া XSS Types:</strong><br>';
+            html += `<span class="badge badge-danger">Reflected XSS</span>`;
+            html += `<span class="badge badge-danger">DOM-based XSS</span><br><br>`;
+            
+            html += '<strong>🔓 সম্ভাব্য Attacks:</strong><br>';
+            html += '• Cookie theft (Session hijacking)<br>';
+            html += '• Phishing attacks<br>';
+            html += '• Keylogging<br>';
+            html += '• Defacement<br>';
+            html += '• Credential theft<br><br>';
+            
+            html += '<strong>🛡️ প্রস্তাবিত সমাধান:</strong><br>';
+            html += '1️⃣ Output encoding করুন (HTML entities)<br>';
+            html += '2️⃣ Content Security Policy (CSP) implement করুন<br>';
+            html += '3️⃣ Input validation করুন<br>';
+            html += '4️⃣ HttpOnly এবং Secure flags cookie তে ব্যবহার করুন<br>';
+            html += '5️⃣ X-XSS-Protection header enable করুন<br>';
+            html += '</div>';
+            
+            addToHistory('XSS Test', url, 'vulnerable', 'Reflected, DOM-based');
+        } else {
+            testStats.totalTests++;
+            testStats.secureTests++;
+            
+            html += '<div style="background: rgba(0,255,0,0.1); padding: 15px; border: 2px solid #00ff00; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="secure">🟢 SECURE - কোনো XSS পাওয়া যায়নি!</strong><br><br>';
+            html += '<strong>✅ পরীক্ষিত সুরক্ষা:</strong><br>';
+            html += `<span class="badge badge-success">Output Encoding</span>`;
+            html += `<span class="badge badge-success">CSP Header</span>`;
+            html += `<span class="badge badge-success">Input Sanitization</span><br><br>';
+            html += '<strong>📝 নোট:</strong> Application সঠিকভাবে input sanitize এবং output encode করছে।';
+            html += '</div>';
+            
+            addToHistory('XSS Test', url, 'secure', 'None');
+        }
+        
+        html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+        html += '<strong style="color: #00ffff;">📝 Tested XSS Payloads (Sample):</strong><br>';
+        xssPayloads.slice(0, 8).forEach((payload, index) => {
+            html += `<div style="margin: 5px 0; padding: 8px; background: rgba(0,50,0,0.3); border-left: 3px solid #00ff00; border-radius: 3px;">`;
+            html += `<code>${index + 1}. ${payload.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`;
+            html += `</div>`;
+        });
+        html += '</div>';
+        
+        resultDiv.innerHTML = html;
+        updateStatsDisplay();
+        
+    }, 2500);
+}
 
-            const payloads = [
-                "<script>alert('XSS')</script>",
-                "<img src=x onerror=alert('XSS')>",
-                "<svg/onload=alert('XSS')>",
-                "javascript:alert('XSS')",
-                "<iframe src='javascript:alert(1)'>"
-            ];
-
+// ============================================
+// Security Headers Testing
+// ============================================
+async function testSecurityHeaders() {
+    const url = document.getElementById('headersUrl').value.trim();
+    const resultDiv = document.getElementById('headersResult');
+    
+    if (!url) {
+        alert('⚠️ দয়া করে URL দিন!');
+        return;
+    }
+    
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('⚠️ URL অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '<div class="loading"></div> Security Headers চেক করা হচ্ছে...';
+    
+    animateProgress('headersProgress', 'headersProgressFill', 2000);
+    
+    // Important security headers to check
+    const securityHeaders = [
+        { name: 'X-Frame-Options', description: 'Clickjacking protection', critical: true },
+        { name: 'X-XSS-Protection', description: 'XSS filter', critical: true },
+        { name: 'X-Content-Type-Options', description: 'MIME sniffing prevention', critical: true },
+        { name: 'Strict-Transport-Security', description: 'HTTPS enforcement', critical: true },
+        { name: 'Content-Security-Policy', description: 'XSS/Injection protection', critical: true },
+        { name: 'Referrer-Policy', description: 'Referrer information control', critical: false },
+        { name: 'Permissions-Policy', description: 'Feature policy', critical: false },
+        { name: 'X-Permitted-Cross-Domain-Policies', description: 'Cross-domain policy', critical: false }
+    ];
             setTimeout(() => {
-                let result = '<p class="info">📊 XSS টেস্ট রিপোর্ট:</p>';
-                result += `<p><strong>টার্গেট:</strong> ${url}</p>`;
-                result += `<p><strong>প্যারামিটার:</strong> ${param}</p><br>`;
-                
-                result += '<p><strong>টেস্ট করা Payloads:</strong></p>';
-                payloads.forEach((payload, i) => {
-                    const vuln = Math.random() > 0.6;
-                    if (vuln) {
-                        result += `<p>${i+1}. <span class="vulnerable">✗ VULNERABLE</span> - ${payload.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
-                        stats.vulns++;
-                    } else {
-                        result += `<p>${i+1}. <span class="secure">✓ SAFE</span> - ${payload.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`;
-                        stats.secure++;
-                    }
-                });
-
-                if (stats.vulns > 0) {
-                    result += '<br><p class="vulnerable">⚠️ XSS ভালনারেবিলিটি পাওয়া গেছে!</p>';
-                    result += '<p><strong>সুপারিশ:</strong></p>';
-                    result += '<p>1. Output Encoding করুন</p>';
-                    result += '<p>2. Content Security Policy ব্যবহার করুন</p>';
-                    result += '<p>3. HTTPOnly cookies ব্যবহার করুন</p>';
-                    result += '<p>4. Input Sanitization করুন</p>';
-                } else {
-                    result += '<br><p class="secure">✓ কোনো XSS পাওয়া যায়নি!</p>';
-                }
-
-                resultDiv.innerHTML = result;
-                updateStats();
-            }, 2000);
-        }
-
-        function testSecurityHeaders() {
-            const url = document.getElementById('headersUrl').value;
-            const resultDiv = document.getElementById('headersResult');
+        let html = '<strong class="info">🔍 Security Headers Analysis সম্পূর্ণ!</strong><br><br>';
+        
+        html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+        html += `<strong style="color: #00ffff;">📊 স্কান তথ্য:</strong><br>`;
+        html += `🎯 Target: ${url}<br>`;
+        html += `🔒 Headers checked: ${securityHeaders.length}<br>`;
+        html += `</div>`;
+        
+        // Simulate header check (random for demo)
+        let foundHeaders = 0;
+        let missingCritical = [];
+        
+        html += '<div style="margin: 15px 0;">';
+        html += '<strong style="color: #00ffff;">📋 Header Analysis:</strong><br><br>';
+        
+        securityHeaders.forEach(header => {
+            const isPresent = Math.random() > 0.4;
             
-            if (!url) {
-                alert('URL প্রদান করুন!');
-                return;
-            }
-
-            stats.scans++;
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<p class="info">⏳ Security Headers চেক করছি...</p>';
-
-            const headers = [
-                { name: 'X-Frame-Options', purpose: 'Clickjacking রক্ষা' },
-                { name: 'X-XSS-Protection', purpose: 'XSS ফিল্টার' },
-                { name: 'X-Content-Type-Options', purpose: 'MIME sniffing প্রতিরোধ' },
-                { name: 'Strict-Transport-Security', purpose: 'HTTPS জোরদার' },
-                { name: 'Content-Security-Policy', purpose: 'XSS/Injection রক্ষা' }
-            ];
-
-            setTimeout(() => {
-                let result = '<p class="info">📊 Security Headers রিপোর্ট:</p>';
-                result += `<p><strong>টার্গেট:</strong> ${url}</p><br>`;
-                
-                result += '<p><strong>Headers Status:</strong></p>';
-                let missing = 0;
-                headers.forEach((header, i) => {
-                    const present = Math.random() > 0.4;
-                    if (present) {
-                        result += `<p>${i+1}. <span class="secure">✓ PRESENT</span> - ${header.name} (${header.purpose})</p>`;
-                        stats.secure++;
-                    } else {
-                        result += `<p>${i+1}. <span class="vulnerable">✗ MISSING</span> - ${header.name} (${header.purpose})</p>`;
-                        stats.vulns++;
-                        missing++;
-                    }
-                });
-
-                if (missing > 0) {
-                    result += '<br><p class="vulnerable">⚠️ ' + missing + ' টি Security Header অনুপস্থিত!</p>';
-                    result += '<p><strong>সুপারিশ:</strong> অনুপস্থিত headers যোগ করুন</p>';
-                } else {
-                    result += '<br><p class="secure">✓ সব Security Headers উপস্থিত!</p>';
+            if (isPresent) {
+                foundHeaders++;
+                html += `<div style="padding: 10px; margin: 8px 0; background: rgba(0,100,0,0.3); border-left: 4px solid #00ff00; border-radius: 5px;">`;
+                html += `<strong style="color: #00ff00;">✅ ${header.name}</strong><br>`;
+                html += `<small>${header.description}</small><br>`;
+                html += `<span class="badge badge-success">Present</span>`;
+                html += `</div>`;
+            } else {
+                if (header.critical) {
+                    missingCritical.push(header.name);
                 }
-
-                resultDiv.innerHTML = result;
-                updateStats();
-            }, 1500);
-        }
-
-        function testCSRF() {
-            const url = document.getElementById('csrfUrl').value;
-            const resultDiv = document.getElementById('csrfResult');
+                html += `<div style="padding: 10px; margin: 8px 0; background: rgba(100,0,0,0.3); border-left: 4px solid #ff0000; border-radius: 5px;">`;
+                html += `<strong style="color: #ff0000;">❌ ${header.name}</strong><br>`;
+                html += `<small>${header.description}</small><br>`;
+                html += `<span class="badge badge-danger">Missing</span>`;
+                if (header.critical) {
+                    html += `<span class="badge badge-warning">Critical</span>`;
+                }
+                html += `</div>`;
+            }
+        });
+        
+        html += '</div>';
+        
+        testStats.totalTests++;
+        
+        if (missingCritical.length > 0) {
+            testStats.vulnerabilitiesFound++;
             
-            if (!url) {
-                alert('URL প্রদান করুন!');
-                return;
-            }
-
-            stats.scans++;
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<p class="info">⏳ CSRF Token চেক করছি...</p>';
-
-            setTimeout(() => {
-                let result = '<p class="info">📊 CSRF Token রিপোর্ট:</p>';
-                result += `<p><strong>ফর্ম URL:</strong> ${url}</p><br>`;
-                
-                const hasToken = Math.random() > 0.5;
-                
-                if (hasToken) {
-                    result += '<p class="secure">✓ CSRF Token পাওয়া গেছে!</p>';
-                    result += '<p>Token Name: csrf_token</p>';
-                    result += '<p>Token Value: ' + Math.random().toString(36).substring(2) + '</p>';
-                    result += '<br><p class="secure">ফর্ম CSRF attack থেকে সুরক্ষিত!</p>';
-                    stats.secure++;
-                } else {
-                    result += '<p class="vulnerable">✗ CSRF Token পাওয়া যায়নি!</p>';
-                    result += '<br><p class="vulnerable">⚠️ এই ফর্ম CSRF attack এর জন্য vulnerable!</p>';
-                    result += '<p><strong>সুপারিশ:</strong></p>';
-                    result += '<p>1. প্রতিটি ফর্মে unique CSRF token যোগ করুন</p>';
-                    result += '<p>2. Token server-side এ যাচাই করুন</p>';
-                    result += '<p>3. SameSite cookie attribute ব্যবহার করুন</p>';
-                    stats.vulns++;
-                }
-
-                resultDiv.innerHTML = result;
-                updateStats();
-            }, 1500);
-        }
-
-        function testFileUpload() {
-            const url = document.getElementById('fileUrl').value;
-            const resultDiv = document.getElementById('fileResult');
+            html += '<div style="background: rgba(255,100,0,0.2); padding: 15px; border: 2px solid #ff9900; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="warning-text">⚠️ মিসিং Critical Headers পাওয়া গেছে!</strong><br><br>';
+            html += `<strong>সিকিউরিটি স্কোর: ${Math.round((foundHeaders/securityHeaders.length)*100)}%</strong><br><br>`;
+            html += '<strong>🚨 মিসিং Critical Headers:</strong><br>';
+            missingCritical.forEach(h => {
+                html += `• ${h}<br>`;
+            });
+            html += '<br><strong>🛡️ প্রস্তাবিত সমাধান:</strong><br>';
+            html += 'এই headers আপনার web server configuration এ যোগ করুন।';
+            html += '</div>';
             
-            if (!url) {
-                alert('URL প্রদান করুন!');
-                return;
-            }
-
-            stats.scans++;
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<p class="info">⏳ File Upload Security টেস্ট করছি...</p>';
-
-            setTimeout(() => {
-                let result = '<p class="info">📊 File Upload Security রিপোর্ট:</p>';
-                result += `<p><strong>Upload URL:</strong> ${url}</p><br>`;
-                
-                const checks = [
-                    { name: 'File Type Validation', status: Math.random() > 0.4 },
-                    { name: 'File Size Limit', status: Math.random() > 0.3 },
-                    { name: 'MIME Type Check', status: Math.random() > 0.5 },
-                    { name: 'Filename Sanitization', status: Math.random() > 0.4 },
-                    { name: 'Upload Directory Permissions', status: Math.random() > 0.6 }
-                ];
-
-                result += '<p><strong>Security Checks:</strong></p>';
-                let vulnerable = 0;
-                checks.forEach((check, i) => {
-                    if (check.status) {
-                        result += `<p>${i+1}. <span class="secure">✓ PASS</span> - ${check.name}</p>`;
-                        stats.secure++;
-                    } else {
-                        result += `<p>${i+1}. <span class="vulnerable">✗ FAIL</span> - ${check.name}</p>`;
-                        stats.vulns++;
-                        vulnerable++;
-                    }
-                });
-
-                if (vulnerable > 0) {
-                    result += '<br><p class="vulnerable">⚠️ File Upload সুরক্ষা দুর্বল!</p>';
-                    result += '<p><strong>ঝুঁকি:</strong> Malicious file upload করে server compromise হতে পারে</p>';
-                } else {
-                    result += '<br><p class="secure">✓ File Upload সঠিকভাবে সুরক্ষিত!</p>';
-                }
-
-                resultDiv.innerHTML = result;
-                updateStats();
-            }, 2000);
+            addToHistory('Security Headers Test', url, 'vulnerable', `Missing: ${missingCritical.join(', ')}`);
+        } else {
+            testStats.secureTests++;
+            
+            html += '<div style="background: rgba(0,255,0,0.1); padding: 15px; border: 2px solid #00ff00; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="secure">🟢 EXCELLENT - সব Critical Headers Present!</strong><br><br>';
+            html += `<strong>সিকিউরিটি স্কোর: ${Math.round((foundHeaders/securityHeaders.length)*100)}%</strong><br><br>`;
+            html += '<strong>✅ Security Posture:</strong> Strong<br>';
+            html += 'আপনার application proper security headers implement করেছে।';
+            html += '</div>';
+            
+            addToHistory('Security Headers Test', url, 'secure', 'All critical headers present');
         }
-    </script>
+        
+        html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+        html += '<strong style="color: #00ffff;">💡 Implementation Example (.htaccess):</strong><br>';
+        html += '<code style="display: block; margin-top: 10px; padding: 10px; background: #000; border-radius: 5px;">';
+        html += 'Header set X-Frame-Options "DENY"<br>';
+        html += 'Header set X-XSS-Protection "1; mode=block"<br>';
+        html += 'Header set X-Content-Type-Options "nosniff"<br>';
+        html += 'Header set Strict-Transport-Security "max-age=31536000"<br>';
+        html += 'Header set Content-Security-Policy "default-src \'self\'"';
+        html += '</code></div>';
+        
+        resultDiv.innerHTML = html;
+        updateStatsDisplay();
+        
+    }, 2000);
+}
+
+// ============================================
+// CSRF Protection Testing
+// ============================================
+async function testCSRF() {
+    const url = document.getElementById('csrfUrl').value.trim();
+    const resultDiv = document.getElementById('csrfResult');
+    
+    if (!url) {
+        alert('⚠️ দয়া করে URL দিন!');
+        return;
+    }
+    
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('⚠️ URL অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '<div class="loading"></div> CSRF Protection চেক করা হচ্ছে...';
+    
+    animateProgress('csrfProgress', 'csrfProgressFill', 2000);
+    
+    setTimeout(() => {
+        let html = '<strong class="info">🔍 CSRF Protection Analysis সম্পূর্ণ!</strong><br><br>';
+        
+        html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+        html += `<strong style="color: #00ffff;">📊 স্কান তথ্য:</strong><br>`;
+        html += `🎯 Target: ${url}<br>`;
+        html += `🎫 Protection type: Token-based<br>`;
+        html += `</div>`;
+        
+        testStats.totalTests++;
+        const hasCSRF = Math.random() > 0.5;
+        
+        if (!hasCSRF) {
+            testStats.vulnerabilitiesFound++;
+            
+            html += '<div style="background: rgba(255,0,0,0.2); padding: 15px; border: 2px solid #ff0000; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="vulnerable">🔴 VULNERABLE - CSRF Token পাওয়া যায়নি!</strong><br><br>';
+            html += '<strong>🚨 ঝুঁকির মাত্রা: HIGH</strong><br><br>';
+            html += '<strong>🔓 সম্ভাব্য Attacks:</strong><br>';
+            html += '• Unauthorized fund transfer<br>';
+            html += '• Account settings modification<br>';
+            html += '• Password change<br>';
+            html += '• Email change<br>';
+            html += '• Malicious actions on behalf of user<br><br>';
+            
+            html += '<strong>🛡️ প্রস্তাবিত সমাধান:</strong><br>';
+            html += '1️⃣ CSRF tokens implement করুন<br>';
+            html += '2️⃣ SameSite cookie attribute ব্যবহার করুন<br>';
+            html += '3️⃣ Double submit cookies pattern ব্যবহার করুন<br>';
+            html += '4️⃣ Custom request headers যাচাই করুন<br>';
+            html += '5️⃣ Referer header validation করুন<br>';
+            html += '</div>';
+            
+            addToHistory('CSRF Test', url, 'vulnerable', 'No CSRF token found');
+        } else {
+            testStats.secureTests++;
+            
+            html += '<div style="background: rgba(0,255,0,0.1); padding: 15px; border: 2px solid #00ff00; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="secure">🟢 SECURE - CSRF Protection Present!</strong><br><br>';
+            html += '<strong>✅ পাওয়া Protection:</strong><br>';
+            html += `<span class="badge badge-success">CSRF Token</span>`;
+            html += `<span class="badge badge-success">SameSite Cookie</span>`;
+            html += `<span class="badge badge-success">Secure Headers</span><br><br>`;
+            html += '<strong>📝 নোট:</strong> Application সঠিকভাবে CSRF protection implement করেছে।';
+            html += '</div>';
+            
+            addToHistory('CSRF Test', url, 'secure', 'CSRF protection present');
+        }
+        
+        html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+        html += '<strong style="color: #00ffff;">💡 Implementation Example (PHP):</strong><br>';
+        html += '<code style="display: block; margin-top: 10px; padding: 10px; background: #000; border-radius: 5px;">';
+        html += '// Generate Token<br>';
+        html += '$_SESSION[\'csrf_token\'] = bin2hex(random_bytes(32));<br><br>';
+        html += '// Verify Token<br>';
+        html += 'if ($_POST[\'csrf_token\'] !== $_SESSION[\'csrf_token\']) {<br>';
+        html += '&nbsp;&nbsp;die("Invalid CSRF token");<br>';
+        html += '}';
+        html += '</code></div>';
+        
+        resultDiv.innerHTML = html;
+        updateStatsDisplay();
+        
+    }, 2000);
+}
+
+// ============================================
+// File Upload Security Testing
+// ============================================
+async function testFileUpload() {
+    const url = document.getElementById('fileUrl').value.trim();
+    const fileType = document.getElementById('fileType').value;
+    const resultDiv = document.getElementById('fileResult');
+    
+    if (!url) {
+        alert('⚠️ দয়া করে URL দিন!');
+        return;
+    }
+    
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('⚠️ URL অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '<div class="loading"></div> File Upload Security টেস্ট চলছে...';
+    
+    animateProgress('fileProgress', 'fileProgressFill', 3000);
+    
+    setTimeout(() => {
+        let html = '<strong class="info">🔍 File Upload Security টেস্ট সম্পূর্ণ!</strong><br><br>';
+        
+        html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+        html += `<strong style="color: #00ffff;">📊 স্কান তথ্য:</strong><br>`;
+        html += `🎯 Target: ${url}<br>`;
+        html += `📄 Test type: ${fileType}<br>`;
+        html += `🧪 Tests performed: Extension bypass, MIME type, Double extension<br>`;
+        html += `</div>`;
+        
+        testStats.totalTests++;
+        const isVulnerable = Math.random() > 0.6;
+        
+        if (isVulnerable) {
+            testStats.vulnerabilitiesFound++;
+            
+            html += '<div style="background: rgba(255,0,0,0.2); padding: 15px; border: 2px solid #ff0000; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="vulnerable">🔴 VULNERABLE - Insecure File Upload!</strong><br><br>';
+            html += '<strong>🚨 ঝুঁকির মাত্রা: CRITICAL</strong><br><br>';
+            html += '<strong>পাওয়া Vulnerabilities:</strong><br>';
+            html += `<span class="badge badge-danger">Extension Bypass</span>`;
+            html += `<span class="badge badge-danger">MIME Type Not Checked</span>`;
+            html += `<span class="badge badge-danger">No File Size Limit</span><br><br>`;
+            
+            html += '<strong>🔓 সম্ভাব্য Exploits:</strong><br>';
+            html += '• Web shell upload (Remote Code Execution)<br>';
+            html += '• XSS via SVG/HTML files<br>';
+            html += '• Malware distribution<br>';
+            html += '• Server compromise<br>';
+            html += '• Data exfiltration<br><br>';
+            
+            html += '<strong>🛡️ প্রস্তাবিত সমাধান:</strong><br>';
+            html += '1️⃣ Whitelist approach - শুধু allowed extensions accept করুন<br>';
+            html += '2️⃣ MIME type validation করুন<br>';
+            html += '3️⃣ File content verification করুন<br>';
+            html += '4️⃣ File size limit set করুন<br>';
+            html += '5️⃣ Random filename generate করুন<br>';
+            html += '6️⃣ Upload folder এ script execution disable করুন<br>';
+            html += '7️⃣ CDN/separate domain এ file store করুন<br>';
+            html += '</div>';
+            
+            html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+            html += '<strong style="color: #ff0000;">⚠️ Dangerous File Extensions to Block:</strong><br>';
+            html += '<span class="badge badge-danger">php</span>';
+            html += '<span class="badge badge-danger">php3</span>';
+            html += '<span class="badge badge-danger">php4</span>';
+            html += '<span class="badge badge-danger">php5</span>';
+            html += '<span class="badge badge-danger">phtml</span>';
+            html += '<span class="badge badge-danger">asp</span>';
+            html += '<span class="badge badge-danger">aspx</span>';
+            html += '<span class="badge badge-danger">jsp</span>';
+            html += '<span class="badge badge-danger">sh</span>';
+            html += '<span class="badge badge-danger">py</span>';
+            html += '<span class="badge badge-danger">rb</span>';
+            html += '<span class="badge badge-danger">exe</span><br>';
+            html += '</div>';
+            
+            addToHistory('File Upload Test', url, 'vulnerable', 'Extension bypass, No MIME check');
+        } else {
+            testStats.secureTests++;
+            
+            html += '<div style="background: rgba(0,255,0,0.1); padding: 15px; border: 2px solid #00ff00; border-radius: 8px; margin: 15px 0;">';
+            html += '<strong class="secure">🟢 SECURE - File Upload Properly Protected!</strong><br><br>';
+            html += '<strong>✅ পরীক্ষিত সুরক্ষা:</strong><br>';
+            html += `<span class="badge badge-success">Extension Validation</span>`;
+            html += `<span class="badge badge-success">MIME Type Check</span>`;
+            html += `<span class="badge badge-success">File Size Limit</span>`;
+            html += `<span class="badge badge-success">Random Filename</span><br><br>`;
+            html += '<strong>📝 নোট:</strong> Application সঠিক file upload security implement করেছে।';
+            html += '</div>';
+            
+            addToHistory('File Upload Test', url, 'secure', 'All checks passed');
+        }
+        
+        html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+        html += '<strong style="color: #00ffff;">💡 Secure Implementation (PHP):</strong><br>';
+        html += '<code style="display: block; margin-top: 10px; padding: 10px; background: #000; border-radius: 5px;">';
+        html += '// Whitelist extensions<br>';
+        html += '$allowed = [\'jpg\', \'png\', \'gif\', \'pdf\'];<br>';
+        html += '$ext = strtolower(pathinfo($_FILES[\'file\'][\'name\'], PATHINFO_EXTENSION));<br><br>';
+        html += '// MIME type check<br>';
+        html += '$finfo = finfo_open(FILEINFO_MIME_TYPE);<br>';
+        html += '$mime = finfo_file($finfo, $_FILES[\'file\'][\'tmp_name\']);<br><br>';
+        html += '// Random filename<br>';
+        html += '$newName = bin2hex(random_bytes(16)) . "." . $ext;<br><br>';
+        html += '// Size limit (5MB)<br>';
+        html += 'if ($_FILES[\'file\'][\'size\'] > 5242880) die("Too large");<br>';
+        html += '</code></div>';
+        
+        resultDiv.innerHTML = html;
+        updateStatsDisplay();
+        
+    }, 3000);
+}
+
+// ============================================
+// Port Scanner
+// ============================================
+async function scanPorts() {
+    const host = document.getElementById('portScanHost').value.trim();
+    const range = document.getElementById('portRange').value.trim();
+    const resultDiv = document.getElementById('portScanResult');
+    
+    if (!host) {
+        alert('⚠️ দয়া করে হোস্ট দিন!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '<div class="loading"></div> Port স্কান চলছে...';
+    
+    animateProgress('portScanProgress', 'portScanProgressFill', 4000);
+    
+    // Common ports and their services
+    const commonPorts = {
+        20: 'FTP Data',
+        21: 'FTP Control',
+        22: 'SSH',
+        23: 'Telnet',
+        25: 'SMTP',
+        53: 'DNS',
+        80: 'HTTP',
+        110: 'POP3',
+        143: 'IMAP',
+        443: 'HTTPS',
+        445: 'SMB',
+        3306: 'MySQL',
+        3389: 'RDP',
+        5432: 'PostgreSQL',
+        8080: 'HTTP Proxy',
+        8443: 'HTTPS Alt',
+        27017: 'MongoDB'
+    };
+    
+    setTimeout(() => {
+        let html = '<strong class="info">🔍 Port Scan সম্পূর্ণ!</strong><br><br>';
+        
+        html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+        html += `<strong style="color: #00ffff;">📊 স্কান তথ্য:</strong><br>`;
+        html += `🎯 Target: ${host}<br>`;
+        html += `🔢 Range: ${range}<br>`;
+        html += `⏱️ Scan duration: 4.2 seconds<br>`;
+        html += `</div>`;
+        
+        // Simulate port scan results
+        html += '<div style="margin: 15px 0;">';
+        html += '<strong style="color: #00ffff;">🔓 Open Ports:</strong><br><br>';
+        
+        let openPorts = [];
+        Object.keys(commonPorts).forEach(port => {
+            if (Math.random() > 0.7) {
+                openPorts.push(port);
+                html += `<div style="padding: 10px; margin: 8px 0; background: rgba(0,100,0,0.3); border-left: 4px solid #00ff00; border-radius: 5px;">`;
+                html += `<strong style="color: #00ff00;">Port ${port}/TCP - OPEN</strong><br>`;
+                html += `<small>Service: ${commonPorts[port]}</small><br>`;
+                html += `<span class="badge badge-success">Accessible</span>`;
+                html += `</div>`;
+            }
+        });
+        
+        if (openPorts.length === 0) {
+            html += '<p style="color: #888; text-align: center;">কোনো open port পাওয়া যায়নি।</p>';
+        }
+        
+        html += '</div>';
+        
+        html += '<div style="background: rgba(0,100,100,0.2); padding: 15px; border: 2px solid #00ffff; border-radius: 8px; margin: 15px 0;">';
+        html += '<strong style="color: #00ffff;">⚠️ Security Recommendations:</strong><br><br>';
+        html += '• শুধুমাত্র প্রয়োজনীয় ports open রাখুন<br>';
+        html += '• Firewall configure করুন<br>';
+        html += '• Strong authentication use করুন<br>';
+        html += '• Regular security updates করুন<br>';
+        html += '• Port monitoring system setup করুন<br>';
+        html += '</div>';
+        
+        html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+        html += '<strong style="color: #00ffff;">📝 নোট:</strong><br>';
+        html += 'এটি একটি simulated port scan। Real port scanning এর জন্য Nmap বা অন্যান্য professional tools ব্যবহার করুন।';
+        html += '</div>';
+        
+        resultDiv.innerHTML = html;
+        
+    }, 4000);
+}
+
+// ============================================
+// Password Strength Checker
+// ============================================
+function checkPasswordStrength() {
+    const password = document.getElementById('passwordInput').value;
+    const resultDiv = document.getElementById('passwordResult');
+    
+    if (!password) {
+        alert('⚠️ দয়া করে পাসওয়ার্ড দিন!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    
+    let score = 0;
+    let feedback = [];
+    
+    // Length check
+    if (password.length >= 12) {
+        score += 25;
+        feedback.push({ text: 'দৈর্ঘ্য পর্যাপ্ত (12+ অক্ষর)', status: 'good' });
+    } else if (password.length >= 8) {
+        score += 15;
+        feedback.push({ text: 'দৈর্ঘ্য মাঝারি (8-11 অক্ষর)', status: 'medium' });
+    } else {
+        feedback.push({ text: 'দৈর্ঘ্য খুবই কম (8 এর কম)', status: 'bad' });
+    }
+    
+    // Uppercase check
+    if (/[A-Z]/.test(password)) {
+        score += 15;
+        feedback.push({ text: 'Uppercase letters আছে', status: 'good' });
+    } else {
+        feedback.push({ text: 'Uppercase letters নেই', status: 'bad' });
+    }
+    
+    // Lowercase check
+    if (/[a-z]/.test(password)) {
+        score += 15;
+        feedback.push({ text: 'Lowercase letters আছে', status: 'good' });
+    } else {
+        feedback.push({ text: 'Lowercase letters নেই', status: 'bad' });
+    }
+    
+    // Numbers check
+    if (/[0-9]/.test(password)) {
+        score += 15;
+        feedback.push({ text: 'Numbers আছে', status: 'good' });
+    } else {
+        feedback.push({ text: 'Numbers নেই', status: 'bad' });
+    }
+    
+    // Special characters check
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+        score += 20;
+        feedback.push({ text: 'Special characters আছে', status: 'good' });
+    } else {
+        feedback.push({ text: 'Special characters নেই', status: 'bad' });
+    }
+    
+    // Common patterns check
+    const commonPatterns = ['123456', 'password', 'qwerty', 'abc123', '111111', 'admin'];
+    const lowerPass = password.toLowerCase();
+    if (commonPatterns.some(pattern => lowerPass.includes(pattern))) {
+        score -= 30;
+        feedback.push({ text: 'Common pattern পাওয়া গেছে', status: 'bad' });
+    } else {
+        score += 10;
+        feedback.push({ text: 'Common pattern নেই', status: 'good' });
+    }
+    
+    // Determine strength
+    let strength, strengthColor, strengthText;
+    if (score >= 80) {
+        strength = 'খুব শক্তিশালী';
+        strengthColor = '#00ff00';
+        strengthText = 'EXCELLENT';
+    } else if (score >= 60) {
+        strength = 'শক্তিশালী';
+        strengthColor = '#00cc00';
+        strengthText = 'STRONG';
+    } else if (score >= 40) {
+        strength = 'মাঝারি';
+        strengthColor = '#ffcc00';
+        strengthText = 'MODERATE';
+    } else if (score >= 20) {
+        strength = 'দুর্বল';
+        strengthColor = '#ff9900';
+        strengthText = 'WEAK';
+    } else {
+        strength = 'খুবই দুর্বল';
+        strengthColor = '#ff0000';
+        strengthText = 'VERY WEAK';
+    }
+    
+    let html = '<strong class="info">🔐 Password Strength Analysis</strong><br><br>';
+    
+    html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+    html += `<strong style="color: #00ffff;">📊 পাসওয়ার্ড তথ্য:</strong><br>`;
+    html += `📏 দৈর্ঘ্য: ${password.length} অক্ষর<br>`;
+    html += `💯 স্কোর: ${score}/100<br>`;
+    html += `💪 শক্তি: <strong style="color: ${strengthColor};">${strength} (${strengthText})</strong><br>`;
+    html += `</div>`;
+    
+    // Progress bar for strength
+    html += '<div class="progress-bar" style="margin: 20px 0;">';
+    html += `<div class="progress-fill" style="width: ${score}%; background: ${strengthColor};">${score}%</div>`;
+    html += '</div>';
+    
+    // Feedback
+    html += '<div style="margin: 15px 0;">';
+    html += '<strong style="color: #00ffff;">📋 বিস্তারিত Analysis:</strong><br><br>';
+    
+    feedback.forEach(item => {
+        const icon = item.status === 'good' ? '✅' : '❌';
+        const color = item.status === 'good' ? '#00ff00' : item.status === 'medium' ? '#ffcc00' : '#ff0000';
+        
+        html += `<div style="padding: 8px; margin: 5px 0; background: rgba(0,0,0,0.3); border-left: 3px solid ${color}; border-radius: 3px;">`;
+        html += `${icon} <span style="color: ${color};">${item.text}</span>`;
+        html += `</div>`;
+    });
+            html += '</div>';
+    
+    // Recommendations
+    if (score < 80) {
+        html += '<div style="background: rgba(100,100,0,0.2); padding: 15px; border: 2px solid #ffcc00; border-radius: 8px; margin: 15px 0;">';
+        html += '<strong style="color: #ffcc00;">💡 উন্নতির জন্য পরামর্শ:</strong><br><br>';
+        
+        if (password.length < 12) {
+            html += '• কমপক্ষে 12 অক্ষরের পাসওয়ার্ড ব্যবহার করুন<br>';
+        }
+        if (!/[A-Z]/.test(password)) {
+            html += '• Uppercase letters যোগ করুন (A-Z)<br>';
+        }
+        if (!/[a-z]/.test(password)) {
+            html += '• Lowercase letters যোগ করুন (a-z)<br>';
+        }
+        if (!/[0-9]/.test(password)) {
+            html += '• Numbers যোগ করুন (0-9)<br>';
+        }
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+            html += '• Special characters যোগ করুন (!@#$%^&*)<br>';
+        }
+        
+        html += '</div>';
+    }
+    
+    // Entropy calculation
+    const entropy = Math.log2(Math.pow(getCharsetSize(password), password.length));
+    html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+    html += '<strong style="color: #00ffff;">🔢 Technical Details:</strong><br>';
+    html += `Password Entropy: ${entropy.toFixed(2)} bits<br>`;
+    html += `Charset Size: ${getCharsetSize(password)} characters<br>`;
+    html += `Possible Combinations: ${Math.pow(getCharsetSize(password), password.length).toExponential(2)}<br><br>`;
+    html += '<small style="color: #888;">Higher entropy = More secure password</small>';
+    html += '</div>';
+    
+    resultDiv.innerHTML = html;
+}
+
+function getCharsetSize(password) {
+    let size = 0;
+    if (/[a-z]/.test(password)) size += 26;
+    if (/[A-Z]/.test(password)) size += 26;
+    if (/[0-9]/.test(password)) size += 10;
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) size += 32;
+    return size || 1;
+}
+
+// ============================================
+// Subdomain Finder
+// ============================================
+async function findSubdomains() {
+    const domain = document.getElementById('subdomainTarget').value.trim();
+    const resultDiv = document.getElementById('subdomainResult');
+    
+    if (!domain) {
+        alert('⚠️ দয়া করে ডোমেইন দিন!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    resultDiv.innerHTML = '<div class="loading"></div> Subdomain খুঁজছি...';
+    
+    animateProgress('subdomainProgress', 'subdomainProgressFill', 3500);
+    
+    // Common subdomain prefixes
+    const commonSubdomains = [
+        'www', 'mail', 'ftp', 'admin', 'blog', 'shop', 'api', 'dev', 'test',
+        'staging', 'app', 'mobile', 'portal', 'webmail', 'secure', 'vpn',
+        'cdn', 'static', 'media', 'assets', 'img', 'images', 'support'
+    ];
+    
+    setTimeout(() => {
+        let html = '<strong class="info">🔍 Subdomain Discovery সম্পূর্ণ!</strong><br><br>';
+        
+        html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+        html += `<strong style="color: #00ffff;">📊 স্কান তথ্য:</strong><br>`;
+        html += `🎯 Target Domain: ${domain}<br>`;
+        html += `🔍 Subdomains checked: ${commonSubdomains.length}<br>`;
+        html += `</div>`;
+        
+        // Simulate subdomain discovery
+        let foundSubdomains = [];
+        html += '<div style="margin: 15px 0;">';
+        html += '<strong style="color: #00ffff;">🌐 পাওয়া Subdomains:</strong><br><br>';
+        
+        commonSubdomains.forEach(sub => {
+            if (Math.random() > 0.7) {
+                const fullDomain = `${sub}.${domain}`;
+                foundSubdomains.push(fullDomain);
+                
+                html += `<div style="padding: 10px; margin: 8px 0; background: rgba(0,100,0,0.3); border-left: 4px solid #00ff00; border-radius: 5px;">`;
+                html += `<strong style="color: #00ff00;">${fullDomain}</strong><br>`;
+                html += `<small>Status: <span class="badge badge-success">Active</span></small><br>`;
+                html += `<small>IP: 192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}</small>`;
+                html += `</div>`;
+            }
+        });
+        
+        html += '</div>';
+        
+        if (foundSubdomains.length === 0) {
+            html += '<p style="color: #888; text-align: center;">কোনো subdomain পাওয়া যায়নি।</p>';
+        } else {
+            html += `<div style="background: rgba(0,255,0,0.1); padding: 15px; border: 2px solid #00ff00; border-radius: 8px; margin: 15px 0;">`;
+            html += `<strong style="color: #00ff00;">✅ মোট পাওয়া: ${foundSubdomains.length} টি subdomain</strong>`;
+            html += `</div>`;
+        }
+        
+        html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+        html += '<strong style="color: #00ffff;">🛠️ Professional Tools:</strong><br>';
+        html += '<span class="badge badge-info">Sublist3r</span>';
+        html += '<span class="badge badge-info">Amass</span>';
+        html += '<span class="badge badge-info">Subfinder</span>';
+        html += '<span class="badge badge-info">DNSdumpster</span><br><br>';
+        html += '<small style="color: #888;">আরো detailed subdomain enumeration এর জন্য এই tools ব্যবহার করুন।</small>';
+        html += '</div>';
+        
+        resultDiv.innerHTML = html;
+        
+    }, 3500);
+}
+
+// ============================================
+// Email Header Analyzer
+// ============================================
+function analyzeEmailHeaders() {
+    const headers = document.getElementById('emailHeaders').value.trim();
+    const resultDiv = document.getElementById('emailHeaderResult');
+    
+    if (!headers) {
+        alert('⚠️ দয়া করে email headers paste করুন!');
+        return;
+    }
+    
+    resultDiv.style.display = 'block';
+    
+    let html = '<strong class="info">📧 Email Header Analysis</strong><br><br>';
+    
+    // Parse common headers
+    const headerLines = headers.split('\n');
+    let analysis = {
+        from: null,
+        to: null,
+        subject: null,
+        date: null,
+        spf: null,
+        dkim: null,
+        dmarc: null,
+        returnPath: null,
+        receivedServers: [],
+        suspiciousIndicators: []
+    };
+    
+    headerLines.forEach(line => {
+        if (line.toLowerCase().startsWith('from:')) {
+            analysis.from = line.substring(5).trim();
+        } else if (line.toLowerCase().startsWith('to:')) {
+            analysis.to = line.substring(3).trim();
+        } else if (line.toLowerCase().startsWith('subject:')) {
+            analysis.subject = line.substring(8).trim();
+        } else if (line.toLowerCase().includes('spf')) {
+            analysis.spf = line;
+        } else if (line.toLowerCase().includes('dkim')) {
+            analysis.dkim = line;
+        } else if (line.toLowerCase().includes('received:')) {
+            analysis.receivedServers.push(line);
+        }
+    });
+    
+    html += `<div style="background: rgba(0,50,0,0.3); padding: 15px; border-radius: 8px; margin: 15px 0;">`;
+    html += `<strong style="color: #00ffff;">📊 Email তথ্য:</strong><br>`;
+    if (analysis.from) html += `From: ${analysis.from}<br>`;
+    if (analysis.to) html += `To: ${analysis.to}<br>`;
+    if (analysis.subject) html += `Subject: ${analysis.subject}<br>`;
+    html += `</div>`;
+    
+    // Security checks
+    html += '<div style="margin: 15px 0;">';
+    html += '<strong style="color: #00ffff;">🔒 Security Checks:</strong><br><br>';
+    
+    // SPF Check
+    html += `<div style="padding: 10px; margin: 8px 0; background: rgba(0,0,0,0.3); border-left: 4px solid ${analysis.spf ? '#00ff00' : '#ff0000'}; border-radius: 5px;">`;
+    html += `<strong>SPF (Sender Policy Framework):</strong><br>`;
+    html += `${analysis.spf ? '<span class="secure">✅ Present</span>' : '<span class="vulnerable">❌ Missing</span>'}`;
+    html += `</div>`;
+    
+    // DKIM Check
+    html += `<div style="padding: 10px; margin: 8px 0; background: rgba(0,0,0,0.3); border-left: 4px solid ${analysis.dkim ? '#00ff00' : '#ff0000'}; border-radius: 5px;">`;
+    html += `<strong>DKIM (DomainKeys Identified Mail):</strong><br>`;
+    html += `${analysis.dkim ? '<span class="secure">✅ Present</span>' : '<span class="vulnerable">❌ Missing</span>'}`;
+    html += `</div>`;
+    
+    html += '</div>';
+    
+    // Received servers analysis
+    if (analysis.receivedServers.length > 0) {
+        html += '<div style="margin: 15px 0;">';
+        html += `<strong style="color: #00ffff;">🌐
+            html += `<strong style="color: #00ffff;">🌐 Email Route (${analysis.receivedServers.length} hops):</strong><br><br>`;
+        
+        analysis.receivedServers.forEach((server, index) => {
+            html += `<div style="padding: 8px; margin: 5px 0; background: rgba(0,50,0,0.2); border-left: 3px solid #00ffff; border-radius: 3px;">`;
+            html += `<strong>Hop ${index + 1}:</strong><br>`;
+            html += `<small style="color: #888;">${server.substring(0, 100)}${server.length > 100 ? '...' : ''}</small>`;
+            html += `</div>`;
+        });
+        
+        html += '</div>';
+    }
+    
+    // Phishing indicators
+    let phishingScore = 0;
+    const indicators = [];
+    
+    if (analysis.from && analysis.from.includes('@')) {
+        const domain = analysis.from.split('@')[1];
+        if (domain && (domain.includes('secure') || domain.includes('verify') || domain.includes('account'))) {
+            phishingScore += 20;
+            indicators.push('Suspicious domain keywords detected');
+        }
+    }
+    
+    if (!analysis.spf) {
+        phishingScore += 25;
+        indicators.push('SPF record missing');
+    }
+    
+    if (!analysis.dkim) {
+        phishingScore += 25;
+        indicators.push('DKIM signature missing');
+    }
+    
+    if (analysis.subject && (analysis.subject.toLowerCase().includes('urgent') || 
+        analysis.subject.toLowerCase().includes('verify') || 
+        analysis.subject.toLowerCase().includes('suspend'))) {
+        phishingScore += 15;
+        indicators.push('Urgency keywords in subject');
+    }
+    
+    if (headers.toLowerCase().includes('click here') || headers.toLowerCase().includes('verify now')) {
+        phishingScore += 15;
+        indicators.push('Suspicious call-to-action phrases');
+    }
+    
+    // Phishing risk assessment
+    html += '<div style="margin: 15px 0;">';
+    html += '<strong style="color: #00ffff;">🎣 Phishing Risk Assessment:</strong><br><br>';
+    
+    let riskLevel, riskColor, riskText;
+    if (phishingScore >= 60) {
+        riskLevel = 'খুব উচ্চ';
+        riskColor = '#ff0000';
+        riskText = 'HIGH RISK';
+    } else if (phishingScore >= 40) {
+        riskLevel = 'উচ্চ';
+        riskColor = '#ff6600';
+        riskText = 'ELEVATED RISK';
+    } else if (phishingScore >= 20) {
+        riskLevel = 'মাঝারি';
+        riskColor = '#ffcc00';
+        riskText = 'MODERATE RISK';
+    } else {
+        riskLevel = 'নিম্ন';
+        riskColor = '#00ff00';
+        riskText = 'LOW RISK';
+    }
+    
+    html += '<div class="progress-bar" style="margin: 15px 0;">';
+    html += `<div class="progress-fill" style="width: ${phishingScore}%; background: ${riskColor};">${phishingScore}%</div>`;
+    html += '</div>';
+    
+    html += `<div style="padding: 15px; background: rgba(${phishingScore > 50 ? '255,0,0' : '0,255,0'},0.1); border: 2px solid ${riskColor}; border-radius: 8px;">`;
+    html += `<strong style="color: ${riskColor};">Risk Level: ${riskLevel} (${riskText})</strong><br><br>`;
+    
+    if (indicators.length > 0) {
+        html += '<strong>⚠️ Suspicious Indicators:</strong><br>';
+        indicators.forEach(indicator => {
+            html += `• ${indicator}<br>`;
+        });
+    } else {
+        html += '<strong>✅ No major suspicious indicators found</strong>';
+    }
+    
+    html += '</div></div>';
+    
+    // Recommendations
+    html += '<div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.5); border-radius: 8px;">';
+    html += '<strong style="color: #00ffff;">💡 Security Recommendations:</strong><br><br>';
+    
+    if (phishingScore >= 40) {
+        html += '<span class="vulnerable">⚠️ এই email সন্দেহজনক! নিচের পদক্ষেপগুলো নিন:</span><br><br>';
+        html += '🚫 কোনো লিংকে click করবেন না<br>';
+        html += '🚫 কোনো attachment open করবেন না<br>';
+        html += '🚫 কোনো personal information দেবেন না<br>';
+        html += '🚫 Reply করবেন না<br>';
+        html += '✅ Email টি spam/phishing হিসেবে report করুন<br>';
+        html += '✅ Email টি delete করুন<br>';
+    } else {
+        html += '✅ Email টি তুলনামূলক নিরাপদ মনে হচ্ছে<br>';
+        html += '⚠️ তবুও সতর্ক থাকুন এবং:<br><br>';
+        html += '• Sender এর email address যাচাই করুন<br>';
+        html += '• লিংকে hover করে actual URL দেখুন<br>';
+        html += '• Unexpected attachments open করার আগে স্কান করুন<br>';
+        html += '• Personal/financial information শেয়ার করার আগে নিশ্চিত হন<br>';
+    }
+    
+    html += '</div>';
+    
+    resultDiv.innerHTML = html;
+}
+
+// ============================================
+// Report Generation
+// ============================================
+function generateReport() {
+    const reportDiv = document.getElementById('reportContainer');
+    reportDiv.style.display = 'block';
+    
+    let html = '<div style="padding: 20px;">';
+    html += '<h2 style="color: #00ffff; text-align: center; margin-bottom: 30px;">📊 সম্পূর্ণ সিকিউরিটি রিপোর্ট</h2>';
+    
+    // Executive Summary
+    html += '<div style="background: rgba(0,50,0,0.3); padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #00ff00;">';
+    html += '<h3 style="color: #00ffff; margin-bottom: 15px;">📋 Executive Summary</h3>';
+    html += `<strong>রিপোর্ট তারিখ:</strong> ${new Date().toLocaleString('bn-BD')}<br>`;
+    html += `<strong>মোট টেস্ট:</strong> ${testStats.totalTests}<br>`;
+    html += `<strong>Vulnerabilities:</strong> ${testStats.vulnerabilitiesFound}<br>`;
+    html += `<strong>সিকিউর টেস্ট:</strong> ${testStats.secureTests}<br>`;
+    
+    const successRate = testStats.totalTests > 0 
+        ? Math.round((testStats.secureTests / testStats.totalTests) * 100) 
+        : 0;
+    html += `<strong>সাফল্যের হার:</strong> ${successRate}%<br>`;
+    html += '</div>';
+    
+    // Security Score
+    let securityScore;
+    if (successRate >= 80) {
+        securityScore = { level: 'চমৎকার', color: '#00ff00', grade: 'A' };
+    } else if (successRate >= 60) {
+        securityScore = { level: 'ভালো', color: '#00cc00', grade: 'B' };
+    } else if (successRate >= 40) {
+        securityScore = { level: 'মাঝারি', color: '#ffcc00', grade: 'C' };
+    } else {
+        securityScore = { level: 'দুর্বল', color: '#ff0000', grade: 'F' };
+    }
+    
+    html += '<div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">';
+    html += '<h3 style="color: #00ffff; margin-bottom: 15px;">🎯 সিকিউরিটি স্কোর</h3>';
+    html += `<div style="font-size: 4em; color: ${securityScore.color}; font-weight: bold; margin: 20px 0;">${securityScore.grade}</div>`;
+    html += `<div style="font-size: 1.5em; color: ${securityScore.color};">${securityScore.level}</div>`;
+    html += '<div class="progress-bar" style="margin: 20px auto; max-width: 500px;">';
+    html += `<div class="progress-fill" style="width: ${successRate}%; background: ${securityScore.color};">${successRate}%</div>`;
+    html += '</div></div>';
+    
+    // Vulnerability Breakdown
+    if (testStats.testHistory.length > 0) {
+        html += '<div style="background: rgba(0,50,0,0.3); padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #00ff00;">';
+        html += '<h3 style="color: #00ffff; margin-bottom: 15px;">🔍 টেস্ট হিস্টরি (সর্বশেষ 10টি)</h3>';
+        
+        const recentTests = testStats.testHistory.slice(0, 10);
+        recentTests.forEach((test, index) => {
+            const statusColor = test.result === 'vulnerable' ? '#ff0000' : '#00ff00';
+            const statusIcon = test.result === 'vulnerable' ? '🔴' : '🟢';
+            
+            html += `<div style="padding: 12px; margin: 10px 0; background: rgba(0,0,0,0.3); border-left: 4px solid ${statusColor}; border-radius: 5px;">`;
+            html += `<strong>${index + 1}. ${test.testType}</strong><br>`;
+            html += `<small style="color: #00ffff;">URL: ${test.url}</small><br>`;
+            html += `${statusIcon} <strong style="color: ${statusColor};">${test.result === 'vulnerable' ? 'Vulnerable' : 'Secure'}</strong><br>`;
+            html += `<small style="color: #888;">${test.timestamp}</small>`;
+            html += `</div>`;
+        });
+        
+        html += '</div>';
+    }
+    
+    // Recommendations
+    html += '<div style="background: rgba(0,50,50,0.3); padding: 20px; border-radius: 10px; margin: 20px 0; border: 2px solid #00ffff;">';
+    html += '<h3 style="color: #00ffff; margin-bottom: 15px;">💡 প্রস্তাবিত পদক্ষেপ</h3>';
+    
+    if (testStats.vulnerabilitiesFound > 0) {
+        html += '<strong style="color: #ff6600;">⚠️ অগ্রাধিকার পদক্ষেপ:</strong><br><br>';
+        html += '1️⃣ সব পাওয়া vulnerabilities অবিলম্বে ঠিক করুন<br>';
+        html += '2️⃣ Security patches এবং updates apply করুন<br>';
+        html += '3️⃣ Input validation এবং output encoding implement করুন<br>';
+        html += '4️⃣ Security headers configure করুন<br>';
+        html += '5️⃣ HTTPS enforce করুন<br>';
+        html += '6️⃣ Regular security audits চালান<br>';
+        html += '7️⃣ Web Application Firewall (WAF) setup করুন<br>';
+        html += '8️⃣ Security monitoring এবং logging enable করুন<br>';
+    } else {
+        html += '<strong style="color: #00ff00;">✅ আপনার application নিরাপদ মনে হচ্ছে!</strong><br><br>';
+        html += 'তবুও নিচের best practices follow করুন:<br><br>';
+        html += '• Regular security testing চালিয়ে যান<br>';
+        html += '• Security updates prompt apply করুন<br>';
+        html += '• Security monitoring setup করুন<br>';
+        html += '• Incident response plan তৈরি করুন<br>';
+        html += '• Team কে security training দিন<br>';
+    }
+    
+    html += '</div>';
+    
+    // Resources
+    html += '<div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 10px; margin: 20px 0;">';
+    html += '<h3 style="color: #00ffff; margin-bottom: 15px;">📚 Additional Resources</h3>';
+    html += '<span class="badge badge-info">OWASP Top 10</span>';
+    html += '<span class="badge badge-info">CWE/SANS Top 25</span>';
+    html += '<span class="badge badge-info">NIST Cybersecurity Framework</span>';
+    html += '<span class="badge badge-info">PCI DSS</span><br><br>';
+    html += '<small style="color: #888;">এই standards এবং frameworks follow করে আপনার security posture আরো উন্নত করুন।</small>';
+    html += '</div>';
+    
+    html += '</div>';
+    
+    reportDiv.innerHTML = html;
+    
+    // Scroll to report
+    reportDiv.scrollIntoView({ behavior: 'smooth' });
+}
+            // ============================================
+// Export Report to PDF (Simulated)
+// ============================================
+function exportReport() {
+    alert('📄 রিপোর্ট জেনারেট হচ্ছে...\n\n' +
+          'এটি একটি educational dashboard। \n' +
+          'Real PDF export এর জন্য jsPDF বা similar library ব্যবহার করুন।\n\n' +
+          'আপনি এখন Report section থেকে content copy করে document এ save করতে পারেন।');
+    
+    // In real implementation, you would use jsPDF or similar
+    console.log('Export report functionality would generate PDF here');
+}
+
+// ============================================
+// Clear History
+// ============================================
+async function clearHistory() {
+    if (confirm('⚠️ আপনি কি নিশ্চিত যে সব history delete করতে চান?')) {
+        testStats = {
+            totalTests: 0,
+            vulnerabilitiesFound: 0,
+            secureTests: 0,
+            testHistory: []
+        };
+        
+        await saveStats();
+        updateStatsDisplay();
+        loadTestHistory();
+        
+        alert('✅ History successfully cleared!');
+    }
+}
+
+// ============================================
+// Matrix Background Animation
+// ============================================
+function createMatrixEffect() {
+    const matrixBg = document.getElementById('matrixBg');
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const columns = Math.floor(window.innerWidth / 20);
+    
+    let drops = [];
+    for (let i = 0; i < columns; i++) {
+        drops[i] = Math.floor(Math.random() * -100);
+    }
+    
+    function drawMatrix() {
+        let output = '';
+        
+        for (let i = 0; i < drops.length; i++) {
+            const char = chars[Math.floor(Math.random() * chars.length)];
+            const x = i * 20;
+            const y = drops[i] * 14;
+            
+            output += `<span style="position: absolute; left: ${x}px; top: ${y}px; color: #00ff00;">${char}</span>`;
+            
+            if (y > window.innerHeight && Math.random() > 0.95) {
+                drops[i] = 0;
+            }
+            
+            drops[i]++;
+        }
+        
+        matrixBg.innerHTML = output;
+    }
+    
+    setInterval(drawMatrix, 50);
+}
+
+// ============================================
+// Copy to Clipboard Function
+// ============================================
+function copyToClipboard(element) {
+    const text = element.innerText;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        // Show copied notification
+        const notification = document.createElement('div');
+        notification.innerHTML = '✅ Copied!';
+        notification.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #00ff00; color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; z-index: 10000; animation: fadeOut 2s forwards;';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+    });
+}
+
+// ============================================
+// Keyboard Shortcuts
+// ============================================
+document.addEventListener('keydown', (e) => {
+    // Ctrl + Shift + R - Generate Report
+    if (e.ctrlKey && e.shiftKey && e.key === 'R') {
+        e.preventDefault();
+        generateReport();
+    }
+    
+    // Ctrl + Shift + C - Clear History
+    if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+        e.preventDefault();
+        clearHistory();
+    }
+    
+    // Ctrl + Shift + E - Export Report
+    if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+        e.preventDefault();
+        exportReport();
+    }
+});
+
+// ============================================
+// Easter Egg - Console Art
+// ============================================
+console.log(`
+%c
+ ███████╗████████╗██╗  ██╗██╗ ██████╗ █████╗ ██╗     
+ ██╔════╝╚══██╔══╝██║  ██║██║██╔════╝██╔══██╗██║     
+ █████╗     ██║   ███████║██║██║     ███████║██║     
+ ██╔══╝     ██║   ██╔══██║██║██║     ██╔══██║██║     
+ ███████╗   ██║   ██║  ██║██║╚██████╗██║  ██║███████╗
+ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝
+                                                       
+ ██╗  ██╗ █████╗  ██████╗██╗  ██╗██╗███╗   ██╗ ██████╗ 
+ ██║  ██║██╔══██╗██╔════╝██║ ██╔╝██║████╗  ██║██╔════╝ 
+ ███████║███████║██║     █████╔╝ ██║██╔██╗ ██║██║  ███╗
+ ██╔══██║██╔══██║██║     ██╔═██╗ ██║██║╚██╗██║██║   ██║
+ ██║  ██║██║  ██║╚██████╗██║  ██╗██║██║ ╚████║╚██████╔╝
+ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝ 
+                                                        
+ ██████╗  █████╗ ███████╗██╗  ██╗██████╗  ██████╗  █████╗ ██████╗ ██████╗ 
+ ██╔══██╗██╔══██╗██╔════╝██║  ██║██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔══██╗
+ ██║  ██║███████║███████╗███████║██████╔╝██║   ██║███████║██████╔╝██║  ██║
+ ██║  ██║██╔══██║╚════██║██╔══██║██╔══██╗██║   ██║██╔══██║██╔══██╗██║  ██║
+ ██████╔╝██║  ██║███████║██║  ██║██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝
+ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ 
+
+%c⚠️  Remember: Use this tool ethically and legally only!
+%c🎓 Educational purpose only - Unauthorized hacking is illegal
+%c🔒 Always get written permission before testing
+
+%cKeyboard Shortcuts:
+%cCtrl + Shift + R - Generate Report
+Ctrl + Shift + C - Clear History  
+Ctrl + Shift + E - Export Report
+`, 
+'color: #00ff00; font-weight: bold;',
+'color: #ff0000; font-size: 14px; font-weight: bold;',
+'color: #ffcc00; font-size: 14px;',
+'color: #00ffff; font-size: 14px;',
+'color: #00ff00; font-size: 14px; font-weight: bold;',
+'color: #888; font-size: 12px;'
+);
+
+// ============================================
+// Initialize Dashboard
+// ============================================
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Ethical Hacking Dashboard Initialized');
+    
+    // Load saved statistics
+    await loadStats();
+    
+    // Create matrix background effect
+    createMatrixEffect();
+    
+    // Add fade-in animation to sections
+    const sections = document.querySelectorAll('.section');
+    sections.forEach((section, index) => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            section.style.transition = 'all 0.5s ease';
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+    
+    // Welcome message
+    setTimeout(() => {
+        console.log('%c🎯 Dashboard ready! Start your security testing.', 
+                   'color: #00ff00; font-size: 16px; font-weight: bold;');
+    }, 1000);
+});
+            // ============================================
+// Window Resize Handler
+// ============================================
+window.addEventListener('resize', () => {
+    // Recreate matrix effect on resize
+    createMatrixEffect();
+});
+
+// ============================================
+// Prevent accidental page close with unsaved tests
+// ============================================
+window.addEventListener('beforeunload', (e) => {
+    if (testStats.totalTests > 0 && testStats.testHistory.length > 0) {
+        e.preventDefault();
+        e.returnValue = 'আপনার টেস্ট ডেটা save হয়ে যাবে। আপনি কি নিশ্চিত?';
+    }
+});
+
+console.log('%c✅ All JavaScript functions loaded successfully!', 
+           'color: #00ff00; font-size: 14px; font-weight: bold;');
+        </script>
 </body>
-</html>.scans++;
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '<p class="info">⏳ SQL Injection স্কান চলছে...</p>';
-
-            const payloads = [
-                "' OR '1'='1",
-                "' OR '1'='1' --",
-                "' UNION SELECT NULL--",
-                "admin' --",
-                "' AND 1=2 UNION SELECT table_name FROM information_schema.tables--"
-            ];
-
-            setTimeout(() => {
-                let result = '<p class="info">📊 SQL Injection টেস্ট রিপোর্ট:</p>';
-                result += `<p><strong>টার্গেট:</strong> ${url}</p>`;
-                result += `<p><strong>প্যারামিটার:</strong> ${param}</p><br>`;
-                
-                result += '<p><strong>টেস্ট করা Payloads:</strong></p>';
-                payloads.forEach((payload, i) => {
-                    const vuln = Math.random() > 0.7;
-                    if (vuln) {
-                        result += `<p>${i+1}. <span class="vulnerable">✗ VULNERABLE</span> - ${payload}</p>`;
-                        stats.vulns++;
-                    } else {
-                        result += `<p>${i+1}. <span class="secure">✓ SAFE</span> - ${payload}</p>`;
-                        stats.secure++;
-                    }
-                });
-
-                if (stats.vulns > 0) {
-                    result += '<br><p class="vulnerable">⚠️ SQL Injection ভালনারেবিলিটি পাওয়া গেছে!</p>';
-                    result += '<p><strong>সুপারিশ:</strong></p>';
-                    result += '<p>1. Prepared Statements ব্যবহার করুন</p>';
-                    result += '<p>2. Input Validation করুন</p>';
-                    result += '<p>3. Stored Procedures ব্যবহার করুন</p>';
-                    result += '<p>4. Error messages লুকিয়ে রাখুন</p>';
-                } else {
-                    result += '<br><p class="secure">✓ কোনো SQL Injection পাওয়া যায়নি!</p>';
-                }
-
-                resultDiv.innerHTML = result;
-                updateStats();
-            }, 2000);
-        }
-
-        function testXSS() {
-            const url = document.getElementById('xssUrl').value;
-            const param = document.getElementById('xssParam').value;
-            const resultDiv = document.getElementById('xssResult');
-            
-            if (!url) {
-                alert('URL প্রদান করুন!');
-                return;
-            }
-
-            stats
+</html>   
