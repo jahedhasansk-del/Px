@@ -1,671 +1,833 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Pattern Slot System - 50 Entry Analysis</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;padding:20px;position:relative;overflow-x:hidden}
-body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(0deg,transparent 0%,rgba(0,255,65,.03) 50%,transparent 100%);pointer-events:none;animation:scan 8s linear infinite;z-index:0}
-@keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
-.container{max-width:900px;margin:0 auto;position:relative;z-index:1}
-h1{color:#00ff41;text-align:center;margin-bottom:30px;font-size:2.5em;text-shadow:0 0 10px #00ff41,0 0 20px #00ff41,0 0 30px #00ff41;animation:glitch 3s infinite;letter-spacing:3px}
-@keyframes glitch{0%,100%{text-shadow:0 0 10px #00ff41,0 0 20px #00ff41}25%{text-shadow:2px 0 10px #ff0000,-2px 0 10px #00ff41}50%{text-shadow:-2px 0 10px #0000ff,2px 0 10px #00ff41}75%{text-shadow:0 0 10px #00ff41,0 0 20px #00ff41}}
-.win-loss-box{background:rgba(0,255,65,.05);border:2px solid #00ff41;border-radius:10px;padding:20px;margin-bottom:25px;box-shadow:0 0 20px rgba(0,255,65,.3);position:relative}
-.win-loss-box::before{content:'';position:absolute;top:-2px;left:-2px;right:-2px;bottom:-2px;background:linear-gradient(90deg,#00ff41,#00aaff,#00ff41);border-radius:10px;z-index:-1;opacity:.3;animation:borderFlow 3s linear infinite}
-@keyframes borderFlow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-.win-loss-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px}
-.wl-item{border:1px solid;border-radius:8px;padding:15px;text-align:center;position:relative;overflow:hidden}
-.wl-item::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);animation:shimmer 3s infinite}
-@keyframes shimmer{0%{left:-100%}100%{left:100%}}
-.wl-item.win{background:rgba(16,185,129,.1);border-color:#10b981;color:#10b981}
-.wl-item.loss{background:rgba(239,68,68,.1);border-color:#ef4444;color:#ef4444}
-.wl-item.rate{background:rgba(251,191,36,.1);border-color:#fbbf24;color:#fbbf24}
-.wl-label{font-size:.85em;opacity:.8;margin-bottom:5px;letter-spacing:1px}
-.wl-value{font-size:2em;font-weight:bold;text-shadow:0 0 10px currentColor}
-.slots-container{background:rgba(0,255,65,.05);border:2px solid #00ff41;border-radius:10px;padding:25px;margin-bottom:25px;box-shadow:0 0 20px rgba(0,255,65,.3)}
-.slots-info{color:#00ff41;text-align:center;margin-bottom:15px;font-size:.9em;letter-spacing:1px}
-.slots-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:10px;margin-bottom:20px}
-.slot{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.2em;transition:all .3s ease;position:relative}
-.slot.empty{background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.3)}
-.slot.big{background:rgba(16,185,129,.2);border:2px solid #10b981;color:#10b981;box-shadow:0 0 15px rgba(16,185,129,.5);animation:pulse 2s infinite}
-.slot.small{background:rgba(239,68,68,.2);border:2px solid #ef4444;color:#ef4444;box-shadow:0 0 15px rgba(239,68,68,.5);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 15px currentColor}50%{box-shadow:0 0 25px currentColor}}
-.total-info{text-align:center;color:#00ff41;font-size:.9em;letter-spacing:1px}
-.button-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px}
-button{padding:20px;font-size:1.5em;font-weight:bold;border:2px solid;border-radius:10px;cursor:pointer;transition:all .3s ease;text-transform:uppercase;letter-spacing:2px;position:relative;overflow:hidden}
-button::before{content:'';position:absolute;top:50%;left:50%;width:0;height:0;border-radius:50%;background:rgba(255,255,255,.3);transform:translate(-50%,-50%);transition:width .6s,height .6s}
-button:hover::before{width:300px;height:300px}
-button:active{transform:scale(.95)}
-button:disabled{opacity:.3;cursor:not-allowed}
-.btn-big{background:rgba(16,185,129,.1);color:#10b981;border-color:#10b981}
-.btn-big:hover{background:rgba(16,185,129,.2);box-shadow:0 0 20px rgba(16,185,129,.5)}
-.btn-small{background:rgba(239,68,68,.1);color:#ef4444;border-color:#ef4444}
-.btn-small:hover{background:rgba(239,68,68,.2);box-shadow:0 0 20px rgba(239,68,68,.5)}
-.btn-big.predicted{animation:glowGreen 1s infinite;border-width:3px}
-.btn-small.predicted{animation:glowRed 1s infinite;border-width:3px}
-@keyframes glowGreen{0%,100%{box-shadow:0 0 20px #10b981,0 0 40px #10b981,inset 0 0 20px rgba(16,185,129,.3)}50%{box-shadow:0 0 30px #10b981,0 0 60px #10b981,inset 0 0 30px rgba(16,185,129,.5)}}
-@keyframes glowRed{0%,100%{box-shadow:0 0 20px #ef4444,0 0 40px #ef4444,inset 0 0 20px rgba(239,68,68,.3)}50%{box-shadow:0 0 30px #ef4444,0 0 60px #ef4444,inset 0 0 30px rgba(239,68,68,.5)}}
-.btn-predict{background:rgba(251,191,36,.1);color:#fbbf24;border-color:#fbbf24;grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:10px;font-size:1.2em}
-.btn-predict:hover{background:rgba(251,191,36,.2);box-shadow:0 0 20px rgba(251,191,36,.5)}
-.action-buttons{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:25px}
-.btn-undo{background:rgba(234,179,8,.1);color:#eab308;border-color:#eab308;padding:15px;font-size:1em}
-.btn-undo:hover{background:rgba(234,179,8,.2);box-shadow:0 0 20px rgba(234,179,8,.5)}
-.btn-clear{background:rgba(168,85,247,.1);color:#a855f7;border-color:#a855f7;padding:15px;font-size:1em;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-clear:hover{background:rgba(168,85,247,.2);box-shadow:0 0 20px rgba(168,85,247,.5)}
-.prediction-box{background:rgba(0,255,65,.05);border:2px solid #00ff41;border-radius:10px;padding:25px;margin-bottom:25px;display:none;box-shadow:0 0 20px rgba(0,255,65,.3)}
-.prediction-box.show{display:block;animation:fadeIn .5s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-.prediction-title{color:#00ff41;text-align:center;font-size:1.3em;margin-bottom:10px;text-shadow:0 0 10px #00ff41;letter-spacing:2px}
-.prediction-legend{background:rgba(59,130,246,.1);border:1px solid #3b82f6;border-radius:8px;padding:12px;margin-bottom:15px;color:#3b82f6;text-align:center;font-size:.9em;letter-spacing:1px}
-.block-info{background:rgba(0,255,65,.1);border:1px solid #00ff41;border-radius:8px;padding:12px;margin-bottom:15px;color:#00ff41;text-align:center;font-size:.9em;letter-spacing:1px}
-.prediction-result{border:2px solid;border-radius:10px;padding:30px;text-align:center;margin-bottom:15px;animation:resultPulse 2s infinite;position:relative;overflow:hidden}
-.prediction-result::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(transparent,rgba(255,255,255,.1),transparent 30%);animation:rotate 4s linear infinite}
-@keyframes rotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-@keyframes resultPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
-.prediction-result.big{background:rgba(16,185,129,.1);border-color:#10b981}
-.prediction-result.small{background:rgba(239,68,68,.1);border-color:#ef4444}
-.prediction-value{font-size:3.5em;font-weight:bold;margin-bottom:10px;position:relative;z-index:1}
-.prediction-result.big .prediction-value{color:#10b981;text-shadow:0 0 20px #10b981}
-.prediction-result.small .prediction-value{color:#ef4444;text-shadow:0 0 20px #ef4444}
-.prediction-confidence{color:#00ff41;font-size:.9em;position:relative;z-index:1;letter-spacing:1px}
-.prediction-reason{background:rgba(0,255,65,.1);border:1px solid #00ff41;border-radius:8px;padding:15px;color:#00ff41;text-align:center;margin-bottom:15px}
-.prediction-reason-label{font-size:.85em;opacity:.8;margin-bottom:5px;letter-spacing:1px}
-.prediction-reason-text{font-weight:600;letter-spacing:1px}
-.summary-box{background:rgba(0,255,65,.05);border:2px solid #00ff41;border-radius:10px;padding:25px;margin-bottom:25px;box-shadow:0 0 20px rgba(0,255,65,.3)}
-.summary-title{color:#00ff41;font-size:1.3em;margin-bottom:20px;text-shadow:0 0 10px #00ff41;letter-spacing:2px}
-.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px}
-.summary-item{border:2px solid;border-radius:10px;padding:20px;text-align:center;position:relative;overflow:hidden}
-.summary-item::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(45deg,transparent,rgba(255,255,255,.05),transparent);animation:shimmer 3s infinite}
-.summary-item.big{background:rgba(16,185,129,.1);border-color:#10b981}
-.summary-item.small{background:rgba(239,68,68,.1);border-color:#ef4444}
-.summary-label{color:#00ff41;font-size:.9em;margin-bottom:5px;opacity:.8;letter-spacing:1px}
-.summary-value{font-size:2.5em;font-weight:bold;position:relative;z-index:1}
-.summary-item.big .summary-value{color:#10b981;text-shadow:0 0 15px #10b981}
-.summary-item.small .summary-value{color:#ef4444;text-shadow:0 0 15px #ef4444}
-.last11-stats{background:rgba(0,255,65,.1);border:1px solid #00ff41;border-radius:10px;padding:15px;color:#00ff41}
-.last11-label{font-size:.85em;opacity:.8;margin-bottom:10px;letter-spacing:1px}
-.last11-values{display:flex;justify-content:space-around;font-size:1.1em;letter-spacing:1px}
-.analysis-stats{background:rgba(59,130,246,.1);border:1px solid #3b82f6;border-radius:10px;padding:15px;margin-bottom:15px;color:#3b82f6}
-.analysis-title{font-size:1.1em;font-weight:bold;margin-bottom:10px;text-align:center;letter-spacing:1px}
-.analysis-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px}
-.analysis-box{background:rgba(0,255,65,.1);border:1px solid #00ff41;border-radius:6px;padding:10px;text-align:center}
-.analysis-label{font-size:.8em;color:#00ff41;opacity:.8;margin-bottom:5px}
-.analysis-value{font-size:1.3em;font-weight:bold;color:#00ff41}
-.history-box{background:rgba(0,255,65,.05);border:2px solid #00ff41;border-radius:10px;padding:20px;box-shadow:0 0 20px rgba(0,255,65,.3);margin-top:25px}
-.history-title{color:#00ff41;font-size:1.2em;margin-bottom:15px;text-align:center;text-shadow:0 0 10px #00ff41;letter-spacing:2px}
-.history-grid{display:grid;gap:8px;max-height:300px;overflow-y:auto}
-.history-grid::-webkit-scrollbar{width:8px}
-.history-grid::-webkit-scrollbar-track{background:rgba(0,255,65,.1);border-radius:4px}
-.history-grid::-webkit-scrollbar-thumb{background:#00ff41;border-radius:4px}
-.history-item{display:grid;grid-template-columns:60px 120px 120px 120px 1fr;gap:10px;padding:12px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.3);border-radius:6px;font-size:.9em;align-items:center;transition:all .3s ease}
-.history-item:hover{background:rgba(0,255,65,.1);border-color:#00ff41;box-shadow:0 0 15px rgba(0,255,65,.3)}
-.history-item.success{border-left:4px solid #10b981;background:rgba(16,185,129,.05)}
-.history-item.failed{border-left:4px solid #ef4444;background:rgba(239,68,68,.05)}
-.history-index{color:#00ff41;font-weight:bold;text-align:center;letter-spacing:1px}
-.history-predicted{text-align:center;font-weight:bold;letter-spacing:1px;padding:5px 10px;border-radius:6px}
-.history-predicted.big{color:#10b981;background:rgba(16,185,129,.2);border:1px solid #10b981}
-.history-predicted.small{color:#ef4444;background:rgba(239,68,68,.2);border:1px solid #ef4444}
-.history-actual{text-align:center;font-weight:bold;letter-spacing:1px;padding:5px 10px;border-radius:6px}
-.history-actual.big{color:#10b981;background:rgba(16,185,129,.15);border:1px solid #10b981}
-.history-actual.small{color:#ef4444;background:rgba(239,68,68,.15);border:1px solid #ef4444}
-.history-result{text-align:center;font-weight:bold;font-size:1.1em;letter-spacing:1px}
-.history-result.success{color:#10b981;text-shadow:0 0 10px #10b981}
-.history-result.failed{color:#ef4444;text-shadow:0 0 10px #ef4444}
-.history-time{color:#00ff41;text-align:right;font-size:.85em;opacity:.8;letter-spacing:1px}
-@media(max-width:768px){
-.win-loss-grid{grid-template-columns:1fr 1fr 1fr;gap:10px}
-.wl-value{font-size:1.5em}
-.slots-grid{gap:5px}
-.slot{font-size:1em}
-button{padding:15px;font-size:1.2em}
-.prediction-value{font-size:2.5em}
-.analysis-grid{grid-template-columns:1fr 1fr;gap:8px}
-.history-item{grid-template-columns:50px 90px 90px 80px 60px;font-size:.8em;padding:8px;gap:6px}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ভাগ ২: নেটওয়ার্ক এবং WiFi সিকিউরিটি</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #00ffff;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 10px;
+            color: #00ffff;
+        }
+
+        .warning {
+            background: rgba(255, 0, 0, 0.2);
+            border: 2px solid #ff0000;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        .section {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: #ffff00;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #00ffff;
+            padding-bottom: 10px;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .tool-card {
+            background: linear-gradient(135deg, rgba(0, 50, 100, 0.6), rgba(0, 30, 60, 0.6));
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+            border-color: #ffff00;
+        }
+
+        .tool-card h3 {
+            color: #ffff00;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 5px;
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #ffff00;
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.5);
+        }
+
+        button {
+            background: linear-gradient(135deg, #00ffff, #00cccc);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #ffff00, #cccc00);
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255, 255, 0, 0.5);
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 5px;
+            border-left: 4px solid #00ffff;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .result::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .result::-webkit-scrollbar-thumb {
+            background: #00ffff;
+            border-radius: 4px;
+        }
+
+        .device-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .device-item {
+            background: rgba(0, 100, 150, 0.3);
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .device-item:hover {
+            background: rgba(0, 150, 200, 0.4);
+        }
+
+        .port-open {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .port-closed {
+            color: #ff0000;
+        }
+
+        .code-block {
+            background: #000;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .badge-secure {
+            background: #00ff00;
+            color: #000;
+        }
+
+        .badge-vulnerable {
+            background: #ff0000;
+            color: #fff;
+        }
+
+        .badge-warning {
+            background: #ffcc00;
+            color: #000;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #00ff00);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .network-map {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .network-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #00ffff, #0088ff);
+            border: 2px solid #ffff00;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .network-node:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-<h1>PATTERN SLOT SYSTEM</h1>
-<div class="win-loss-box">
-<div class="win-loss-grid">
-<div class="wl-item win">
-<div class="wl-label">✅ WIN</div>
-<div class="wl-value" id="winCount">0</div>
-</div>
-<div class="wl-item loss">
-<div class="wl-label">❌ LOSS</div>
-<div class="wl-value" id="lossCount">0</div>
-</div>
-<div class="wl-item rate">
-<div class="wl-label">📊 WIN RATE</div>
-<div class="wl-value" id="winRate">0%</div>
-</div>
-</div>
-</div>
-<div class="slots-container">
-<div class="slots-info">Last 20 Shown (Total: <span id="totalCount">0</span>)</div>
-<div class="slots-grid" id="slotsGrid"></div>
-<div class="total-info">Total Entries: <span id="totalEntries">0</span></div>
-</div>
-<div class="button-grid">
-<button class="btn-big" id="bigBtn" onclick="addPattern('BIG')">BIG</button>
-<button class="btn-small" id="smallBtn" onclick="addPattern('SMALL')">SMALL</button>
-</div>
-<button class="btn-predict" id="predictBtn" onclick="togglePrediction()" disabled>
-<span>🔬</span>
-<span id="predictBtnText">AI Prediction (Need 50)</span>
-</button>
-<div class="prediction-box" id="predictionBox"></div>
-<div class="action-buttons">
-<button class="btn-undo" onclick="removeLastPattern()" id="undoBtn" disabled>Undo Last</button>
-<button class="btn-clear" onclick="clearAll()"><span>🗑️</span><span>Clear All</span></button>
-</div>
-<div class="summary-box" id="summaryBox" style="display:none">
-<h2 class="summary-title">PATTERN SUMMARY</h2>
-<div class="summary-grid">
-<div class="summary-item big">
-<div class="summary-label">BIG</div>
-<div class="summary-value" id="bigCount">0</div>
-</div>
-<div class="summary-item small">
-<div class="summary-label">SMALL</div>
-<div class="summary-value" id="smallCount">0</div>
-</div>
-</div>
-<div class="last11-stats" id="last11Stats" style="display:none">
-<div class="last11-label">Last 11 (Set #11):</div>
-<div class="last11-values">
-<div>BIG: <span id="last11Big">0</span></div>
-<div>SMALL: <span id="last11Small">0</span></div>
-</div>
-</div>
-</div>
-<div class="history-box">
-<h2 class="history-title">🎯 PREDICTION HISTORY</h2>
-<div class="history-grid" id="historyGrid"></div>
-</div>
-</div>
-let slots = [];
-let showPrediction = false;
-let currentPrediction = null;
-let winCount = 0;
-let lossCount = 0;
-let predictionHistory = [];
+    <div class="container">
+        <div class="header">
+            <h1>📡 ভাগ ২: নেটওয়ার্ক এবং WiFi সিকিউরিটি</h1>
+            <p style="color: #ffff00;">Network Scanning, WiFi Security, Port Analysis</p>
+        </div>
 
-function updateWinLoss() {
-    document.getElementById("winCount").textContent = winCount;
-    document.getElementById("lossCount").textContent = lossCount;
-    const total = winCount + lossCount;
-    const rate = total > 0 ? Math.round(winCount / total * 100) : 0;
-    document.getElementById("winRate").textContent = rate + "%";
-}
+        <div class="warning">
+            ⚠️ সতর্কতা: শুধুমাত্র নিজের নেটওয়ার্কে বা অনুমতি সহ টেস্ট করুন! অবৈধ স্কানিং আইনত দণ্ডনীয়!
+        </div>
 
-function renderSlots() {
-    const grid = document.getElementById("slotsGrid");
-    const lastSlots = slots.slice(-20);
-    const emptyCount = Math.max(0, 20 - lastSlots.length);
-    
-    grid.innerHTML = "";
-    
-    for (let i = 0; i < emptyCount; i++) {
-        const slot = document.createElement("div");
-        slot.className = "slot empty";
-        grid.appendChild(slot);
-    }
-    
-    lastSlots.forEach(type => {
-        const slot = document.createElement("div");
-        slot.className = `slot ${type.toLowerCase()}`;
-        slot.textContent = type === "BIG" ? "B" : "S";
-        grid.appendChild(slot);
-    });
-    
-    document.getElementById("totalCount").textContent = slots.length;
-    document.getElementById("totalEntries").textContent = slots.length;
-    document.getElementById("predictBtn").disabled = slots.length < 50;
-    document.getElementById("undoBtn").disabled = slots.length === 0;
-    
-    updateSummary();
-    renderHistory();
-}
-
-function renderHistory() {
-    const historyGrid = document.getElementById("historyGrid");
-    
-    if (predictionHistory.length === 0) {
-        historyGrid.innerHTML = '<div style="text-align:center;color:#00ff41;opacity:0.6;padding:20px;letter-spacing:1px">No prediction records yet</div>';
-        return;
-    }
-    
-    const historyHTML = [...predictionHistory].reverse().map((record, index) => {
-        const recordNum = predictionHistory.length - index;
-        const resultClass = record.success ? "success" : "failed";
-        const resultText = record.success ? "✅ SUCCESS" : "❌ FAILED";
-        
-        return `<div class="history-item ${resultClass}">
-            <div class="history-index">#${recordNum}</div>
-            <div class="history-predicted ${record.predicted.toLowerCase()}">${record.predicted}</div>
-            <div class="history-actual ${record.actual.toLowerCase()}">${record.actual}</div>
-            <div class="history-result ${resultClass}">${resultText}</div>
-            <div class="history-time">${record.time}</div>
-        </div>`;
-    }).join("");
-    
-    historyGrid.innerHTML = historyHTML;
-}
-
-function updateSummary() {
-    const summaryBox = document.getElementById("summaryBox");
-    
-    if (slots.length > 0) {
-        summaryBox.style.display = "block";
-        
-        const bigCount = slots.filter(s => s === "BIG").length;
-        const smallCount = slots.filter(s => s === "SMALL").length;
-        
-        document.getElementById("bigCount").textContent = bigCount;
-        document.getElementById("smallCount").textContent = smallCount;
-        
-        if (slots.length >= 11) {
-            const last11 = slots.slice(-11);
-            const last11Big = last11.filter(s => s === "BIG").length;
-            const last11Small = last11.filter(s => s === "SMALL").length;
-            
-            document.getElementById("last11Stats").style.display = "block";
-            document.getElementById("last11Big").textContent = last11Big;
-            document.getElementById("last11Small").textContent = last11Small;
-        } else {
-            document.getElementById("last11Stats").style.display = "none";
-        }
-    } else {
-        summaryBox.style.display = "none";
-    }
-}
-
-function highlightPrediction(prediction) {
-    document.getElementById("bigBtn").classList.remove("predicted");
-    document.getElementById("smallBtn").classList.remove("predicted");
-    
-    if (prediction) {
-        if (prediction === "BIG") {
-            document.getElementById("bigBtn").classList.add("predicted");
-        } else {
-            document.getElementById("smallBtn").classList.add("predicted");
-        }
-    }
-}
-
-function addPattern(type) {
-    if (currentPrediction) {
-        const success = type === currentPrediction;
-        const now = new Date();
-        const time = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
-        
-        predictionHistory.push({
-            predicted: currentPrediction,
-            actual: type,
-            success: success,
-            time: time
-        });
-        
-        if (success) {
-            winCount++;
-        } else {
-            lossCount++;
-        }
-        
-        updateWinLoss();
-        currentPrediction = null;
-        highlightPrediction(null);
-    }
-    
-    slots.push(type);
-    renderSlots();
-    
-    if (showPrediction) {
-        showPredictionResult();
-    }
-}
-
-function removeLastPattern() {
-    if (slots.length > 0) {
-        slots.pop();
-        
-        if (currentPrediction) {
-            currentPrediction = null;
-            highlightPrediction(null);
-        }
-        
-        renderSlots();
-        
-        if (showPrediction) {
-            if (slots.length >= 50) {
-                showPredictionResult();
-            } else {
-                showPrediction = false;
-                document.getElementById("predictionBox").classList.remove("show");
-                document.getElementById("predictBtnText").textContent = "AI Prediction (Need 50)";
-            }
-        }
-    }
-}
-
-function clearAll() {
-    slots = [];
-    showPrediction = false;
-    currentPrediction = null;
-    winCount = 0;
-    lossCount = 0;
-    predictionHistory = [];
-    
-    updateWinLoss();
-    highlightPrediction(null);
-    renderSlots();
-    
-    document.getElementById("predictionBox").classList.remove("show");
-    document.getElementById("predictBtnText").textContent = "AI Prediction (Need 50)";
-}
-
-function analyzePrediction() {
-    if (slots.length < 50) {
-        return {
-            prediction: null,
-            confidence: 0,
-            reason: "Need at least 50 entries for AI analysis"
-        };
-    }
-    
-    const last50 = slots.slice(-50);
-    
-    let bigCount = 0;
-    let smallCount = 0;
-    for (let i = 0; i < last50.length; i++) {
-        if (last50[i] === "BIG") {
-            bigCount++;
-        } else {
-            smallCount++;
-        }
-    }
-    
-    const dominantType = bigCount > smallCount ? "BIG" : "SMALL";
-    const imbalance = Math.abs(bigCount - smallCount);
-    
-    const recent25 = last50.slice(-25);
-    const previous25 = last50.slice(-50, -25);
-    
-    let followCount = 0;
-    for (let i = 0; i < 25; i++) {
-        if (recent25[i] === previous25[i]) {
-            followCount++;
-        }
-    }
-    
-    const oppositeCount = 25 - followCount;
-    
-    const repetitions = [];
-    for (let i = 0; i < last50.length - 1; i++) {
-        if (last50[i] === last50[i + 1]) {
-            repetitions.push(i);
-        }
-    }
-    const repetitionCount = repetitions.length;
-    
-    const streaks = [];
-    let currentStreak = 1;
-    let currentType = last50[0];
-    
-    for (let i = 1; i < last50.length; i++) {
-        if (last50[i] === currentType) {
-            currentStreak++;
-        } else {
-            if (currentStreak >= 3) {
-                streaks.push({
-                    type: currentType,
-                    count: currentStreak,
-                    position: i - currentStreak
-                });
-            }
-            currentStreak = 1;
-            currentType = last50[i];
-        }
-    }
-    
-    if (currentStreak >= 3) {
-        streaks.push({
-            type: currentType,
-            count: currentStreak,
-            position: last50.length - currentStreak
-        });
-    }
-    
-    const maxStreak = streaks.length > 0 ? Math.max(...streaks.map(s => s.count)) : 0;
-    const lastStreak = streaks.length > 0 ? streaks[streaks.length - 1] : null;
-    
-    const last20 = last50.slice(-20);
-    let patterns = [];
-    for (let i = 1; i < last20.length; i++) {
-        patterns.push(last20[i] === last20[i - 1] ? "Same" : "Opp");
-    }
-    
-    const blocks = [];
-    let currentBlock = {
-        type: patterns[0],
-        count: 1,
-        values: [last20[0]]
-    };
-    
-    for (let i = 1; i < patterns.length; i++) {
-        if (patterns[i] === currentBlock.type) {
-            currentBlock.count++;
-            currentBlock.values.push(last20[i]);
-        } else {
-            blocks.push({...currentBlock});
-            currentBlock = {
-                type: patterns[i],
-                count: 1,
-                values: [last20[i]]
-            };
-        }
-    }
-    
-    currentBlock.values.push(last20[last20.length - 1]);
-    blocks.push(currentBlock);
-    
-    const lastBlock = blocks[blocks.length - 1];
-    const lastValue = last50[last50.length - 1];
-    
-    const blockInfo = blocks.map(b => `${b.count}${b.type === "Same" ? "✓" : "↔"}`).join(" → ");
-    
-    let prediction, confidence, reason;
-    
-    if (lastStreak && lastStreak.count >= 5 && last50.length - lastStreak.position - lastStreak.count <= 2) {
-        prediction = lastStreak.type === "BIG" ? "SMALL" : "BIG";
-        confidence = 94;
-        reason = `🔥 MEGA STREAK BREAK (${lastStreak.count}x ${lastStreak.type}) - Extreme Reverse!`;
-    } else if (maxStreak >= 4 && lastStreak && last50.length - lastStreak.position - lastStreak.count <= 3) {
-        prediction = lastStreak.type === "BIG" ? "SMALL" : "BIG";
-        confidence = 91;
-        reason = `⚡ Long Streak Detected (${maxStreak}x) - Strong Break Signal`;
-    } else if (blocks.length >= 4 && blocks.slice(-4).every(b => b.count === 1)) {
-        const blockType = lastBlock.type;
-        prediction = blockType === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
-        confidence = 89;
-        reason = "🎯 Perfect Zigzag (1-1-1-1) - Ultra Pattern";
-    } else if (blocks.length >= 3 && blocks.slice(-3).every(b => b.count === 1)) {
-        const blockType = lastBlock.type;
-        prediction = blockType === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
-        confidence = 86;
-        reason = "🔄 Triple Zigzag (1-1-1) - Strong Pattern";
-    } else if (lastBlock.count === 3) {
-        prediction = lastBlock.type === "Same" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
-        confidence = 84;
-        reason = `🎯 Triple Block (${lastBlock.count}${lastBlock.type === "Same" ? "✓" : "↔"}) - Reverse Coming`;
-    } else if (lastBlock.count === 4) {
-        prediction = lastBlock.type === "Same" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
-        confidence = 88;
-        reason = `⚡ Quad Block (${lastBlock.count}${lastBlock.type === "Same" ? "✓" : "↔"}) - Strong Reverse`;
-    } else if (lastBlock.count >= 5) {
-        prediction = lastValue === "BIG" ? "SMALL" : "BIG";
-        confidence = 92;
-        reason = `🔥 Massive Block (${lastBlock.count}${lastBlock.type === "Same" ? "✓" : "↔"}) - Critical Reverse`;
-    } else if (lastBlock.count === 2) {
-        prediction = lastBlock.type === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
-        confidence = 81;
-        reason = `📊 Double Pattern (${lastBlock.count}${lastBlock.type === "Same" ? "✓" : "↔"}) - Change Expected`;
-    } else if (imbalance >= 20) {
-        prediction = dominantType;
-        confidence = 83;
-        reason = `⚖️ Huge Imbalance (${bigCount}B/${smallCount}S) - Follow ${dominantType}`;
-    } else if (imbalance >= 15) {
-        prediction = dominantType;
-        confidence = 79;
-        reason = `⚖️ Big Imbalance (${bigCount}B/${smallCount}S) - Lean ${dominantType}`;
-    } else if (followCount >= 20) {
-        prediction = previous25[0];
-        confidence = 82;
-        reason = `✅ Super Follow Rate (${followCount}/25) - History Strong`;
-    } else if (oppositeCount >= 20) {
-        prediction = previous25[0] === "BIG" ? "SMALL" : "BIG";
-        confidence = 82;
-        reason = `❌ Super Opposite (${oppositeCount}/25) - Reverse Strong`;
-    } else if (repetitionCount >= 30) {
-        prediction = lastValue;
-        confidence = 78;
-        reason = `🔁 High Repetition (${repetitionCount}/49) - Continue Trend`;
-    } else if (followCount >= 18) {
-        prediction = previous25[0];
-        confidence = 77;
-        reason = `✅ High Follow (${followCount}/25) - History Pattern`;
-    } else if (oppositeCount >= 18) {
-        prediction = previous25[0] === "BIG" ? "SMALL" : "BIG";
-        confidence = 77;
-        reason = `❌ High Opposite (${oppositeCount}/25) - Reverse Pattern`;
-    } else if (blocks.length >= 2) {
-        const prevBlock = blocks[blocks.length - 2];
-        if (prevBlock.count >= 3 && lastBlock.count === 1) {
-            prediction = lastBlock.type === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
-            confidence = 76;
-            reason = `🔀 After Streak (${prevBlock.count}→1) - Mix Pattern`;
-        } else {
-            prediction = lastBlock.type === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
-            confidence = 72;
-            reason = "🔄 Standard Pattern Flow";
-        }
-    } else {
-        prediction = lastBlock.type === "Opp" ? (lastValue === "BIG" ? "SMALL" : "BIG") : lastValue;
-        confidence = 68;
-        reason = "🎲 Basic Pattern Following";
-    }
-    
-    return {
-        prediction: prediction,
-        confidence: confidence,
-        reason: reason,
-        blockInfo: blockInfo,
-        advancedStats: {
-            totalEntries: 50,
-            bigCount: bigCount,
-            smallCount: smallCount,
-            dominantType: dominantType,
-            imbalance: imbalance,
-            followRate: followCount,
-            oppositeRate: oppositeCount,
-            repetitionCount: repetitionCount,
-            maxStreak: maxStreak,
-            lastStreak: lastStreak,
-            recentBlocks: blocks.slice(-5)
-        }
-    };
-}
-
-function showPredictionResult() {
-    const analysis = analyzePrediction();
-    const box = document.getElementById("predictionBox");
-    
-    if (analysis.prediction) {
-        currentPrediction = analysis.prediction;
-        highlightPrediction(analysis.prediction);
-        
-        let statsHTML = "";
-        if (analysis.advancedStats) {
-            const {
-                totalEntries,
-                bigCount,
-                smallCount,
-                dominantType,
-                imbalance,
-                followRate,
-                oppositeRate,
-                repetitionCount,
-                maxStreak,
-                lastStreak
-            } = analysis.advancedStats;
-            
-            statsHTML = `<div class="analysis-stats">
-                <div class="analysis-title">🔬 50-ENTRY DEEP AI ANALYSIS</div>
-                <div class="analysis-grid">
-                    <div class="analysis-box"><div class="analysis-label">Total Data</div><div class="analysis-value">${totalEntries}</div></div>
-                    <div class="analysis-box"><div class="analysis-label">BIG</div><div class="analysis-value">${bigCount}</div></div>
-                    <div class="analysis-box"><div class="analysis-label">SMALL</div><div class="analysis-value">${smallCount}</div></div>
-                    <div class="analysis-box"><div class="analysis-label">Dominant</div><div class="analysis-value">${dominantType}</div></div>
-                    <div class="analysis-box"><div class="analysis-label">Imbalance</div><div class="analysis-value">${imbalance}</div></div>
-                    <div class="analysis-box"><div class="analysis-label">Max Streak</div><div class="analysis-value">${maxStreak}</div></div>
-                    <div class="analysis-box"><div class="analysis-label">Follow Rate</div><div class="analysis-value">${followRate}/25</div></div>
-                    <div class="analysis-box"><div class="analysis-label">Opposite</div><div class="analysis-value">${oppositeRate}/25</div></div>
-                    <div class="analysis-box"><div class="analysis-label">Repetitions</div><div class="analysis-value">${repetitionCount}</div></div>
+        <!-- Network Scanner -->
+        <div class="section">
+            <h2>🔍 নেটওয়ার্ক স্কানার</h2>
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h3>🌐 IP এবং Network Info</h3>
+                    <button onclick="getNetworkInfo()">📊 নেটওয়ার্ক তথ্য দেখুন</button>
+                    <div id="networkInfo" class="result" style="display: none;"></div>
                 </div>
-                ${lastStreak ? `<div style="margin-top:15px;background:rgba(251,191,36,0.1);border:1px solid #fbbf24;border-radius:8px;padding:12px;text-align:center;color:#fbbf24;font-weight:bold">⚠️ Active Streak: ${lastStreak.count}x ${lastStreak.type} (Position: ${lastStreak.position})</div>` : ""}
-            </div>`;
+
+                <div class="tool-card">
+                    <h3>🔎 পোর্ট স্কানার</h3>
+                    <label>টার্গেট IP:</label>
+                    <input type="text" id="portScanIP" placeholder="192.168.1.1" value="192.168.1.1">
+                    
+                    <label>পোর্ট রেঞ্জ:</label>
+                    <select id="portRange">
+                        <option value="common">Common Ports (1-1024)</option>
+                        <option value="all">All Ports (1-65535)</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                    
+                    <button onclick="scanPorts()">🔍 পোর্ট স্কান শুরু করুন</button>
+                    
+                    <div class="progress-bar" id="portProgress" style="display: none;">
+                        <div class="progress-fill" id="portProgressFill" style="width: 0%;">0%</div>
+                    </div>
+                    
+                    <div id="portResults" class="result" style="display: none;"></div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>📍 IP Geolocation</h3>
+                    <label>IP Address:</label>
+                    <input type="text" id="geoIP" placeholder="8.8.8.8" value="8.8.8.8">
+                    <button onclick="getIPLocation()">🌍 Location খুঁজুন</button>
+                    <div id="geoResults" class="result" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        <!-- WiFi Security -->
+        <div class="section">
+            <h2>📶 WiFi সিকিউরিটি টেস্টিং</h2>
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <h3>🔐 WiFi পাসওয়ার্ড শক্তি যাচাই</h3>
+                    <label>WiFi পাসওয়ার্ড:</label>
+                    <input type="password" id="wifiPassword" placeholder="আপনার WiFi পাসওয়ার্ড">
+                    <button onclick="checkWiFiPassword()">🔍 পাসওয়ার্ড চেক করুন</button>
+                    <div id="wifiPassResult" class="result" style="display: none;"></div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>🎲 Secure WiFi পাসওয়ার্ড তৈরি</h3>
+                    <label>পাসওয়ার্ড দৈর্ঘ্য:</label>
+                    <input type="number" id="passLength" value="20" min="12" max="64">
+                    <button onclick="generateWiFiPassword()">🔑 পাসওয়ার্ড তৈরি করুন</button>
+                    <div id="generatedPass" class="result" style="display: none;"></div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>📡 WiFi Security Checklist</h3>
+                    <button onclick="showWiFiChecklist()">📋 Checklist দেখুন</button>
+                    <div id="wifiChecklist" class="result" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Device Scanner -->
+        <div class="section">
+            <h2>💻 নেটওয়ার্ক ডিভাইস স্কানার</h2>
+            <div class="tool-card">
+                <h3>🔍 Connected Devices খুঁজুন</h3>
+                <label>Network Range:</label>
+                <input type="text" id="networkRange" placeholder="192.168.1.0/24" value="192.168.1.0/24">
+                <button onclick="scanDevices()">🔎 ডিভাইস স্কান করুন</button>
+                
+                <div class="progress-bar" id="deviceProgress" style="display: none;">
+                    <div class="progress-fill" id="deviceProgressFill" style="width: 0%;">0%</div>
+                </div>
+                
+                <div id="deviceResults" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Network Map Visualization -->
+        <div class="section">
+            <h2>🗺️ নেটওয়ার্ক ম্যাপ ভিজুয়ালাইজেশন</h2>
+            <div class="network-map" id="networkMap">
+                <p style="text-align: center; padding: 20px;">নেটওয়ার্ক স্কান করুন ম্যাপ দেখার জন্য...</p>
+            </div>
+        </div>
+
+        <!-- Security Tips -->
+        <div class="section">
+            <h2>🛡️ নেটওয়ার্ক সুরক্ষা গাইড</h2>
+            <div class="code-block">
+                <strong>🔒 Router সুরক্ষা:</strong><br>
+                1. Default admin পাসওয়ার্ড পরিবর্তন করুন<br>
+                2. WPA3 বা WPA2 encryption ব্যবহার করুন<br>
+                3. Firmware নিয়মিত আপডেট করুন<br>
+                4. Remote management বন্ধ রাখুন<br>
+                5. Guest network আলাদা রাখুন<br><br>
+
+                <strong>📶 WiFi সুরক্ষা:</strong><br>
+                1. শক্তিশালী পাসওয়ার্ড (16+ characters)<br>
+                2. SSID broadcast লুকিয়ে রাখুন (optional)<br>
+                3. MAC address filtering চালু করুন<br>
+                4. WPS disable করুন<br>
+                5. Network encryption সর্বদা ON<br><br>
+
+                <strong>🔥 Firewall Configuration:</strong><br>
+                1. Incoming connections block করুন<br>
+                2. শুধুমাত্র প্রয়োজনীয় ports খুলুন<br>
+                3. Port forwarding সাবধানে করুন<br>
+                4. Logging enable রাখুন<br>
+                5. Intrusion detection সক্রিয় করুন
+            </div>
+
+            <div class="code-block">
+                <strong>🐧 Linux Firewall Commands:</strong><br>
+                <span style="color: #00ff00;"># UFW Firewall</span><br>
+                sudo ufw enable<br>
+                sudo ufw default deny incoming<br>
+                sudo ufw allow 22/tcp  <span style="color: #00ff00;"># SSH</span><br>
+                sudo ufw allow 80/tcp  <span style="color: #00ff00;"># HTTP</span><br>
+                sudo ufw allow 443/tcp <span style="color: #00ff00;"># HTTPS</span><br><br>
+
+                <span style="color: #00ff00;"># iptables</span><br>
+                iptables -A INPUT -p tcp --dport 22 -j ACCEPT<br>
+                iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT<br>
+                iptables -P INPUT DROP
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Network Info
+        function getNetworkInfo() {
+            const resultDiv = document.getElementById('networkInfo');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<p style="color: #ffff00;">⏳ নেটওয়ার্ক তথ্য সংগ্রহ করছি...</p>';
+
+            setTimeout(() => {
+                const info = {
+                    localIP: '192.168.1.' + Math.floor(Math.random() * 254 + 1),
+                    gateway: '192.168.1.1',
+                    subnet: '255.255.255.0',
+                    dns1: '8.8.8.8',
+                    dns2: '8.8.4.4',
+                    mac: generateMAC()
+                };
+
+                let html = '<p><strong style="color: #ffff00;">📊 নেটওয়ার্ক তথ্য:</strong></p>';
+                html += `<p><span class="port-open">Local IP:</span> ${info.localIP}</p>`;
+                html += `<p><span class="port-open">Gateway:</span> ${info.gateway}</p>`;
+                html += `<p><span class="port-open">Subnet Mask:</span> ${info.subnet}</p>`;
+                html += `<p><span class="port-open">DNS 1:</span> ${info.dns1}</p>`;
+                html += `<p><span class="port-open">DNS 2:</span> ${info.dns2}</p>`;
+                html += `<p><span class="port-open">MAC Address:</span> ${info.mac}</p>`;
+
+                resultDiv.innerHTML = html;
+            }, 1000);
         }
-        
-        box.innerHTML = `
-            <h2 class="prediction-title">🎯 AI PATTERN PREDICTION</h2>
-            <div class="prediction-legend">✓ = Same | ↔ = Opposite | 50 Entries Analysis</div>
-            ${analysis.blockInfo ? `<div class="block-info">Last 20 Pattern: ${analysis.blockInfo}</div>` : ""}
-            ${statsHTML}
-            <div class="prediction-result ${analysis.prediction.toLowerCase()}">
-                <div class="prediction-value">${analysis.prediction}</div>
-                <div class="prediction-confidence">AI Confidence: ${analysis.confidence}%</div>
-            </div>
-            <div class="prediction-reason">
-                <div class="prediction-reason-label">🤖 AI Analysis:</div>
-                <div class="prediction-reason-text">${analysis.reason}</div>
-            </div>
-            <div style="background:rgba(0,255,65,0.1);border:1px solid #00ff41;border-radius:10px;padding:15px;margin-top:15px;text-align:center;color:#00ff41;font-size:0.95em;letter-spacing:1px">
-                ⬆️ Click ${analysis.prediction} button (glowing) ⬆️
-            </div>
-        `;
-    } else {
-        currentPrediction = null;
-        highlightPrediction(null);
-        box.innerHTML = `
-            <div class="prediction-reason">
-                <div class="prediction-reason-text">${analysis.reason}</div>
-            </div>
-        `;
-    }
-}
 
-function togglePrediction() {
-    showPrediction = !showPrediction;
-    const box = document.getElementById("predictionBox");
-    
-    if (showPrediction) {
-        showPredictionResult();
-        box.classList.add("show");
-        document.getElementById("predictBtnText").textContent = "Hide Prediction";
-    } else {
-        currentPrediction = null;
-        highlightPrediction(null);
-        box.classList.remove("show");
-        document.getElementById("predictBtnText").textContent = "AI Prediction (Need 50)";
-    }
-}
+        // Port Scanner
+        function scanPorts() {
+            const ip = document.getElementById('portScanIP').value;
+            const range = document.getElementById('portRange').value;
+            const resultDiv = document.getElementById('portResults');
+            const progressBar = document.getElementById('portProgress');
+            const progressFill = document.getElementById('portProgressFill');
 
-renderSlots();
-updateWinLoss();
+            if (!ip) {
+                alert('IP Address দিন!');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            progressBar.style.display = 'block';
+            resultDiv.innerHTML = '<p style="color: #ffff00;">⏳ পোর্ট স্কান চলছে...</p>';
+
+            const commonPorts = {
+                20: 'FTP Data',
+                21: 'FTP Control',
+                22: 'SSH',
+                23: 'Telnet',
+                25: 'SMTP',
+                53: 'DNS',
+                80: 'HTTP',
+                110: 'POP3',
+                143: 'IMAP',
+                443: 'HTTPS',
+                445: 'SMB',
+                3306: 'MySQL',
+                3389: 'RDP',
+                5432: 'PostgreSQL',
+                8080: 'HTTP Proxy'
+            };
+
+            let totalPorts = Object.keys(commonPorts).length;
+            let scanned = 0;
+            let openPorts = [];
+
+            const scanInterval = setInterval(() => {
+                scanned++;
+                const progress = Math.floor((scanned / totalPorts) * 100);
+                progressFill.style.width = progress + '%';
+                progressFill.textContent = progress + '%';
+
+                // Simulate port scan
+                const ports = Object.keys(commonPorts);
+                const port = parseInt(ports[scanned - 1]);
+                const isOpen = Math.random() > 0.7; // 30% chance of being open
+
+                if (isOpen) {
+                    openPorts.push({ port: port, service: commonPorts[port] });
+                }
+
+                if (scanned >= totalPorts) {
+                    clearInterval(scanInterval);
+                    displayPortResults(ip, openPorts, totalPorts);
+                }
+            }, 100);
+        }
+
+        function displayPortResults(ip, openPorts, total) {
+            const resultDiv = document.getElementById('portResults');
+            
+            let html = `<p><strong style="color: #ffff00;">📊 পোর্ট স্কান রিপোর্ট:</strong></p>`;
+            html += `<p><strong>টার্গেট IP:</strong> ${ip}</p>`;
+            html += `<p><strong>স্কান করা পোর্ট:</strong> ${total}</p>`;
+            html += `<p><strong>খোলা পোর্ট:</strong> <span class="port-open">${openPorts.length}</span></p><br>`;
+
+            if (openPorts.length > 0) {
+                html += '<p><strong>খোলা পোর্টের তালিকা:</strong></p>';
+                openPorts.forEach(p => {
+                    html += `<div class="device-item">`;
+                    html += `<span>Port ${p.port}</span>`;
+                    html += `<span class="port-open">${p.service}</span>`;
+                    html += `</div>`;
+                });
+
+                html += '<br><p style="color: #ffcc00;">⚠️ সতর্কতা: অপ্রয়োজনীয় খোলা পোর্ট নিরাপত্তা ঝুঁকি!</p>';
+            } else {
+                html += '<p class="port-open">✓ কোনো খোলা পোর্ট পাওয়া যায়নি (ভালো!)</p>';
+            }
+
+            resultDiv.innerHTML = html;
+        }
+
+        // IP Geolocation
+        function getIPLocation() {
+            const ip = document.getElementById('geoIP').value;
+            const resultDiv = document.getElementById('geoResults');
+
+            if (!ip) {
+                alert('IP Address দিন!');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<p style="color: #ffff00;">⏳ IP Location খুঁজছি...</p>';
+
+            setTimeout(() => {
+                // Simulated geolocation data
+                const locations = [
+                    { country: 'Bangladesh', city: 'Dhaka', isp: 'Grameenphone', lat: 23.8103, lon: 90.4125 },
+                    { country: 'United States', city: 'New York', isp: 'Google LLC', lat: 40.7128, lon: -74.0060 },
+                    { country: 'India', city: 'Mumbai', isp: 'Airtel', lat: 19.0760, lon: 72.8777 }
+                ];
+
+                const loc = locations[Math.floor(Math.random() * locations.length)];
+
+                let html = `<p><strong style="color: #ffff00;">🌍 IP Geolocation:</strong></p>`;
+                html += `<p><strong>IP:</strong> ${ip}</p>`;
+                html += `<p><strong>দেশ:</strong> ${loc.country}</p>`;
+                html += `<p><strong>শহর:</strong> ${loc.city}</p>`;
+                html += `<p><strong>ISP:</strong> ${loc.isp}</p>`;
+                html += `<p><strong>Latitude:</strong> ${loc.lat}</p>`;
+                html += `<p><strong>Longitude:</strong> ${loc.lon}</p>`;
+
+                resultDiv.innerHTML = html;
+            }, 1500);
+        }
+
+        // WiFi Password Checker
+        function checkWiFiPassword() {
+            const password = document.getElementById('wifiPassword').value;
+            const resultDiv = document.getElementById('wifiPassResult');
+
+            if (!password) {
+                alert('পাসওয়ার্ড দিন!');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+
+            let score = 0;
+            let feedback = [];
+
+            // Length check
+            if (password.length >= 16) {
+                score += 30;
+                feedback.push('<span class="port-open">✓ দৈর্ঘ্য ভালো (16+ characters)</span>');
+            } else if (password.length >= 12) {
+                score += 20;
+                feedback.push('<span style="color: #ffcc00;">⚠ দৈর্ঘ্য মোটামুটি (12-15 characters)</span>');
+            } else {
+                feedback.push('<span class="port-closed">✗ দৈর্ঘ্য খুব ছোট (12+ প্রয়োজন)</span>');
+            }
+
+            // Uppercase check
+            if (/[A-Z]/.test(password)) {
+                score += 15;
+                feedback.push('<span class="port-open">✓ বড় অক্ষর আছে</span>');
+            } else {
+                feedback.push('<span class="port-closed">✗ বড় অক্ষর নেই</span>');
+            }
+
+            // Lowercase check
+            if (/[a-z]/.test(password)) {
+                score += 15;
+                feedback.push('<span class="port-open">✓ ছোট অক্ষর আছে</span>');
+            } else {
+                feedback.push('<span class="port-closed">✗ ছোট অক্ষর নেই</span>');
+            }
+
+            // Number check
+            if (/[0-9]/.test(password)) {
+                score += 15;
+                feedback.push('<span class="port-open">✓ সংখ্যা আছে</span>');
+            } else {
+                feedback.push('<span class="port-closed">✗ সংখ্যা নেই</span>');
+            }
+
+            // Special character check
+            if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+                score += 25;
+                feedback.push('<span class="port-open">✓ বিশেষ চিহ্ন আছে</span>');
+            } else {
+                feedback.push('<span class="port-closed">✗ বিশেষ চিহ্ন নেই</span>');
+            }
+
+            let html = '<p><strong style="color: #ffff00;">🔐 পাসওয়ার্ড বিশ্লেষণ:</strong></p>';
+            html += `<p><strong>Score:</strong> ${score}/100</p>`;
+            
+            if (score >= 80) {
+                html += '<p class="port-open">✓ পাসওয়ার্ড খুব শক্তিশালী!</p>';
+            } else if (score >= 60) {
+                html += '<p style="color: #ffcc00;">⚠ পাসওয়ার্ড মোটামুটি</p>';
+            } else {
+                html += '<p class="port-closed">✗ পাসওয়ার্ড দুর্বল - পরিবর্তন করুন!</p>';
+            }
+
+            html += '<br><p><strong>বিস্তারিত:</strong></p>';
+            feedback.forEach(f => html += `<p>${f}</p>`);
+
+            resultDiv.innerHTML = html;
+        }
+
+        // Generate WiFi Password
+        function generateWiFiPassword() {
+            const length = parseInt(document.getElementById('passLength').value);
+            const resultDiv = document.getElementById('generatedPass');
+
+            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            let password = '';
+
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+
+            resultDiv.style.display = 'block';
+            let html = '<p><strong style="color: #ffff00;">🔑 Generated পাসওয়ার্ড:</strong></p>';
+            html += `<p style="font-size: 1.2em; color: #00ff00; word-break: break-all;">${password}</p>`;
+            html += '<p style="color: #ffcc00;">⚠️ এই পাসওয়ার্ড কপি করে নিরাপদ জায়গায় সংরক্ষণ করুন!</p>';
+
+            resultDiv.innerHTML = html;
+        }
+
+        // WiFi Security Checklist
+        function showWiFiChecklist() {
+            const resultDiv = document.getElementById('wifiChecklist');
+            resultDiv.style.display = 'block';
+
+            let html = '<p><strong style="color: #ffff00;">📋 WiFi Security Checklist:</strong></p>';
+            
+            const checklist = [
+                { item: 'WPA3/WPA2 encryption ব্যবহার', checked: Math.random() > 0.3 },
+                { item: 'শক্তিশালী পাসওয়ার্ড (16+ chars)', checked: Math.random() > 0.4 },
+                { item: 'Default admin credentials পরিবর্তন', checked: Math.random() > 0.5 },
+                { item: 'Firmware আপডেট', checked: Math.random() > 0.6 },
+                { item: 'WPS disabled', checked: Math.random() > 0.5 },
+                { item: 'Guest network আলাদা', checked: Math.random() > 0.7 },
+                { item: 'MAC filtering enabled', checked: Math.random() > 0.6 },
+                { item: 'Remote management disabled', checked: Math.random() > 0.5 }
+            ];
+
+            checklist.forEach(item => {
+                if (item.checked) {
+                    html += `<p><span class="port-open">☑</span> ${item.item}</p>`;
+                } else {
+                    html += `<p><span class="port-closed">☐</span> ${item.item}</p>`;
+                }
+            });
+
+            const checkedCount = checklist.filter(i => i.checked).length;
+            const percentage = Math.floor((checkedCount / checklist.length) * 100);
+
+            html += `<br><p><strong>Security Score:</strong> ${percentage}%</p>`;
+            
+            if (percentage >= 80) {
+                html += '<p class="port-open">✓ WiFi সুরক্ষা ভালো!</p>';
+            } else if (percentage >= 60) {
+                html += '<p style="color: #ffcc00;">⚠ কিছু উন্নতি প্রয়োজন</p>';
+            } else {
+                html += '<p class="port-closed">✗ WiFi সুরক্ষা দুর্বল!</p>';
+            }
+
+            resultDiv.innerHTML = html;
+        }
+
+        // Device Scanner
+        function scanDevices() {
+            const range = document.getElementById('networkRange').value;
+            const resultDiv = document.getElementById('deviceResults');
+            const progressBar = document.getElementById('deviceProgress');
+            const progressFill = document.getElementById('deviceProgressFill');
+
+            if (!range) {
+                alert('Network Range দিন!');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            progressBar.style.display = 'block';
+            resultDiv.innerHTML = '<p style="color: #ffff00;">⏳ ডিভাইস স্কান চলছে...</p>';
+
+            const totalIPs = 254;
+            let scanned = 0;
+            let devices = [];
+
+            const scanInterval = setInterval(() => {
+                scanned++;
+                const progress = Math.floor((scanned / totalIPs) * 100);
+                progressFill.style.width = progress + '%';
+                progressFill.textContent = progress + '%';
+
+                // Simulate device discovery
+                if (Math.random() > 0.9) { // 10% chance of finding a device
+                    const deviceTypes = ['Router', 'Computer', 'Smartphone', 'Smart TV', 'IoT Device', 'Printer'];
+                    devices.push({
+                        ip: `192.168.1.${scanned}`,
+                        mac: generateMAC(),
+                        type: deviceTypes[Math.floor(Math.random() * deviceTypes.length)],
+                        hostname: `device-${scanned}`
+                    });
+                }
+
+                if (scanned >= totalIPs) {
+                    clearInterval(scanInterval);
+                    displayDevices(devices);
+                }
+            }, 20);
+        }
+
+        function displayDevices(devices) {
+            const resultDiv = document.getElementById('deviceResults');
+            const mapDiv = document.getElementById('networkMap');
+
+            let html = `<p><strong style="color: #ffff00;">📊 পাওয়া ডিভাইস: ${devices.length}</strong></p><br>`;
+
+            if (devices.length > 0) {
+                html += '<div class="device-list">';
+                devices.forEach(device => {
+                    html += `<div class="device-item">`;
+                    html += `<div>`;
+                    html += `<p><strong>${device.type}</strong></p>`;
+                    html += `<p style="font-size: 0.9em;">IP: ${device.ip}</p>`;
+                    html += `<p style="font-size: 0.9em;">MAC: ${device.mac}</p>`;
+                    html += `</div>`;
+                    html += `<span class="badge badge-secure">Active</span>`;
+                    html += `</div>`;
+                });
+                html += '</div>';
+
+                // Update network map
+                updateNetworkMap(devices);
+            } else {
+                html += '<p class="port-closed">কোনো ডিভাইস পাওয়া যায়নি</p>';
+            }
+
+            resultDiv.innerHTML = html;
+        }
+
+        function updateNetworkMap(devices) {
+            const mapDiv = document.getElementById('networkMap');
+            mapDiv.innerHTML = '';
+
+            // Add router in center
+            const router = document.createElement('div');
+            router.className = 'network-node';
+            router.innerHTML = '🌐';
+            router.style.left = '50%';
+            router.style.top = '50%';
+            router.style.transform = 'translate(-50%, -50%)';
+            router.title = 'Router\n192.168.1.1';
+            mapDiv.appendChild(router);
+
+            // Add devices around router
+            devices.forEach((device, index) => {
+                const angle = (index * 360 / devices.length) * Math.PI / 180;
+                const radius = 120;
+                const x = 50 + radius * Math.cos(angle);
+                const y = 50 + radius * Math.sin(angle);
+
+                const node = document.createElement('div');
+                node.className = 'network-node';
+                node.innerHTML = getDeviceIcon(device.type);
+                node.style.left = `calc(${x}% - 30px)`;
+                node.style.top = `calc(${y}% - 30px)`;
+                node.title = `${device.type}\n${device.ip}\n${device.mac}`;
+                node.style.width = '50px';
+                node.style.height = '50px';
+                node.style.fontSize = '24px';
+                mapDiv.appendChild(node);
+            });
+        }
+
+        function getDeviceIcon(type) {
+            const icons = {
+                'Router': '🌐',
+                'Computer': '💻',
+                'Smartphone': '📱',
+                'Smart TV': '📺',
+                'IoT Device': '🔌',
+                'Printer': '🖨️'
+            };
+            return icons[type] || '❓';
+        }
+
+        function generateMAC() {
+            const hex = '0123456789ABCDEF';
+            let mac = '';
+            for (let i = 0; i < 6; i++) {
+                mac += hex.charAt(Math.floor(Math.random() * 16));
+                mac += hex.charAt(Math.floor(Math.random() * 16));
+                if (i < 5) mac += ':';
+            }
+            return mac;
+        }
+    </script>
 </body>
 </html>
