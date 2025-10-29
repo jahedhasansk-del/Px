@@ -46,7 +46,7 @@
 </div>
 <button class="refresh-btn" onclick="_r()"><span class="refresh-icon" id="ri">⟳</span><span>Refresh</span></button>
 <script>
-    // Matrix Effect
+// Matrix Effect
 const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(10,14,39,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
 
 // AI Prediction System
@@ -85,10 +85,8 @@ const b1=d[0],b5=d[4],b4=d[3];
 let pred;
 
 if(b1===b5){
-// Match: predict SAME as Box 4
 pred=b4
 }else{
-// No match: predict OPPOSITE of Box 4
 pred=_inv(b4)
 }
 
@@ -101,17 +99,22 @@ const b1=d[0],b11=_box11,b10=d[9];
 let pred;
 
 if(b1===b11){
-// Match: predict SAME as Box 10
 pred=b10
 }else{
-// No match: predict OPPOSITE of Box 10
 pred=_inv(b10)
 }
 
 return{pr:pred,conf:87}
 };
 
-// AI Decision System with Smart Reverse Logic
+// Helper: Check if patterns match
+const _pMatch=(arr)=>{
+if(arr.length<2)return null;
+const sig=arr.sort().join(',');
+return sig
+};
+
+// AI Decision System
 const _ai=(d)=>{
 const p1=_p1(d),p2=_p2(d),p3=_p3(d);
 let preds=[];
@@ -121,14 +124,14 @@ if(p3)preds.push({p:p3.pr,c:p3.conf,n:'P3'});
 
 if(preds.length===0)return{pr:d[0]===BIG?SMALL:BIG,conf:55,ps:[]};
 
-// Check 3 patterns agree (all same prediction)
+// Check 3 patterns agree
 if(preds.length===3&&preds[0].p===preds[1].p&&preds[1].p===preds[2].p){
 const samePred=preds[0].p;
 const ps=['P1','P2','P3'];
-// Check if last time 3 patterns agreed and lost
-const last3=_h.find(x=>x.ps&&x.ps.length===3&&x.ps.includes('P1')&&x.ps.includes('P2')&&x.ps.includes('P3'));
-if(last3&&last3.res===LOSS&&last3.pred===samePred){
-// Last time same 3 pattern prediction LOST, so REVERSE
+// Check if last prediction (3 patterns) was LOSS
+const last=_h[0];
+if(last&&last.res===LOSS&&last.ps&&last.ps.length===3){
+// Last 3-pattern LOST, so reverse
 return{pr:_inv(samePred),conf:98,ps:ps}
 }
 return{pr:samePred,conf:97,ps:ps}
@@ -144,22 +147,17 @@ const pairs=[
 for(let pair of pairs){
 if(pair.p.length===2&&pair.p[0].p===pair.p[1].p){
 const samePred=pair.p[0].p;
-const pairNames=pair.n;
-// Check if last time ANY 2 patterns agreed and lost
-const last2=_h.find(x=>{
-if(!x.ps||x.ps.length<2)return false;
-// Check if current pair patterns were in last prediction
-const hasBoth=pairNames.every(pn=>x.ps.includes(pn));
-return hasBoth
-});
-if(last2&&last2.res===LOSS&&last2.pred===samePred){
-// Last time 2 pattern prediction LOST, so REVERSE (HIGH RATING)
-return{pr:_inv(samePred),conf:95,ps:pairNames}
+const ps=pair.n;
+// Check if last prediction (ANY 2 patterns) was LOSS
+const last=_h[0];
+if(last&&last.res===LOSS&&last.ps&&last.ps.length>=2){
+// Last 2-pattern LOST, so reverse current 2-pattern prediction
+return{pr:_inv(samePred),conf:95,ps:ps}
 }
-return{pr:samePred,conf:92,ps:pairNames}
+return{pr:samePred,conf:92,ps:ps}
 }}
 
-// Single pattern (highest confidence)
+// Single pattern
 preds.sort((a,b)=>b.c-a.c);
 return{pr:preds[0].p,conf:preds[0].c,ps:[preds[0].n]}
 };
@@ -184,10 +182,8 @@ if(ls.length===0){tb.innerHTML='<tr><td colspan="5" class="loading">[ NO DATA ]<
 const _f1=['issue','period','issueNo','periodId','issueNumber'],_f2=['result','number','num','openResult'],_f3=['color','colour'],_f4=['gameNo','drawNo','id'];
 const tp=String(ls[0][_f1[0]]||ls[0][_f1[1]]||ls[0][_f1[2]]||ls[0][_f1[3]]||ls[0][_f1[4]]||''),tn=String(ls[0][_f2[0]]||ls[0][_f2[1]]||ls[0][_f2[2]]||ls[0][_f2[3]]||''),ts=_x(tn);
 
-// Convert to Big/Small array
 const sh=ls.slice(0,10).map(i=>{const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";return _x(rn)});
 
-// Save Box 11 (deleted box memory)
 if(ls.length>=11){
 const box11Data=ls[10];
 const box11Num=box11Data[_f2[0]]||box11Data[_f2[1]]||box11Data[_f2[2]]||box11Data[_f2[3]];
@@ -196,27 +192,22 @@ _box11=_x(box11Num)
 _box11=sh[9]
 }
 
-// Get AI prediction
 const pd=_ai(sh);
 
-// Check if new period
 if(_lp!==tp){
 if(_p){
 const im=_p.pr===ts,re={per:tp,pred:_p.pr,act:ts,res:im?WIN:LOSS,ps:_p.ps};
 _h.unshift(re);
 if(_h.length>100)_h=_h.slice(0,100);
 
-// Update pattern stats
 if(_p.ps){_p.ps.forEach(pn=>{const k=pn.toLowerCase();if(im)_pStats[k].w++;else _pStats[k].l++})}
 
-// Update Box 11 memory
 _box11=sh[9]
 }
 _p={...pd};
 _lp=tp
 }
 
-// Display prediction
 const cr=document.getElementById("currPred"),cb=document.getElementById("confBar"),cl=document.getElementById("confLabel"),pi=document.getElementById("patternInfo");
 cr.innerHTML=`<span class="prediction-${pd.pr.toLowerCase()}">${pd.pr}</span>`;
 cb.style.width=pd.conf+'%';
@@ -230,7 +221,6 @@ pi.innerHTML=pd.ps.length>0?pd.ps.map(p=>`<span class="pattern-tag pattern-activ
 
 let wc=0,lc=0;_h.forEach(e=>{if(e.res===WIN)wc++;if(e.res===LOSS)lc++});
 
-// Display table
 ls.slice(0,10).forEach((it,ix)=>{
 const tr=document.createElement("tr"),tdp=document.createElement("td");
 tdp.className="period-cell";
