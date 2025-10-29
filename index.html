@@ -1,53 +1,370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>WinGo Pro AI Signal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Lottery Predictor</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;padding:15px;overflow-x:hidden}.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.03;pointer-events:none}.container{max-width:700px;margin:0 auto;position:relative;z-index:1}.header{text-align:center;margin-bottom:20px;position:relative}.logo{font-size:28px;color:#00ff41;text-shadow:0 0 20px #00ff41;animation:glow 2s ease-in-out infinite;margin-bottom:8px}@keyframes glow{0%,100%{text-shadow:0 0 20px #00ff41}50%{text-shadow:0 0 30px #00ff41,0 0 60px #00ff41}}.title{color:#00ff41;font-size:13px;letter-spacing:2px;text-transform:uppercase}.scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00ff41,transparent);animation:scan 3s linear infinite}@keyframes scan{0%{top:0}100%{top:100%}}.prediction-container{background:linear-gradient(135deg,rgba(0,255,65,.1) 0%,rgba(0,100,255,.1) 100%);border:2px solid #00ff41;border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(0,255,65,.3);margin-bottom:20px;animation:borderPulse 2s ease-in-out infinite}@keyframes borderPulse{0%,100%{box-shadow:0 0 30px rgba(0,255,65,.3)}50%{box-shadow:0 0 50px rgba(0,255,65,.5)}}.prediction-header{padding:12px;text-align:center;background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%);border-bottom:1px solid #00ff41}.prediction-header h3{color:#00ff41;font-size:15px;letter-spacing:2px;text-transform:uppercase}.prediction-content{padding:30px 20px;text-align:center}.prediction-result{font-size:56px;font-weight:bold;margin-bottom:15px;text-transform:uppercase;letter-spacing:4px;animation:fadeInScale 1s ease-out}@keyframes fadeInScale{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}.prediction-big{color:#ff0055;text-shadow:0 0 20px #ff0055}.prediction-small{color:#00ff41;text-shadow:0 0 20px #00ff41}.pattern-info{display:flex;justify-content:center;gap:15px;margin-top:15px;flex-wrap:wrap}.pattern-tag{background:rgba(0,255,65,.1);border:1px solid rgba(0,255,65,.3);padding:8px 15px;border-radius:20px;font-size:11px;color:#00ff41;letter-spacing:1px}.pattern-active{background:rgba(0,255,65,.3);box-shadow:0 0 15px rgba(0,255,65,.5)}.confidence-bar{width:180px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;margin:15px auto;overflow:hidden}.confidence-fill{height:100%;background:linear-gradient(90deg,#ff0055,#ffaa00,#00ff41);border-radius:4px;animation:fillBar 2s ease-out;position:relative}@keyframes fillBar{0%{width:0%}}.confidence-fill::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2s infinite}@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}.confidence-label{color:#00ff41;font-size:12px;margin-top:8px;letter-spacing:1px;text-transform:uppercase}.confidence-high{color:#00ff41;text-shadow:0 0 10px #00ff41}.confidence-medium{color:#ffaa00;text-shadow:0 0 10px #ffaa00}.confidence-low{color:#ff0055;text-shadow:0 0 10px #ff0055}.stats-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,255,65,.2)}.stats-info{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.stat-item{text-align:center;padding:12px 8px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:8px;transition:all .3s ease}.stat-item:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,255,65,.3)}.stat-label{font-size:9px;color:#00ff41;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}.stat-value{font-size:24px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}.stat-win{color:#00ff41;text-shadow:0 0 15px #00ff41}.stat-loss{color:#ff0055;text-shadow:0 0 15px #ff0055}.stat-streak{color:#ffaa00;text-shadow:0 0 15px #ffaa00}.table-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(0,255,65,.2)}table{width:100%;border-collapse:collapse}thead{background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%)}th{padding:12px 6px;text-align:center;font-weight:600;color:#00ff41;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #00ff41}tbody tr{background:rgba(0,0,0,.3);transition:all .3s ease;border-bottom:1px solid rgba(0,255,65,.1)}tbody tr:hover{background:rgba(0,255,65,.1);transform:scale(1.01);box-shadow:0 0 15px rgba(0,255,65,.3)}td{padding:10px 6px;text-align:center;color:#00ff41;font-size:11px}.period-cell{font-family:'Courier New',monospace;font-size:10px;opacity:.7}.number-cell{font-size:22px;font-weight:bold}.color-cell{display:flex;justify-content:center;align-items:center;gap:4px}.color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(0,255,65,.3);animation:dotPulse 2s infinite}@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}.red{background:#ff0055;box-shadow:0 0 8px #ff0055}.green{background:#00ff41;box-shadow:0 0 8px #00ff41}.violet{background:#aa00ff;box-shadow:0 0 8px #aa00ff}.result-cell{font-weight:bold;font-size:11px;padding:5px 8px;border-radius:4px}.result-win{color:#00ff41;background:rgba(0,255,65,.2);border:1px solid #00ff41;text-shadow:0 0 5px #00ff41}.result-loss{color:#ff0055;background:rgba(255,0,85,.2);border:1px solid #ff0055;text-shadow:0 0 5px #ff0055}.time-display{background:rgba(0,255,65,.1);padding:15px 30px;border-radius:12px;display:inline-block;margin-top:15px;border:1px solid rgba(0,255,65,.3);box-shadow:0 0 20px rgba(0,255,65,.2)}.current-time{font-size:28px;font-weight:bold;color:#00ff41;font-family:'Courier New',monospace;letter-spacing:2px;text-shadow:0 0 20px #00ff41}.seconds-highlight{color:#ff0055;font-size:32px;animation:pulse 1s infinite;text-shadow:0 0 20px #ff0055}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.refresh-btn{position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;padding:14px 24px;border-radius:40px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,255,65,.5);display:flex;align-items:center;gap:8px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1.5px}.refresh-btn:hover{transform:scale(1.08);box-shadow:0 0 50px rgba(0,255,65,.8)}.refresh-btn:active{transform:scale(.95)}.refresh-icon{font-size:18px}.refresh-icon.spinning{animation:spin .5s linear}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.loading{text-align:center;padding:15px;color:#00ff41;animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}.update-time{text-align:center;margin-top:15px}@media (max-width:600px){.logo{font-size:22px}.title{font-size:10px;letter-spacing:1px}.stats-info{grid-template-columns:repeat(2,1fr);gap:10px}.prediction-result{font-size:40px;letter-spacing:2px}th,td{padding:8px 4px;font-size:10px}.number-cell{font-size:18px}.refresh-btn{bottom:15px;right:15px;padding:12px 20px;font-size:12px}.current-time{font-size:22px}.stat-value{font-size:20px}.pattern-info{gap:8px}.pattern-tag{padding:6px 12px;font-size:10px}}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', monospace;
+  background: #0a0e27;
+  color: #00ff41;
+  overflow-x: hidden;
+}
+
+#matrix {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(0, 255, 65, 0.1);
+  border: 2px solid #00ff41;
+  border-radius: 10px;
+}
+
+.header h1 {
+  font-size: 2.5em;
+  text-shadow: 0 0 20px #00ff41;
+  margin-bottom: 10px;
+}
+
+.time-display {
+  font-size: 1.5em;
+  color: #00ff41;
+}
+
+.seconds-highlight {
+  color: #ff0055;
+  font-weight: bold;
+}
+
+.prediction-panel {
+  background: rgba(10, 14, 39, 0.9);
+  border: 2px solid #00ff41;
+  border-radius: 10px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+}
+
+.prediction-label {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  opacity: 0.8;
+}
+
+.current-prediction {
+  font-size: 3em;
+  font-weight: bold;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.prediction-big {
+  color: #ff0055;
+  text-shadow: 0 0 20px #ff0055;
+}
+
+.prediction-small {
+  color: #00ff41;
+  text-shadow: 0 0 20px #00ff41;
+}
+
+.confidence-bar {
+  width: 100%;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ff41, #00ff41);
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.confidence-high {
+  color: #00ff41;
+}
+
+.confidence-medium {
+  color: #ffaa00;
+}
+
+.confidence-low {
+  color: #ff0055;
+}
+
+.pattern-info {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.pattern-tag {
+  padding: 8px 15px;
+  background: rgba(0, 255, 65, 0.2);
+  border: 1px solid #00ff41;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
+
+.pattern-active {
+  background: rgba(0, 255, 65, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: rgba(10, 14, 39, 0.9);
+  border: 2px solid #00ff41;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2.5em;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.stat-label {
+  opacity: 0.8;
+  font-size: 0.9em;
+}
+
+.data-table {
+  width: 100%;
+  background: rgba(10, 14, 39, 0.9);
+  border: 2px solid #00ff41;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+}
+
+th {
+  background: rgba(0, 255, 65, 0.2);
+  font-weight: bold;
+}
+
+.period-cell {
+  color: #00ff41;
+}
+
+.number-cell {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+.color-cell {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+.color-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.color-dot.red {
+  background: #ff0055;
+  box-shadow: 0 0 10px #ff0055;
+}
+
+.color-dot.green {
+  background: #00ff41;
+  box-shadow: 0 0 10px #00ff41;
+}
+
+.color-dot.violet {
+  background: #aa00ff;
+  box-shadow: 0 0 10px #aa00ff;
+}
+
+.result-cell {
+  font-weight: bold;
+}
+
+.result-win {
+  color: #00ff41;
+}
+
+.result-loss {
+  color: #ff0055;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2em;
+  opacity: 0.6;
+}
+
+.refresh-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: #00ff41;
+  border: none;
+  border-radius: 50%;
+  color: #0a0e27;
+  font-size: 1.5em;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+  transition: transform 0.3s;
+}
+
+.refresh-btn:hover {
+  transform: scale(1.1);
+}
+
+.spinning {
+  animation: spin 0.5s linear;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
-<canvas class="matrix-bg" id="matrix"></canvas>
+<canvas id="matrix"></canvas>
+
 <div class="container">
-<div class="header">
-<div class="scan-line"></div>
-<div class="logo">⚡ WINGO AI PRO</div>
-<div class="title">AI PATTERN ANALYZER v5.0</div>
+  <div class="header">
+    <h1>🎯 AI LOTTERY PREDICTOR</h1>
+    <div class="time-display" id="rt">00:00:00</div>
+  </div>
+
+  <div class="prediction-panel">
+    <div class="prediction-label">NEXT PREDICTION:</div>
+    <div class="current-prediction" id="currPred">
+      <span class="prediction-big">ANALYZING...</span>
+    </div>
+    <div class="confidence-bar">
+      <div class="confidence-fill" id="confBar" style="width: 0%">
+        <span id="confLabel">LOADING...</span>
+      </div>
+    </div>
+    <div class="pattern-info" id="patternInfo">
+      <span class="pattern-tag">INITIALIZING</span>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">WIN</div>
+      <div class="stat-value" id="wc">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">LOSS</div>
+      <div class="stat-value" id="lc">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TOTAL</div>
+      <div class="stat-value" id="tc">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">WIN RATE</div>
+      <div class="stat-value" id="wr">0%</div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">P1 WINS</div>
+      <div class="stat-value" id="p1w">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">P2 WINS</div>
+      <div class="stat-value" id="p2w">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">P3 WINS</div>
+      <div class="stat-value" id="p3w">0</div>
+    </div>
+  </div>
+
+  <div class="data-table">
+    <table>
+      <thead>
+        <tr>
+          <th>PERIOD</th>
+          <th>NUMBER</th>
+          <th>SIZE</th>
+          <th>COLOR</th>
+          <th>RESULT</th>
+        </tr>
+      </thead>
+      <tbody id="tb">
+        <tr>
+          <td colspan="5" class="loading">[ LOADING DATA... ]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
-<div class="prediction-container">
-<div class="prediction-header"><h3>🤖 AI PREDICTION</h3></div>
-<div class="prediction-content">
-<div class="prediction-result" id="currPred"><div class="loading" style="font-size:16px">[ AI ANALYZING... ]</div></div>
-<div class="pattern-info" id="patternInfo"></div>
-<div class="confidence-bar"><div class="confidence-fill" id="confBar" style="width:0%"></div></div>
-<div class="confidence-label" id="confLabel">ANALYZING</div>
-</div>
-</div>
-<div class="stats-container">
-<div class="stats-info">
-<div class="stat-item"><div class="stat-label">Win</div><div class="stat-value stat-win" id="wc">0</div></div>
-<div class="stat-item"><div class="stat-label">Loss</div><div class="stat-value stat-loss" id="lc">0</div></div>
-<div class="stat-item"><div class="stat-label">Total</div><div class="stat-value" id="tc">0</div></div>
-<div class="stat-item"><div class="stat-label">Accuracy</div><div class="stat-value" id="wr">0%</div></div>
-<div class="stat-item"><div class="stat-label">P1 Win</div><div class="stat-value stat-streak" id="p1w">0</div></div>
-<div class="stat-item"><div class="stat-item"><div class="stat-label">P2 Win</div><div class="stat-value stat-streak" id="p2w">0</div></div>
-<div class="stat-item"><div class="stat-label">P3 Win</div><div class="stat-value stat-streak" id="p3w">0</div></div>
-</div>
-</div>
-<div class="table-container">
-<table>
-<thead><tr><th>Period</th><th>Number</th><th>Size</th><th>Color</th><th>Result</th></tr></thead>
-<tbody id="tb"><tr><td colspan="5" class="loading">[ LOADING DATA... ]</td></tr></tbody>
-</table>
-</div>
-<p class="update-time"><span class="time-display"><div class="current-time" id="rt">00:00:00</div></span></p>
-</div>
-<button class="refresh-btn" onclick="_r()"><span class="refresh-icon" id="ri">⟳</span><span>Refresh</span></button>
-<script src="script.js"></script>
-</body>
-</html>
+
+<button class="refresh-btn" onclick="_r()" id="ri">↻</button>
+
+<script>
 // Matrix Effect
 const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(10,14,39,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
 
@@ -62,235 +379,19 @@ const _x=n=>parseInt(n)>=5?BIG:SMALL;
 const _inv=p=>p===BIG?SMALL:BIG;
 const _g=(n,c)=>{let a=[];if(c==='red')a.push('red');else if(c==='green')a.push('green');else if(c==='violet')a.push('violet');if(n===0){a.push('violet');a.push('red')}else if(n===5){a.push('violet');a.push('green')}return a};
 
-// Pattern 1: Track B-S-B or S-B-S pattern
-const _p1=(d)=>{if(d.length<3)return null;
-// Check last 3 P1-only predictions for losses
-const lastP1Only=_h.filter(x=>x.ps&&x.ps.includes('P1')&&x.ps.length===1).slice(0,3);
-const recentLosses=lastP1Only.filter(x=>x.res===LOSS).length;
+const _p1=(d)=>{if(d.length<3)return null;const lastP1Only=_h.filter(x=>x.ps&&x.ps.includes('P1')&&x.ps.length===1).slice(0,3);const recentLosses=lastP1Only.filter(x=>x.res===LOSS).length;if(recentLosses===3&&lastP1Only.length===3){_pStats.p1.lc=_pStats.p1.lc===0?1:0}let pred;const isBSB=(d[0]===BIG&&d[1]===SMALL&&d[2]===BIG);const isSBS=(d[0]===SMALL&&d[1]===BIG&&d[2]===SMALL);if(_pStats.p1.lc===0){if(isBSB)pred=SMALL;else if(isSBS)pred=BIG;else pred=_inv(d[0])}else{if(isSBS)pred=BIG;else if(isBSB)pred=SMALL;else pred=_inv(d[0])}return{pr:pred,conf:85}};
 
-// Toggle pattern tracking mode every 3 losses
-if(recentLosses===3&&lastP1Only.length===3){
-_pStats.p1.lc=_pStats.p1.lc===0?1:0;
-}
+const _p2=(d)=>{if(d.length<5)return null;const b1=d[0],b5=d[4],b4=d[3];let pred;if(b1===b5){pred=b4}else{pred=_inv(b4)}return{pr:pred,conf:88}};
 
-let pred;
-// Check current box pattern
-const isBSB=(d[0]===BIG&&d[1]===SMALL&&d[2]===BIG);
-const isSBS=(d[0]===SMALL&&d[1]===BIG&&d[2]===SMALL);
+const _p3=(d)=>{if(!_box11||d.length<10)return null;const b1=d[0],b11=_box11,b10=d[9];let pred;if(b1===b11){pred=b10}else{pred=_inv(b10)}return{pr:pred,conf:87}};
 
-if(_pStats.p1.lc===0){
-// Normal: Follow B-S-B → S or S-B-S → B
-if(isBSB)pred=SMALL;
-else if(isSBS)pred=BIG;
-else pred=_inv(d[0]);
-}else{
-// Reversed: Follow S-B-S → B or B-S-B → S  
-if(isSBS)pred=BIG;
-else if(isBSB)pred=SMALL;
-else pred=_inv(d[0]);
-}
-
-return{pr:pred,conf:85}
-};
-
-// Pattern 2: Box 1 & Box 5 comparison
-const _p2=(d)=>{if(d.length<5)return null;
-const b1=d[0],b5=d[4],b4=d[3];
-let pred;
-
-if(b1===b5){
-pred=b4
-}else{
-pred=_inv(b4)
-}
-
-return{pr:pred,conf:88}
-};
-
-// Pattern 3: Box 1 & Box 11 comparison
-const _p3=(d)=>{if(!_box11||d.length<10)return null;
-const b1=d[0],b11=_box11,b10=d[9];
-let pred;
-
-if(b1===b11){
-pred=b10
-}else{
-pred=_inv(b10)
-}
-
-return{pr:pred,conf:87}
-};
-
-// AI Decision System
-const _ai=(d)=>{
-const p1=_p1(d),p2=_p2(d),p3=_p3(d);
-let preds=[];
-if(p1)preds.push({p:p1.pr,c:p1.conf,n:'P1'});
-if(p2)preds.push({p:p2.pr,c:p2.conf,n:'P2'});
-if(p3)preds.push({p:p3.pr,c:p3.conf,n:'P3'});
-
-if(preds.length===0)return{pr:d[0]===BIG?SMALL:BIG,conf:55,ps:[],rev:false};
-
-let finalPred=null,finalConf=55,finalPs=[];
-
-// Check 3 patterns agree
-if(preds.length===3&&preds[0].p===preds[1].p&&preds[1].p===preds[2].p){
-finalPred=preds[0].p;
-finalConf=97;
-finalPs=['P1','P2','P3'];
-}
-// Check 2 patterns agree
-else{
-const pairs=[
-{n:['P1','P2'],p:preds.filter(x=>x.n==='P1'||x.n==='P2')},
-{n:['P1','P3'],p:preds.filter(x=>x.n==='P1'||x.n==='P3')},
-{n:['P2','P3'],p:preds.filter(x=>x.n==='P2'||x.n==='P3')}
-];
-
-for(let pair of pairs){
-if(pair.p.length===2&&pair.p[0].p===pair.p[1].p){
-finalPred=pair.p[0].p;
-finalConf=92;
-finalPs=pair.n;
-break;
-}}
-
-// Single pattern
-if(!finalPred){
-preds.sort((a,b)=>b.c-a.c);
-finalPred=preds[0].p;
-finalConf=preds[0].c;
-finalPs=[preds[0].n];
-}
-}
-
-// Check if need to reverse final prediction (2+ patterns only)
-if(finalPs.length>=2){
-// Check if last prediction with 2+ patterns was LOSS
-const last=_h[0];
-if(last&&last.res===LOSS&&last.ps&&last.ps.length>=2&&!last.rev){
-// Last multi-pattern prediction LOST, enable reverse mode
-_revMode=true;
-finalPred=_inv(finalPred);
-return{pr:finalPred,conf:finalConf+3,ps:finalPs,rev:true}
-}else if(_revMode){
-// Continue in reverse mode
-finalPred=_inv(finalPred);
-return{pr:finalPred,conf:finalConf+2,ps:finalPs,rev:true}
-}
-}
-
-return{pr:finalPred,conf:finalConf,ps:finalPs,rev:false}
-};
+const _ai=(d)=>{const p1=_p1(d),p2=_p2(d),p3=_p3(d);let preds=[];if(p1)preds.push({p:p1.pr,c:p1.conf,n:'P1'});if(p2)preds.push({p:p2.pr,c:p2.conf,n:'P2'});if(p3)preds.push({p:p3.pr,c:p3.conf,n:'P3'});if(preds.length===0)return{pr:d[0]===BIG?SMALL:BIG,conf:55,ps:[],rev:false};let finalPred=null,finalConf=55,finalPs=[];if(preds.length===3&&preds[0].p===preds[1].p&&preds[1].p===preds[2].p){finalPred=preds[0].p;finalConf=97;finalPs=['P1','P2','P3']}else{const pairs=[{n:['P1','P2'],p:preds.filter(x=>x.n==='P1'||x.n==='P2')},{n:['P1','P3'],p:preds.filter(x=>x.n==='P1'||x.n==='P3')},{n:['P2','P3'],p:preds.filter(x=>x.n==='P2'||x.n==='P3')}];for(let pair of pairs){if(pair.p.length===2&&pair.p[0].p===pair.p[1].p){finalPred=pair.p[0].p;finalConf=92;finalPs=pair.n;break}}if(!finalPred){preds.sort((a,b)=>b.c-a.c);finalPred=preds[0].p;finalConf=preds[0].c;finalPs=[preds[0].n]}}if(finalPs.length>=2){const last=_h[0];if(last&&last.res===LOSS&&last.ps&&last.ps.length>=2&&!last.rev){_revMode=true;finalPred=_inv(finalPred);return{pr:finalPred,conf:finalConf+3,ps:finalPs,rev:true}}else if(_revMode){finalPred=_inv(finalPred);return{pr:finalPred,conf:finalConf+2,ps:finalPs,rev:true}}}return{pr:finalPred,conf:finalConf,ps:finalPs,rev:false}};
 
 const _u=()=>{const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0'),e=document.getElementById('rt');if(e)e.innerHTML=`${h}:${m}:<span class="seconds-highlight">${s}</span>`;if(n.getSeconds()===_k.m)_l()};
 const _s=()=>{_u();clearInterval(_ct);_ct=setInterval(_u,_k.i)};
 window._r=()=>{const ic=document.getElementById('ri');if(ic){ic.classList.add('spinning');setTimeout(()=>ic.classList.remove('spinning'),500)}_l()};
 
-const _l=async()=>{
-try{
-const t=new Date().getTime(),_u=_k.u1+_k.u2+_k.u3+_k.u4,_q=`?${_d('7473')}=${t}`,_f=_u+_q,r=await fetch(_f),d=await r.json();
-let ls=[];
-const _pk=['data','list'],_sk=['list'];
-if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,11);
-else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,11);
-else if(Array.isArray(d))ls=d.slice(0,11);
-
-const tb=document.getElementById("tb");
-tb.innerHTML="";
-if(ls.length===0){tb.innerHTML='<tr><td colspan="5" class="loading">[ NO DATA ]</td></tr>';return}
-
-const _f1=['issue','period','issueNo','periodId','issueNumber'],_f2=['result','number','num','openResult'],_f3=['color','colour'],_f4=['gameNo','drawNo','id'];
-const tp=String(ls[0][_f1[0]]||ls[0][_f1[1]]||ls[0][_f1[2]]||ls[0][_f1[3]]||ls[0][_f1[4]]||''),tn=String(ls[0][_f2[0]]||ls[0][_f2[1]]||ls[0][_f2[2]]||ls[0][_f2[3]]||''),ts=_x(tn);
-
-const sh=ls.slice(0,10).map(i=>{const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";return _x(rn)});
-
-if(ls.length>=11){
-const box11Data=ls[10];
-const box11Num=box11Data[_f2[0]]||box11Data[_f2[1]]||box11Data[_f2[2]]||box11Data[_f2[3]];
-_box11=_x(box11Num)
-}else if(sh.length===10&&_box11===null){
-_box11=sh[9]
-}
-
-const pd=_ai(sh);
-
-if(_lp!==tp){
-if(_p){
-const im=_p.pr===ts,re={per:tp,pred:_p.pr,act:ts,res:im?WIN:LOSS,ps:_p.ps,rev:_p.rev};
-_h.unshift(re);
-if(_h.length>100)_h=_h.slice(0,100);
-
-// Update stats
-if(_p.ps){
-_p.ps.forEach(pn=>{
-const k=pn.toLowerCase();
-if(im)_pStats[k].w++;
-else _pStats[k].l++;
-})
-}
-
-// Reset reverse mode if WIN
-if(im&&_p.ps&&_p.ps.length>=2){
-_revMode=false
-}
-
-_box11=sh[9]
-}
-_p={...pd};
-_lp=tp
-}
-
-const cr=document.getElementById("currPred"),cb=document.getElementById("confBar"),cl=document.getElementById("confLabel"),pi=document.getElementById("patternInfo");
-cr.innerHTML=`<span class="prediction-${pd.pr.toLowerCase()}">${pd.pr}</span>`;
-cb.style.width=pd.conf+'%';
-
-if(pd.conf>=95)cl.innerHTML='<span class="confidence-high">⚡ ULTRA HIGH'+(pd.rev?' ⟲':'')+'</span>';
-else if(pd.conf>=90)cl.innerHTML='<span class="confidence-high">✓ VERY HIGH'+(pd.rev?' ⟲':'')+'</span>';
-else if(pd.conf>=85)cl.innerHTML='<span class="confidence-medium">⚠ MEDIUM'+(pd.rev?' ⟲':'')+'</span>';
-else cl.innerHTML='<span class="confidence-low">⚠ LOW</span>';
-
-pi.innerHTML=pd.ps.length>0?pd.ps.map(p=>`<span class="pattern-tag pattern-active">${p}</span>`).join(''):'<span class="pattern-tag">ANALYZING</span>';
-
-let wc=0,lc=0;_h.forEach(e=>{if(e.res===WIN)wc++;if(e.res===LOSS)lc++});
-
-ls.slice(0,10).forEach((it,ix)=>{
-const tr=document.createElement("tr"),tdp=document.createElement("td");
-tdp.className="period-cell";
-const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');
-tdp.textContent=pv||"N/A";
-
-const rn=it[_f2[0]]||it[_f2[1]]||it[_f2[2]]||it[_f2[3]]||"?",tdn=document.createElement("td");
-tdn.className="number-cell";
-const ns=document.createElement("span"),co=(it[_f3[0]]||it[_f3[1]]||"").toLowerCase();
-if(co==='red'){ns.style.color='#ff0055';ns.style.textShadow='0 0 10px #ff0055'}
-else if(co==='green'){ns.style.color='#00ff41';ns.style.textShadow='0 0 10px #00ff41'}
-else if(co==='violet'||co==='purple'){ns.style.color='#aa00ff';ns.style.textShadow='0 0 10px #aa00ff'}
-ns.textContent=rn;tdn.appendChild(ns);
-
-const tds=document.createElement("td");tds.textContent=sh[ix];
-const tdc=document.createElement("td");tdc.className="color-cell";
-const nv=parseInt(rn),cls=_g(nv,co);
-cls.forEach(c=>{const dt=document.createElement("span");dt.className=`color-dot ${c}`;tdc.appendChild(dt)});
-
-const tdr=document.createElement("td"),mr=_h.find(q=>String(q.per)===String(pv));
-if(mr){if(mr.res===WIN){tdr.className="result-cell result-win";tdr.textContent="✓ WIN"}else{tdr.className="result-cell result-loss";tdr.textContent="✗ LOSS"}}else tdr.textContent="-";
-
-tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);tr.appendChild(tdr);tb.appendChild(tr)
-});
-
-const to=wc+lc,wrt=to>0?Math.round((wc/to)*100):0;
-document.getElementById('wc').textContent=wc;
-document.getElementById('lc').textContent=lc;
-document.getElementById('tc').textContent=to;
-document.getElementById('wr').textContent=wrt+'%';
-document.getElementById('p1w').textContent=_pStats.p1.w;
-document.getElementById('p2w').textContent=_pStats.p2.w;
-document.getElementById('p3w').textContent=_pStats.p3.w
-}catch(e){document.getElementById("tb").innerHTML=`<tr><td colspan="5" class="loading">[ ERROR ]</td></tr>`}
-};
-_l();_s()
-})();
+const _l=async()=>{try{const t=new Date().getTime(),_u=_k.u1+_k.u2+_k.u3+_k.u4,_q=`?${_d('7473')}=${t}`,_f=_u+_q,r=await fetch(_f),d=await r.json();let ls=[];const _pk=['data','list'],_sk=['list'];if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,11);else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,11);else if(Array.isArray(d))ls=d.slice(0,11);const tb=document.getElementById("tb");tb.innerHTML="";if(ls.length===0){tb.innerHTML='<tr><td colspan="5" class="loading">[ NO DATA ]</td></tr>';return}const _f1=['issue','period','issueNo','periodId','issueNumber'],_f2=['result','number','num','openResult'],_f3=['color','colour'],_f4=['gameNo','drawNo','id'];const tp=String(ls[0][_f1[0]]||ls[0][_f1[1]]||ls[0][_f1[2]]||ls[0][_f1[3]]||ls[0][_f1[4]]||''),tn=String(ls[0][_f2[0]]||ls[0][_f2[1]]||ls[0][_f2[2]]||ls[0][_f2[3]]||''),ts=_x(tn);const sh=ls.slice(0,10).map(i=>{const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";return _x(rn)});if(ls.length>=11){const box11Data=ls[10];const box11Num=box11Data[_f2[0]]||box11Data[_f2[1]]||box11Data[_f2[2]]||box11Data[_f2[3]];_box11=_x(box11Num)}else if(sh.length===10&&_box11===null){_box11=sh[9]}const pd=_ai(sh);if(_lp!==tp){if(_p){const im=_p.pr===ts,re={per:tp,pred:_p.pr,act:ts,res:im?WIN:LOSS,ps:_p.ps,rev:_p.rev};_h.unshift(re);if(_h.length>100)_h=_h.slice(0,100);if(_p.ps){_p.ps.forEach(pn=>{const k=pn.toLowerCase();if(im)_pStats[k].w++;else _pStats[k].l++})}if(im&&_p.ps&&_p.ps.length>=2){_revMode=false}_box11=sh[9]}_p={...pd};_lp=tp}const cr=document.getElementById("currPred"),cb=document.getElementById("confBar"),cl=document.getElementById("confLabel"),pi=document.getElementById("patternInfo");cr.innerHTML=`<span class="prediction-${pd.pr.toLowerCase()}">${pd.pr}</span>`;cb.style.width=pd.conf+'%';if(pd.conf>=95)cl.innerHTML='<span class="confidence-high">⚡ ULTRA HIGH'+(pd.rev?' ⟲':'')+'</span>';else if(pd.conf>=90)cl.innerHTML='<span class="confidence-high">✓ VERY HIGH'+(pd.rev?' ⟲':'')+'</span>';else if(pd.conf>=85)cl.innerHTML='<span class="confidence-medium">⚠ MEDIUM'+(pd.rev?' ⟲':'')+'</span>';else cl.innerHTML='<span class="confidence-low">⚠ LOW</span>';pi.innerHTML=pd.ps.length>0?pd.ps.map(p=>`<span class="pattern-tag pattern-active">${p}</span>`).join(''):'<span class="pattern-tag">ANALYZING</span>';let wc=0,lc=0;_h.forEach(e=>{if(e.res===WIN)wc++;if(e.res===LOSS)lc++});ls.slice(0,10).forEach((it,ix)=>{const tr=document.createElement("tr"),tdp=document.createElement("td");tdp.className="period-cell";const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');tdp.textContent=pv||"N/A";const rn=it[_f2[0]]||it[_f2[1]]||it[_f2[2]]||it[_f2[3]]||"?",tdn=document.createElement("td");tdn.className="number-cell";const ns=document.createElement("span"),co=(it[_f3[0]]||it[_f3[1]]||"").toLowerCase();if(co==='red'){ns.style.color='#ff0055';ns.style.textShadow='0 0 10px #ff0055'}else if(co==='green'){ns.style.color='#00ff41';ns.style.textShadow='0 0 10px #00ff41'}else if(co==='violet'||co==='purple'){ns.style.color='#aa00ff';ns.style.textShadow='0 0 10px #aa00ff'}ns.textContent=rn;tdn.appendChild(ns);const tds=document.createElement("td");tds.textContent=sh[ix];const tdc=document.createElement("td");tdc.className="color-cell";const nv=parseInt(rn),cls=_g(nv,co);cls.forEach(c=>{const dt=document.createElement("span");dt.className=`color-dot ${c}`;tdc.appendChild(dt)});const tdr=document.createElement("td"),mr=_h.find(q=>String(q.per)===String(pv));if(mr){if(mr.res===WIN){tdr.className="result-cell result-win";tdr.textContent="✓ WIN"}else{tdr.className="result-cell result-loss";tdr.textContent="✗ LOSS"}}else tdr.textContent="-";tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);tr.appendChild(tdr);tb.appendChild(tr)});const to=wc+lc,wrt=to>0?Math.round((wc/to)*100):0;document.getElementById('wc').textContent=wc;document.getElementById('lc').textContent=lc;document.getElementById('tc').textContent=to;document.getElementById('wr').textContent=wrt+'%';document.getElementById('p1w').textContent=_pStats.p1.w;document.getElementById('p2w').textContent=_pStats.p2.w;document.getElementById('p3w').textContent=_pStats.p3.w}catch(e){document.getElementById("tb").innerHTML=`<tr><td colspan="5" class="loading">[ ERROR: ${e.message} ]</td></tr>`}};_l();_s()})();
 </script>
 </body>
 </html>
