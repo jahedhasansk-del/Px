@@ -52,7 +52,7 @@ const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.
 // AI Prediction System
 (function(){
 const BIG='Big',SMALL='Small',WIN='win',LOSS='loss';
-let _p=null,_lp=null,_h=[],_hist11=[],_ct,_pStats={p1:{w:0,l:0},p2:{w:0,l:0},p3:{w:0,l:0}};
+let _p=null,_lp=null,_h=[],_box11=null,_ct,_pStats={p1:{w:0,l:0},p2:{w:0,l:0},p3:{w:0,l:0}};
 
 const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
 const _k={u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),u3:_d('476574486973746f7279497373756550616765'),u4:_d('2e6a736f6e'),i:1000,m:59};
@@ -60,49 +60,111 @@ const _x=n=>parseInt(n)>=5?BIG:SMALL;
 const _inv=p=>p===BIG?SMALL:BIG;
 const _g=(n,c)=>{let a=[];if(c==='red')a.push('red');else if(c==='green')a.push('green');else if(c==='violet')a.push('violet');if(n===0){a.push('violet');a.push('red')}else if(n===5){a.push('violet');a.push('green')}return a};
 
-// Pattern 1: BIG-SMALL-BIG sequence
+// Pattern 1: Alternating pattern checker
 const _p1=(d)=>{if(d.length<3)return null;
-let lc=0,lp=null;for(let i=0;i<d.length-2;i++){if(d[i]===BIG&&d[i+1]===SMALL&&d[i+2]===BIG){if(lc>=3)return{pr:_inv(SMALL),conf:95,rev:true};return{pr:SMALL,conf:85,rev:false}}else if(d[i]===SMALL&&d[i+1]===BIG&&d[i+2]===SMALL){if(lc>=3)return{pr:_inv(BIG),conf:95,rev:true};return{pr:BIG,conf:85,rev:false}}if(lp&&d[i]!==lp)lc=0;else lc++;lp=d[i]}return null};
+let pred=null;
+const lastP1=_h.filter(x=>x.ps&&x.ps.includes('P1')).slice(0,3);
+const lossCount=lastP1.filter(x=>x.res===LOSS).length;
 
-// Pattern 2: Slot 1 & 5 match
+// Check if alternating (BIG-SMALL-BIG or SMALL-BIG-SMALL)
+if(d[0]===BIG&&d[1]===SMALL&&d[2]===BIG){
+pred=SMALL
+}else if(d[0]===SMALL&&d[1]===BIG&&d[2]===SMALL){
+pred=BIG
+}else{
+// Not alternating, predict opposite of Box 1
+pred=_inv(d[0])
+}
+
+// If 3 consecutive losses, reverse
+if(lossCount>=3)pred=_inv(pred);
+
+return{pr:pred,conf:85,rev:lossCount>=3}
+};
+
+// Pattern 2: Box 1 & Box 5 comparison
 const _p2=(d)=>{if(d.length<5)return null;
-if(d[0]===d[4]){const p4=d[3];const fp=_h.filter(x=>x.ps&&x.ps.includes('P2'));if(fp.length>0&&fp[0].res===LOSS)return{pr:_inv(p4),conf:90,rev:true};return{pr:_inv(p4),conf:88,rev:false}}return null};
+const b1=d[0],b5=d[4],b4=d[3];
+let pred;
 
-// Pattern 3: Slot 1 & 11 match
-const _p3=(d)=>{if(d.length<11)return null;
-if(d[0]===d[10]){const p10=d[9];const fp=_h.filter(x=>x.ps&&x.ps.includes('P3'));if(fp.length>0&&fp[0].res===LOSS)return{pr:_inv(p10),conf:92,rev:true};return{pr:p10,conf:87,rev:false}}return null};
+if(b1===b5){
+// Match: predict same as Box 4
+pred=b4
+}else{
+// No match: predict opposite of Box 4
+pred=_inv(b4)
+}
+
+const lastP2=_h.filter(x=>x.ps&&x.ps.includes('P2'));
+if(lastP2.length>0&&lastP2[0].res===LOSS){
+// Last prediction was wrong, reverse
+pred=_inv(pred);
+return{pr:pred,conf:90,rev:true}
+}
+
+return{pr:pred,conf:88,rev:false}
+};
+
+// Pattern 3: Box 1 & Box 11 (deleted box) comparison
+const _p3=(d)=>{if(!_box11||d.length<10)return null;
+const b1=d[0],b11=_box11,b10=d[9];
+let pred;
+
+if(b1===b11){
+// Match: predict same as Box 10
+pred=b10
+}else{
+// No match: predict opposite of Box 10
+pred=_inv(b10)
+}
+
+const lastP3=_h.filter(x=>x.ps&&x.ps.includes('P3'));
+if(lastP3.length>0&&lastP3[0].res===LOSS){
+// Last prediction was wrong, reverse
+pred=_inv(pred);
+return{pr:pred,conf:92,rev:true}
+}
+
+return{pr:pred,conf:87,rev:false}
+};
 
 // AI Decision System
 const _ai=(d)=>{
 const p1=_p1(d),p2=_p2(d),p3=_p3(d);
-let preds=[],acts=[];
-if(p1){preds.push({p:p1.pr,c:p1.conf,n:'P1',r:p1.rev});acts.push('P1')}
-if(p2){preds.push({p:p2.pr,c:p2.conf,n:'P2',r:p2.rev});acts.push('P2')}
-if(p3){preds.push({p:p3.pr,c:p3.conf,n:'P3',r:p3.rev});acts.push('P3')}
+let preds=[];
+if(p1)preds.push({p:p1.pr,c:p1.conf,n:'P1',r:p1.rev});
+if(p2)preds.push({p:p2.pr,c:p2.conf,n:'P2',r:p2.rev});
+if(p3)preds.push({p:p3.pr,c:p3.conf,n:'P3',r:p3.rev});
 
 if(preds.length===0)return{pr:d[0]===BIG?SMALL:BIG,conf:55,ps:[]};
 
 // 3 patterns agree
 if(preds.length===3&&preds[0].p===preds[1].p&&preds[1].p===preds[2].p){
-const fp=_h.filter(x=>x.ps&&x.ps.length===3);
-if(fp.length>0&&fp[0].res===LOSS)return{pr:_inv(preds[0].p),conf:98,ps:acts};
-return{pr:preds[0].p,conf:97,ps:acts}
+const last3=_h.filter(x=>x.ps&&x.ps.length===3);
+if(last3.length>0&&last3[0].res===LOSS){
+return{pr:_inv(preds[0].p),conf:98,ps:['P1','P2','P3']}
+}
+return{pr:preds[0].p,conf:97,ps:['P1','P2','P3']}
 }
 
-// 2 patterns agree (high priority combinations)
+// 2 patterns agree
 const pairs=[['P1','P2'],['P1','P3'],['P2','P3']];
 for(let pair of pairs){
 const mp=preds.filter(x=>pair.includes(x.n));
 if(mp.length===2&&mp[0].p===mp[1].p){
-const fp=_h.filter(x=>x.ps&&x.ps.includes(mp[0].n)&&x.ps.includes(mp[1].n));
-if(fp.length>0&&fp[0].res===LOSS)return{pr:_inv(mp[0].p),conf:94,ps:pair};
+const last2=_h.filter(x=>{
+if(!x.ps)return false;
+return x.ps.includes(mp[0].n)&&x.ps.includes(mp[1].n)
+});
+if(last2.length>0&&last2[0].res===LOSS){
+return{pr:_inv(mp[0].p),conf:94,ps:pair}
+}
 return{pr:mp[0].p,conf:92,ps:pair}
 }}
 
-// Single pattern with highest confidence
+// Single pattern (highest confidence)
 preds.sort((a,b)=>b.c-a.c);
-const bp=preds[0];
-return{pr:bp.p,conf:bp.c,ps:[bp.n]}
+return{pr:preds[0].p,conf:preds[0].c,ps:[preds[0].n]}
 };
 
 const _u=()=>{const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0'),e=document.getElementById('rt');if(e)e.innerHTML=`${h}:${m}:<span class="seconds-highlight">${s}</span>`;if(n.getSeconds()===_k.m)_l()};
@@ -125,24 +187,40 @@ if(ls.length===0){tb.innerHTML='<tr><td colspan="5" class="loading">[ NO DATA ]<
 const _f1=['issue','period','issueNo','periodId','issueNumber'],_f2=['result','number','num','openResult'],_f3=['color','colour'],_f4=['gameNo','drawNo','id'];
 const tp=String(ls[0][_f1[0]]||ls[0][_f1[1]]||ls[0][_f1[2]]||ls[0][_f1[3]]||ls[0][_f1[4]]||''),tn=String(ls[0][_f2[0]]||ls[0][_f2[1]]||ls[0][_f2[2]]||ls[0][_f2[3]]||''),ts=_x(tn);
 
-const sh=ls.map(i=>{const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";return _x(rn)});
-_hist11=sh.slice(0,11);
+// Convert to Big/Small array (Box 1 to Box 10)
+const sh=ls.slice(0,10).map(i=>{const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";return _x(rn)});
 
+// Save Box 11 (the one that will be deleted)
+if(ls.length>=11){
+const box11Data=ls[10];
+const box11Num=box11Data[_f2[0]]||box11Data[_f2[1]]||box11Data[_f2[2]]||box11Data[_f2[3]];
+_box11=_x(box11Num)
+}else if(sh.length===10&&_box11===null){
+// First time, save Box 10 as Box 11
+_box11=sh[9]
+}
+
+// Get AI prediction
 const pd=_ai(sh);
 
+// Check if new period and update history
 if(_lp!==tp){
 if(_p){
 const im=_p.pr===ts,re={per:tp,pred:_p.pr,act:ts,res:im?WIN:LOSS,ps:_p.ps};
 _h.unshift(re);
-if(_h.length>50)_h=_h.slice(0,50);
+if(_h.length>100)_h=_h.slice(0,100);
 
 // Update pattern stats
 if(_p.ps){_p.ps.forEach(pn=>{const k=pn.toLowerCase();if(im)_pStats[k].w++;else _pStats[k].l++})}
+
+// Update Box 11 for next round (current Box 10 becomes Box 11)
+_box11=sh[9]
 }
 _p={...pd};
 _lp=tp
 }
 
+// Display prediction
 const cr=document.getElementById("currPred"),cb=document.getElementById("confBar"),cl=document.getElementById("confLabel"),pi=document.getElementById("patternInfo");
 cr.innerHTML=`<span class="prediction-${pd.pr.toLowerCase()}">${pd.pr}</span>`;
 cb.style.width=pd.conf+'%';
@@ -155,6 +233,7 @@ pi.innerHTML=pd.ps.length>0?pd.ps.map(p=>`<span class="pattern-tag pattern-activ
 
 let wc=0,lc=0;_h.forEach(e=>{if(e.res===WIN)wc++;if(e.res===LOSS)lc++});
 
+// Display 10 boxes
 ls.slice(0,10).forEach((it,ix)=>{
 const tr=document.createElement("tr"),tdp=document.createElement("td");
 tdp.className="period-cell";
