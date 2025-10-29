@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Lottery Predictor</title>
+<title>AI Lottery Predictor Pro</title>
 <style>
 * {
   margin: 0;
@@ -12,9 +12,9 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  color: #e0e0e0;
   overflow-x: hidden;
   min-height: 100vh;
 }
@@ -24,7 +24,7 @@ body {
   top: 0;
   left: 0;
   z-index: -1;
-  opacity: 0.15;
+  opacity: 0.3;
 }
 
 .container {
@@ -37,133 +37,203 @@ body {
 
 .header {
   text-align: center;
-  margin-bottom: 40px;
-  padding: 30px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 30px;
+  padding: 30px;
+  background: linear-gradient(135deg, rgba(0, 255, 65, 0.15) 0%, rgba(0, 200, 255, 0.15) 100%);
+  border: 2px solid transparent;
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 255, 65, 0.2);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #00ff41, #00c8ff, #00ff41);
+  border-radius: 20px;
+  z-index: -1;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
 }
 
 .header h1 {
   font-size: 2.8em;
-  font-weight: 700;
-  margin-bottom: 15px;
-  background: linear-gradient(45deg, #ffd89b, #19547b);
+  background: linear-gradient(45deg, #00ff41, #00c8ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+  margin-bottom: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
 }
 
 .time-display {
   font-size: 1.8em;
+  color: #00ff41;
   font-weight: 600;
-  color: #fff;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 0 20px rgba(0, 255, 65, 0.7);
 }
 
 .seconds-highlight {
-  color: #ffd89b;
-  font-weight: 700;
+  color: #ff0055;
+  font-weight: bold;
+  text-shadow: 0 0 20px rgba(255, 0, 85, 0.7);
 }
 
 .prediction-panel {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 25px;
+  background: linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 31, 58, 0.95) 100%);
+  border: 2px solid #00ff41;
+  border-radius: 20px;
   padding: 40px;
   margin-bottom: 30px;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
-  color: #333;
+  box-shadow: 0 10px 40px rgba(0, 255, 65, 0.3);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.prediction-panel::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 255, 65, 0.1) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 0.8; }
 }
 
 .prediction-label {
-  font-size: 1.1em;
-  font-weight: 600;
+  font-size: 1.4em;
   margin-bottom: 20px;
-  color: #666;
+  opacity: 0.9;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 3px;
+  font-weight: 600;
 }
 
 .current-prediction {
   font-size: 4em;
-  font-weight: 800;
-  margin: 25px 0;
+  font-weight: bold;
+  margin: 30px 0;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .prediction-big {
-  color: #ff4757;
-  text-shadow: 0 4px 20px rgba(255, 71, 87, 0.3);
+  color: #ff0055;
+  text-shadow: 0 0 30px #ff0055, 0 0 60px #ff0055;
+  animation: glow 2s ease-in-out infinite;
 }
 
 .prediction-small {
-  color: #5f27cd;
-  text-shadow: 0 4px 20px rgba(95, 39, 205, 0.3);
+  color: #00ff41;
+  text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
 .confidence-bar {
   width: 100%;
   height: 40px;
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   overflow: hidden;
   margin: 25px 0;
-  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .confidence-fill {
   height: 100%;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  transition: width 0.5s ease;
+  background: linear-gradient(90deg, #00ff41 0%, #00c8ff 100%);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.95em;
-  color: #fff;
+  font-weight: bold;
+  font-size: 1.1em;
+  position: relative;
+  overflow: hidden;
+}
+
+.confidence-fill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 .confidence-high {
-  color: #fff;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
 .confidence-medium {
-  color: #fff;
+  color: #ffffff;
 }
 
 .confidence-low {
-  color: #fff;
+  color: #ffffff;
 }
 
 .pattern-info {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 20px;
 }
 
 .pattern-tag {
-  padding: 10px 20px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border: none;
+  padding: 12px 24px;
+  background: rgba(0, 255, 65, 0.2);
+  border: 2px solid #00ff41;
   border-radius: 25px;
-  font-size: 0.95em;
+  font-size: 1em;
   font-weight: 600;
-  color: #fff;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
 }
 
 .pattern-active {
-  animation: pulse 2s infinite;
-  box-shadow: 0 4px 25px rgba(102, 126, 234, 0.5);
+  background: rgba(0, 255, 65, 0.4);
+  animation: patternPulse 2s infinite;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.05); opacity: 0.9; }
+@keyframes patternPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 .stats-grid {
@@ -174,100 +244,164 @@ body {
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 31, 58, 0.95) 100%);
+  border: 2px solid #00ff41;
+  border-radius: 15px;
   padding: 25px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 65, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.stat-card:hover::before {
+  left: 100%;
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 255, 65, 0.4);
 }
 
 .stat-value {
   font-size: 2.8em;
-  font-weight: 800;
+  font-weight: bold;
   margin: 15px 0;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #00ff41, #00c8ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .stat-label {
-  font-size: 0.9em;
-  font-weight: 600;
-  color: #666;
+  opacity: 0.9;
+  font-size: 1em;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.data-section {
+  margin-bottom: 30px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  background: linear-gradient(135deg, rgba(0, 255, 65, 0.2) 0%, rgba(0, 200, 255, 0.2) 100%);
+  border: 2px solid #00ff41;
+  border-radius: 15px 15px 0 0;
+  margin-bottom: -2px;
+}
+
+.section-title {
+  font-size: 1.5em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #00ff41;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+.history-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.size-btn {
+  padding: 8px 16px;
+  background: rgba(0, 255, 65, 0.2);
+  border: 2px solid #00ff41;
+  border-radius: 8px;
+  color: #00ff41;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.size-btn:hover {
+  background: rgba(0, 255, 65, 0.4);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+}
+
+.size-btn.active {
+  background: #00ff41;
+  color: #0a0e27;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.7);
 }
 
 .data-table {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 31, 58, 0.95) 100%);
+  border: 2px solid #00ff41;
+  border-radius: 0 0 15px 15px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 700px;
 }
 
 th, td {
-  padding: 18px 12px;
+  padding: 16px 12px;
   text-align: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 255, 65, 0.2);
   font-size: 0.95em;
 }
 
 th {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: rgba(0, 255, 65, 0.15);
   font-weight: 700;
   font-size: 1em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #fff;
+  letter-spacing: 1px;
+  color: #00ff41;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-tbody tr {
-  transition: background 0.2s ease;
+tr {
+  transition: all 0.3s ease;
 }
 
 tbody tr:hover {
-  background: rgba(102, 126, 234, 0.05);
+  background: rgba(0, 255, 65, 0.1);
+  transform: scale(1.01);
 }
 
 .period-cell {
-  color: #667eea;
+  color: #00c8ff;
+  font-size: 0.85em;
   font-weight: 600;
-  font-size: 0.8em;
   font-family: 'Courier New', monospace;
 }
-
-.number-cell {
-  font-size: 1.8em;
-  font-weight: 800;
-}
-
-.size-cell {
-  font-weight: 700;
-  font-size: 1.1em;
-}
-
-.size-big {
-  color: #ff4757;
-}
-
-.size-small {
-  color: #5f27cd;
+  .number-cell {
+  font-size: 1.5em;
+  font-weight: bold;
 }
 
 .color-cell {
@@ -284,61 +418,76 @@ tbody tr:hover {
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.color-dot:hover {
+  transform: scale(1.3);
 }
 
 .color-dot.red {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  background: #ff0055;
+  box-shadow: 0 0 15px #ff0055;
 }
 
 .color-dot.green {
-  background: linear-gradient(135deg, #51cf66, #37b24d);
+  background: #00ff41;
+  box-shadow: 0 0 15px #00ff41;
 }
 
 .color-dot.violet {
-  background: linear-gradient(135deg, #b197fc, #9775fa);
+  background: #aa00ff;
+  box-shadow: 0 0 15px #aa00ff;
 }
 
 .result-cell {
-  font-weight: 700;
+  font-weight: bold;
   font-size: 1.1em;
 }
 
 .result-win {
-  color: #51cf66;
+  color: #00ff41;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
 }
 
 .result-loss {
-  color: #ff6b6b;
+  color: #ff0055;
+  text-shadow: 0 0 10px rgba(255, 0, 85, 0.7);
 }
 
 .loading {
   text-align: center;
   padding: 50px;
-  font-size: 1.2em;
-  color: #999;
+  font-size: 1.3em;
+  opacity: 0.7;
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
 .refresh-btn {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 65px;
-  height: 65px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #00ff41 0%, #00c8ff 100%);
   border: none;
   border-radius: 50%;
-  color: #fff;
-  font-size: 1.8em;
+  color: #0a0e27;
+  font-size: 2em;
   cursor: pointer;
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 25px rgba(0, 255, 65, 0.5);
   transition: all 0.3s ease;
   z-index: 1000;
 }
 
 .refresh-btn:hover {
-  transform: scale(1.1) rotate(180deg);
-  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+  transform: scale(1.15) rotate(90deg);
+  box-shadow: 0 8px 35px rgba(0, 255, 65, 0.7);
 }
 
 .refresh-btn:active {
@@ -346,7 +495,7 @@ tbody tr:hover {
 }
 
 .spinning {
-  animation: spin 0.6s ease-in-out;
+  animation: spin 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes spin {
@@ -359,12 +508,12 @@ tbody tr:hover {
     font-size: 2em;
   }
   
-  .current-prediction {
-    font-size: 3em;
+  .time-display {
+    font-size: 1.4em;
   }
   
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .current-prediction {
+    font-size: 3em;
   }
   
   th, td {
@@ -372,8 +521,14 @@ tbody tr:hover {
     font-size: 0.85em;
   }
   
-  .number-cell {
-    font-size: 1.5em;
+  .stat-value {
+    font-size: 2.2em;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
   }
 }
 </style>
@@ -383,12 +538,12 @@ tbody tr:hover {
 
 <div class="container">
   <div class="header">
-    <h1>🎯 AI LOTTERY PREDICTOR</h1>
+    <h1>🎯 AI LOTTERY PREDICTOR PRO</h1>
     <div class="time-display" id="rt">00:00:00</div>
   </div>
 
   <div class="prediction-panel">
-    <div class="prediction-label">⚡ Next Prediction</div>
+    <div class="prediction-label">⚡ NEXT PREDICTION</div>
     <div class="current-prediction" id="currPred">
       <span class="prediction-big">ANALYZING...</span>
     </div>
@@ -404,55 +559,68 @@ tbody tr:hover {
 
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-label">✓ Wins</div>
+      <div class="stat-label">✓ WIN</div>
       <div class="stat-value" id="wc">0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">✗ Loss</div>
+      <div class="stat-label">✗ LOSS</div>
       <div class="stat-value" id="lc">0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">📊 Total</div>
+      <div class="stat-label">📊 TOTAL</div>
       <div class="stat-value" id="tc">0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">🎯 Win Rate</div>
+      <div class="stat-label">🎯 WIN RATE</div>
       <div class="stat-value" id="wr">0%</div>
     </div>
   </div>
 
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-label">P1 Wins</div>
+      <div class="stat-label">P1 WINS</div>
       <div class="stat-value" id="p1w">0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">P2 Wins</div>
+      <div class="stat-label">P2 WINS</div>
       <div class="stat-value" id="p2w">0</div>
     </div>
     <div class="stat-card">
-      <div class="stat-label">P3 Wins</div>
+      <div class="stat-label">P3 WINS</div>
       <div class="stat-value" id="p3w">0</div>
     </div>
   </div>
 
-  <div class="data-table">
-    <table>
-      <thead>
-        <tr>
-          <th>Period</th>
-          <th>Number</th>
-          <th>Size</th>
-          <th>Color</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-      <tbody id="tb">
-        <tr>
-          <td colspan="5" class="loading">Loading data...</td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="data-section">
+    <div class="section-header">
+      <div class="section-title">📜 HISTORY</div>
+      <div class="history-controls">
+        <button class="size-btn active" onclick="changeSize(10)" id="btn10">10</button>
+        <button class="size-btn" onclick="changeSize(20)" id="btn20">20</button>
+        <button class="size-btn" onclick="changeSize(30)" id="btn30">30</button>
+        <button class="size-btn" onclick="changeSize(50)" id="btn50">50</button>
+      </div>
+    </div>
+    <div class="data-table">
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>PERIOD</th>
+              <th>NUMBER</th>
+              <th>SIZE</th>
+              <th>COLOR</th>
+              <th>RESULT</th>
+            </tr>
+          </thead>
+          <tbody id="tb">
+            <tr>
+              <td colspan="5" class="loading">[ LOADING DATA... ]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -460,7 +628,23 @@ tbody tr:hover {
 
 <script>
 // Matrix Effect
-const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(102,126,234,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='rgba(255,255,255,0.8)';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
+const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(10,14,39,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
+
+window.addEventListener('resize', () => {
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
+});
+
+// History Size Control
+let currentSize = 10;
+window.changeSize = (size) => {
+  currentSize = size;
+  ['btn10', 'btn20', 'btn30', 'btn50'].forEach(id => {
+    document.getElementById(id).classList.remove('active');
+  });
+  document.getElementById('btn' + size).classList.add('active');
+  _l();
+};
 
 // AI Prediction System
 (function(){
@@ -485,7 +669,7 @@ const _u=()=>{const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String
 const _s=()=>{_u();clearInterval(_ct);_ct=setInterval(_u,_k.i)};
 window._r=()=>{const ic=document.getElementById('ri');if(ic){ic.classList.add('spinning');setTimeout(()=>ic.classList.remove('spinning'),600)}_l()};
 
-const _l=async()=>{try{const t=new Date().getTime(),_u=_k.u1+_k.u2+_k.u3+_k.u4,_q=`?${_d('7473')}=${t}`,_f=_u+_q,r=await fetch(_f),d=await r.json();let ls=[];const _pk=['data','list'],_sk=['list'];if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,11);else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,11);else if(Array.isArray(d))ls=d.slice(0,11);const tb=document.getElementById("tb");tb.innerHTML="";if(ls.length===0){tb.innerHTML='<tr><td colspan="5" class="loading">No data available</td></tr>';return}const _f1=['issue','period','issueNo','periodId','issueNumber'],_f2=['result','number','num','openResult'],_f3=['color','colour'],_f4=['gameNo','drawNo','id'];const tp=String(ls[0][_f1[0]]||ls[0][_f1[1]]||ls[0][_f1[2]]||ls[0][_f1[3]]||ls[0][_f1[4]]||''),tn=String(ls[0][_f2[0]]||ls[0][_f2[1]]||ls[0][_f2[2]]||ls[0][_f2[3]]||''),ts=_x(tn);const sh=ls.slice(0,10).map(i=>{const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";return _x(rn)});if(ls.length>=11){const box11Data=ls[10];const box11Num=box11Data[_f2[0]]||box11Data[_f2[1]]||box11Data[_f2[2]]||box11Data[_f2[3]];_box11=_x(box11Num)}else if(sh.length===10&&_box11===null){_box11=sh[9]}const pd=_ai(sh);if(_lp!==tp){if(_p){const im=_p.pr===ts,re={per:tp,pred:_p.pr,act:ts,res:im?WIN:LOSS,ps:_p.ps,rev:_p.rev};_h.unshift(re);if(_h.length>100)_h=_h.slice(0,100);if(_p.ps){_p.ps.forEach(pn=>{const k=pn.toLowerCase();if(im)_pStats[k].w++;else _pStats[k].l++})}if(im&&_p.ps&&_p.ps.length>=2){_revMode=false}_box11=sh[9]}_p={...pd};_lp=tp}const cr=document.getElementById("currPred"),cb=document.getElementById("confBar"),cl=document.getElementById("confLabel"),pi=document.getElementById("patternInfo");cr.innerHTML=`<span class="prediction-${pd.pr.toLowerCase()}">${pd.pr}</span>`;cb.style.width=pd.conf+'%';if(pd.conf>=95)cl.innerHTML='<span class="confidence-high">⚡ ULTRA HIGH'+(pd.rev?' ⟲':'')+'</span>';else if(pd.conf>=90)cl.innerHTML='<span class="confidence-high">✓ VERY HIGH'+(pd.rev?' ⟲':'')+'</span>';else if(pd.conf>=85)cl.innerHTML='<span class="confidence-medium">⚠ MEDIUM'+(pd.rev?' ⟲':'')+'</span>';else cl.innerHTML='<span class="confidence-low">⚠ LOW</span>';pi.innerHTML=pd.ps.length>0?pd.ps.map(p=>`<span class="pattern-tag pattern-active">${p}</span>`).join(''):'<span class="pattern-tag">ANALYZING</span>';let wc=0,lc=0;_h.forEach(e=>{if(e.res===WIN)wc++;if(e.res===LOSS)lc++});ls.slice(0,10).forEach((it,ix)=>{const tr=document.createElement("tr"),tdp=document.createElement("td");tdp.className="period-cell";const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');tdp.textContent=pv||"N/A";const rn=it[_f2[0]]||it[_f2[1]]||it[_f2[2]]||it[_f2[3]]||"?",tdn=document.createElement("td");tdn.className="number-cell";const ns=document.createElement("span"),co=(it[_f3[0]]||it[_f3[1]]||"").toLowerCase();if(co==='red'){ns.style.color='#ff4757'}else if(co==='green'){ns.style.color='#51cf66'}else if(co==='violet'||co==='purple'){ns.style.color='#b197fc'}ns.textContent=rn;tdn.appendChild(ns);const tds=document.createElement("td");tds.className="size-cell";const sizeSpan=document.createElement("span");sizeSpan.className=sh[ix]===BIG?"size-big":"size-small";sizeSpan.textContent=sh[ix];tds.appendChild(sizeSpan);const tdc=document.createElement("td");tdc.className="color-cell";const nv=parseInt(rn),cls=_g(nv,co);cls.forEach(c=>{const dt=document.createElement("span");dt.className=`color-dot ${c}`;tdc.appendChild(dt)});const tdr=document.createElement("td"),mr=_h.find(q=>String(q.per)===String(pv));if(mr){if(mr.res===WIN){tdr.className="result-cell result-win";tdr.textContent="✓ WIN"}else{tdr.className="result-cell result-loss";tdr.textContent="✗ LOSS"}}else tdr.textContent="-";tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);tr.appendChild(tdr);tb.appendChild(tr)});const to=wc+lc,wrt=to>0?Math.round((wc/to)*100):0;document.getElementById('wc').textContent=wc;document.getElementById('lc').textContent=lc;document.getElementById('tc').textContent=to;document.getElementById('wr').textContent=wrt+'%';document.getElementById('p1w').textContent=_pStats.p1.w;document.getElementById('p2w').textContent=_pStats.p2.w;document.getElementById('p3w').textContent=_pStats.p3.w}catch(e){document.getElementById("tb").innerHTML=`<tr><td colspan="5" class="loading">Error: ${e.message}</td></tr>`}};_l();_s()})();
+const _l=async()=>{try{const t=new Date().getTime(),_u=_k.u1+_k.u2+_k.u3+_k.u4,_q=`?${_d('7473')}=${t}`,_f=_u+_q,r=await fetch(_f),d=await r.json();let ls=[];const _pk=['data','list'],_sk=['list'];if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,currentSize+1);else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,currentSize+1);else if(Array.isArray(d))ls=d.slice(0,currentSize+1);const tb=document.getElementById("tb");tb.innerHTML="";if(ls.length===0){tb.innerHTML='<tr><td colspan="5" class="loading">[ NO DATA ]</td></tr>';return}const _f1=['issue','period','issueNo','periodId','issueNumber'],_f2=['result','number','num','openResult'],_f3=['color','colour'],_f4=['gameNo','drawNo','id'];const tp=String(ls[0][_f1[0]]||ls[0][_f1[1]]||ls[0][_f1[2]]||ls[0][_f1[3]]||ls[0][_f1[4]]||''),tn=String(ls[0][_f2[0]]||ls[0][_f2[1]]||ls[0][_f2[2]]||ls[0][_f2[3]]||''),ts=_x(tn);const sh=ls.slice(0,Math.min(currentSize, ls.length)).map(i=>{const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";return _x(rn)});if(ls.length>=11){const box11Data=ls[10];const box11Num=box11Data[_f2[0]]||box11Data[_f2[1]]||box11Data[_f2[2]]||box11Data[_f2[3]];_box11=_x(box11Num)}else if(sh.length===10&&_box11===null){_box11=sh[9]}const pd=_ai(sh);if(_lp!==tp){if(_p){const im=_p.pr===ts,re={per:tp,pred:_p.pr,act:ts,res:im?WIN:LOSS,ps:_p.ps,rev:_p.rev};_h.unshift(re);if(_h.length>100)_h=_h.slice(0,100);if(_p.ps){_p.ps.forEach(pn=>{const k=pn.toLowerCase();if(im)_pStats[k].w++;else _pStats[k].l++})}if(im&&_p.ps&&_p.ps.length>=2){_revMode=false}_box11=sh[9]}_p={...pd};_lp=tp}const cr=document.getElementById("currPred"),cb=document.getElementById("confBar"),cl=document.getElementById("confLabel"),pi=document.getElementById("patternInfo");cr.innerHTML=`<span class="prediction-${pd.pr.toLowerCase()}">${pd.pr}</span>`;cb.style.width=pd.conf+'%';if(pd.conf>=95)cl.innerHTML='<span class="confidence-high">⚡ ULTRA HIGH'+(pd.rev?' ⟲':'')+'</span>';else if(pd.conf>=90)cl.innerHTML='<span class="confidence-high">✓ VERY HIGH'+(pd.rev?' ⟲':'')+'</span>';else if(pd.conf>=85)cl.innerHTML='<span class="confidence-medium">⚠ MEDIUM'+(pd.rev?' ⟲':'')+'</span>';else cl.innerHTML='<span class="confidence-low">⚠ LOW</span>';pi.innerHTML=pd.ps.length>0?pd.ps.map(p=>`<span class="pattern-tag pattern-active">${p}</span>`).join(''):'<span class="pattern-tag">ANALYZING</span>';let wc=0,lc=0;_h.forEach(e=>{if(e.res===WIN)wc++;if(e.res===LOSS)lc++});ls.slice(0,currentSize).forEach((it,ix)=>{const tr=document.createElement("tr"),tdp=document.createElement("td");tdp.className="period-cell";const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');tdp.textContent=pv||"N/A";const rn=it[_f2[0]]||it[_f2[1]]||it[_f2[2]]||it[_f2[3]]||"?",tdn=document.createElement("td");tdn.className="number-cell";const ns=document.createElement("span"),co=(it[_f3[0]]||it[_f3[1]]||"").toLowerCase();if(co==='red'){ns.style.color='#ff0055';ns.style.textShadow='0 0 10px #ff0055'}else if(co==='green'){ns.style.color='#00ff41';ns.style.textShadow='0 0 10px #00ff41'}else if(co==='violet'||co==='purple'){ns.style.color='#aa00ff';ns.style.textShadow='0 0 10px #aa00ff'}ns.textContent=rn;tdn.appendChild(ns);const tds=document.createElement("td");tds.textContent=sh[ix];const tdc=document.createElement("td");tdc.className="color-cell";const nv=parseInt(rn),cls=_g(nv,co);cls.forEach(c=>{const dt=document.createElement("span");dt.className=`color-dot ${c}`;tdc.appendChild(dt)});const tdr=document.createElement("td"),mr=_h.find(q=>String(q.per)===String(pv));if(mr){if(mr.res===WIN){tdr.className="result-cell result-win";tdr.textContent="✓ WIN"}else{tdr.className="result-cell result-loss";tdr.textContent="✗ LOSS"}}else tdr.textContent="-";tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);tr.appendChild(tdr);tb.appendChild(tr)});const to=wc+lc,wrt=to>0?Math.round((wc/to)*100):0;document.getElementById('wc').textContent=wc;document.getElementById('lc').textContent=lc;document.getElementById('tc').textContent=to;document.getElementById('wr').textContent=wrt+'%';document.getElementById('p1w').textContent=_pStats.p1.w;document.getElementById('p2w').textContent=_pStats.p2.w;document.getElementById('p3w').textContent=_pStats.p3.w}catch(e){document.getElementById("tb").innerHTML=`<tr><td colspan="5" class="loading">[ ERROR: ${e.message} ]</td></tr>`}};_l();_s()})();
 </script>
 </body>
 </html>
