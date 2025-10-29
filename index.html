@@ -403,8 +403,8 @@ const BIG='Big',SMALL='Small',WIN='win',LOSS='loss';
 let _p=null,_lp=null,_h=[],_box11=null,_ct,_pStats={p1:{w:0,l:0,lc:0},p2:{w:0,l:0},p3:{w:0,l:0}},_revMode=false;
 
 const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
-const _k={u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),u3:_d('476574486973746f7279497373756550616765'),u4:_d('2e6a736f6e'),i:1000,m:59};
-const _x=n=>parseInt(n)>=5?BIG:SMALL;
+const _k={u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),u2:_d('2e636f6d2f57696e476f2f57696e476f5f3330532f'),u3:_d('476574486973746f7279497373756550616765'),u4:_d('2e6a736f6e'),i:1000,m:59};
+  const _x=n=>parseInt(n)>=5?BIG:SMALL;
 const _inv=p=>p===BIG?SMALL:BIG;
 const _g=(n,c)=>{let a=[];if(c==='red')a.push('red');else if(c==='green')a.push('green');else if(c==='violet')a.push('violet');if(n===0){a.push('violet');a.push('red')}else if(n===5){a.push('violet');a.push('green')}return a};
 
