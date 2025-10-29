@@ -178,27 +178,43 @@ body {
   background: rgba(10, 14, 39, 0.9);
   border: 2px solid #00ff41;
   border-radius: 10px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px;
 }
 
 th, td {
-  padding: 15px;
+  padding: 12px 8px;
   text-align: center;
   border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+  font-size: 0.85em;
+  white-space: nowrap;
 }
 
 th {
   background: rgba(0, 255, 65, 0.2);
   font-weight: bold;
+  font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+  th, td {
+    padding: 10px 5px;
+    font-size: 0.75em;
+  }
 }
 
 .period-cell {
   color: #00ff41;
+  font-size: 0.75em;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .number-cell {
@@ -211,13 +227,15 @@ th {
   gap: 5px;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .color-dot {
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .color-dot.red {
