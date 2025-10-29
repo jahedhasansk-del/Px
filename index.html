@@ -46,13 +46,13 @@
 </div>
 <button class="refresh-btn" onclick="_r()"><span class="refresh-icon" id="ri">⟳</span><span>Refresh</span></button>
 <script>
-// Matrix Effect
+  // Matrix Effect
 const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(10,14,39,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
 
 // AI Prediction System
 (function(){
 const BIG='Big',SMALL='Small',WIN='win',LOSS='loss';
-let _p=null,_lp=null,_h=[],_box11=null,_ct,_pStats={p1:{w:0,l:0},p2:{w:0,l:0},p3:{w:0,l:0}};
+let _p=null,_lp=null,_h=[],_box11=null,_ct,_pStats={p1:{w:0,l:0,lc:0},p2:{w:0,l:0},p3:{w:0,l:0}},_revMode=false;
 
 const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
 const _k={u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),u3:_d('476574486973746f7279497373756550616765'),u4:_d('2e6a736f6e'),i:1000,m:59};
@@ -63,9 +63,6 @@ const _g=(n,c)=>{let a=[];if(c==='red')a.push('red');else if(c==='green')a.push(
 // Pattern 1: Alternating pattern
 const _p1=(d)=>{if(d.length<3)return null;
 let pred=null;
-const lastP1=_h.filter(x=>x.ps&&x.ps.includes('P1')).slice(0,3);
-const lossCount=lastP1.filter(x=>x.res===LOSS).length;
-
 if(d[0]===BIG&&d[1]===SMALL&&d[2]===BIG){
 pred=SMALL
 }else if(d[0]===SMALL&&d[1]===BIG&&d[2]===SMALL){
@@ -74,12 +71,18 @@ pred=BIG
 pred=_inv(d[0])
 }
 
-if(lossCount>=3)pred=_inv(pred);
+// Check Pattern 1 specific reverse (3 consecutive P1 losses)
+const lastP1=_h.filter(x=>x.ps&&x.ps.includes('P1')&&x.ps.length===1).slice(0,3);
+const p1LossCount=lastP1.filter(x=>x.res===LOSS).length;
+_pStats.p1.lc=p1LossCount;
+if(p1LossCount>=3){
+pred=_inv(pred)
+}
 
 return{pr:pred,conf:85}
 };
 
-// Pattern 2: Box 1 & Box 5 comparison → Box 4 prediction
+// Pattern 2: Box 1 & Box 5 comparison
 const _p2=(d)=>{if(d.length<5)return null;
 const b1=d[0],b5=d[4],b4=d[3];
 let pred;
@@ -93,7 +96,7 @@ pred=_inv(b4)
 return{pr:pred,conf:88}
 };
 
-// Pattern 3: Box 1 & Box 11 comparison → Box 10 prediction
+// Pattern 3: Box 1 & Box 11 comparison
 const _p3=(d)=>{if(!_box11||d.length<10)return null;
 const b1=d[0],b11=_box11,b10=d[9];
 let pred;
@@ -107,13 +110,6 @@ pred=_inv(b10)
 return{pr:pred,conf:87}
 };
 
-// Helper: Check if patterns match
-const _pMatch=(arr)=>{
-if(arr.length<2)return null;
-const sig=arr.sort().join(',');
-return sig
-};
-
 // AI Decision System
 const _ai=(d)=>{
 const p1=_p1(d),p2=_p2(d),p3=_p3(d);
@@ -122,22 +118,18 @@ if(p1)preds.push({p:p1.pr,c:p1.conf,n:'P1'});
 if(p2)preds.push({p:p2.pr,c:p2.conf,n:'P2'});
 if(p3)preds.push({p:p3.pr,c:p3.conf,n:'P3'});
 
-if(preds.length===0)return{pr:d[0]===BIG?SMALL:BIG,conf:55,ps:[]};
+if(preds.length===0)return{pr:d[0]===BIG?SMALL:BIG,conf:55,ps:[],rev:false};
+
+let finalPred=null,finalConf=55,finalPs=[];
 
 // Check 3 patterns agree
 if(preds.length===3&&preds[0].p===preds[1].p&&preds[1].p===preds[2].p){
-const samePred=preds[0].p;
-const ps=['P1','P2','P3'];
-// Check if last prediction (3 patterns) was LOSS
-const last=_h[0];
-if(last&&last.res===LOSS&&last.ps&&last.ps.length===3){
-// Last 3-pattern LOST, so reverse
-return{pr:_inv(samePred),conf:98,ps:ps}
+finalPred=preds[0].p;
+finalConf=97;
+finalPs=['P1','P2','P3'];
 }
-return{pr:samePred,conf:97,ps:ps}
-}
-
 // Check 2 patterns agree
+else{
 const pairs=[
 {n:['P1','P2'],p:preds.filter(x=>x.n==='P1'||x.n==='P2')},
 {n:['P1','P3'],p:preds.filter(x=>x.n==='P1'||x.n==='P3')},
@@ -146,20 +138,38 @@ const pairs=[
 
 for(let pair of pairs){
 if(pair.p.length===2&&pair.p[0].p===pair.p[1].p){
-const samePred=pair.p[0].p;
-const ps=pair.n;
-// Check if last prediction (ANY 2 patterns) was LOSS
-const last=_h[0];
-if(last&&last.res===LOSS&&last.ps&&last.ps.length>=2){
-// Last 2-pattern LOST, so reverse current 2-pattern prediction
-return{pr:_inv(samePred),conf:95,ps:ps}
-}
-return{pr:samePred,conf:92,ps:ps}
+finalPred=pair.p[0].p;
+finalConf=92;
+finalPs=pair.n;
+break;
 }}
 
 // Single pattern
+if(!finalPred){
 preds.sort((a,b)=>b.c-a.c);
-return{pr:preds[0].p,conf:preds[0].c,ps:[preds[0].n]}
+finalPred=preds[0].p;
+finalConf=preds[0].c;
+finalPs=[preds[0].n];
+}
+}
+
+// Check if need to reverse final prediction (2+ patterns only)
+if(finalPs.length>=2){
+// Check if last prediction with 2+ patterns was LOSS
+const last=_h[0];
+if(last&&last.res===LOSS&&last.ps&&last.ps.length>=2&&!last.rev){
+// Last multi-pattern prediction LOST, enable reverse mode
+_revMode=true;
+finalPred=_inv(finalPred);
+return{pr:finalPred,conf:finalConf+3,ps:finalPs,rev:true}
+}else if(_revMode){
+// Continue in reverse mode
+finalPred=_inv(finalPred);
+return{pr:finalPred,conf:finalConf+2,ps:finalPs,rev:true}
+}
+}
+
+return{pr:finalPred,conf:finalConf,ps:finalPs,rev:false}
 };
 
 const _u=()=>{const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0'),e=document.getElementById('rt');if(e)e.innerHTML=`${h}:${m}:<span class="seconds-highlight">${s}</span>`;if(n.getSeconds()===_k.m)_l()};
@@ -196,11 +206,23 @@ const pd=_ai(sh);
 
 if(_lp!==tp){
 if(_p){
-const im=_p.pr===ts,re={per:tp,pred:_p.pr,act:ts,res:im?WIN:LOSS,ps:_p.ps};
+const im=_p.pr===ts,re={per:tp,pred:_p.pr,act:ts,res:im?WIN:LOSS,ps:_p.ps,rev:_p.rev};
 _h.unshift(re);
 if(_h.length>100)_h=_h.slice(0,100);
 
-if(_p.ps){_p.ps.forEach(pn=>{const k=pn.toLowerCase();if(im)_pStats[k].w++;else _pStats[k].l++})}
+// Update stats
+if(_p.ps){
+_p.ps.forEach(pn=>{
+const k=pn.toLowerCase();
+if(im)_pStats[k].w++;
+else _pStats[k].l++;
+})
+}
+
+// Reset reverse mode if WIN
+if(im&&_p.ps&&_p.ps.length>=2){
+_revMode=false
+}
 
 _box11=sh[9]
 }
@@ -212,10 +234,10 @@ const cr=document.getElementById("currPred"),cb=document.getElementById("confBar
 cr.innerHTML=`<span class="prediction-${pd.pr.toLowerCase()}">${pd.pr}</span>`;
 cb.style.width=pd.conf+'%';
 
-if(pd.conf>=95)cl.innerHTML='<span class="confidence-high">⚡ HIGH CONFIDENCE</span>';
-else if(pd.conf>=90)cl.innerHTML='<span class="confidence-high">✓ VERY HIGH</span>';
-else if(pd.conf>=85)cl.innerHTML='<span class="confidence-medium">⚠ MEDIUM CONFIDENCE</span>';
-else cl.innerHTML='<span class="confidence-low">⚠ LOW CONFIDENCE</span>';
+if(pd.conf>=95)cl.innerHTML='<span class="confidence-high">⚡ ULTRA HIGH'+(pd.rev?' ⟲':'')+'</span>';
+else if(pd.conf>=90)cl.innerHTML='<span class="confidence-high">✓ VERY HIGH'+(pd.rev?' ⟲':'')+'</span>';
+else if(pd.conf>=85)cl.innerHTML='<span class="confidence-medium">⚠ MEDIUM'+(pd.rev?' ⟲':'')+'</span>';
+else cl.innerHTML='<span class="confidence-low">⚠ LOW</span>';
 
 pi.innerHTML=pd.ps.length>0?pd.ps.map(p=>`<span class="pattern-tag pattern-active">${p}</span>`).join(''):'<span class="pattern-tag">ANALYZING</span>';
 
