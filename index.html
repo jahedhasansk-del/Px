@@ -32,7 +32,7 @@
 <div class="stat-item"><div class="stat-label">Total</div><div class="stat-value" id="tc">0</div></div>
 <div class="stat-item"><div class="stat-label">Accuracy</div><div class="stat-value" id="wr">0%</div></div>
 <div class="stat-item"><div class="stat-label">P1 Win</div><div class="stat-value stat-streak" id="p1w">0</div></div>
-<div class="stat-item"><div class="stat-label">P2 Win</div><div class="stat-value stat-streak" id="p2w">0</div></div>
+<div class="stat-item"><div class="stat-item"><div class="stat-label">P2 Win</div><div class="stat-value stat-streak" id="p2w">0</div></div>
 <div class="stat-item"><div class="stat-label">P3 Win</div><div class="stat-value stat-streak" id="p3w">0</div></div>
 </div>
 </div>
@@ -45,8 +45,10 @@
 <p class="update-time"><span class="time-display"><div class="current-time" id="rt">00:00:00</div></span></p>
 </div>
 <button class="refresh-btn" onclick="_r()"><span class="refresh-icon" id="ri">⟳</span><span>Refresh</span></button>
-<script>
-  // Matrix Effect
+<script src="script.js"></script>
+</body>
+</html>
+// Matrix Effect
 const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(10,14,39,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
 
 // AI Prediction System
@@ -60,24 +62,32 @@ const _x=n=>parseInt(n)>=5?BIG:SMALL;
 const _inv=p=>p===BIG?SMALL:BIG;
 const _g=(n,c)=>{let a=[];if(c==='red')a.push('red');else if(c==='green')a.push('green');else if(c==='violet')a.push('violet');if(n===0){a.push('violet');a.push('red')}else if(n===5){a.push('violet');a.push('green')}return a};
 
-// Pattern 1: Simple alternating with 3-loss toggle
-const _p1=(d)=>{if(d.length<1)return null;
-// Check last 3 P1-only predictions
+// Pattern 1: Track B-S-B or S-B-S pattern
+const _p1=(d)=>{if(d.length<3)return null;
+// Check last 3 P1-only predictions for losses
 const lastP1Only=_h.filter(x=>x.ps&&x.ps.includes('P1')&&x.ps.length===1).slice(0,3);
 const recentLosses=lastP1Only.filter(x=>x.res===LOSS).length;
 
-// Toggle mode every 3 losses
-if(recentLosses===3){
-_pStats.p1.lc=_pStats.p1.lc===0?1:0; // Toggle between 0 and 1
+// Toggle pattern tracking mode every 3 losses
+if(recentLosses===3&&lastP1Only.length===3){
+_pStats.p1.lc=_pStats.p1.lc===0?1:0;
 }
 
 let pred;
-if(_pStats.p1.lc===1){
-// Reverse mode: Same as Box 1
-pred=d[0]
+// Check current box pattern
+const isBSB=(d[0]===BIG&&d[1]===SMALL&&d[2]===BIG);
+const isSBS=(d[0]===SMALL&&d[1]===BIG&&d[2]===SMALL);
+
+if(_pStats.p1.lc===0){
+// Normal: Follow B-S-B → S or S-B-S → B
+if(isBSB)pred=SMALL;
+else if(isSBS)pred=BIG;
+else pred=_inv(d[0]);
 }else{
-// Normal mode: Opposite of Box 1 (alternating)
-pred=_inv(d[0])
+// Reversed: Follow S-B-S → B or B-S-B → S  
+if(isSBS)pred=BIG;
+else if(isBSB)pred=SMALL;
+else pred=_inv(d[0]);
 }
 
 return{pr:pred,conf:85}
