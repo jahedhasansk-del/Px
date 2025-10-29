@@ -60,23 +60,24 @@ const _x=n=>parseInt(n)>=5?BIG:SMALL;
 const _inv=p=>p===BIG?SMALL:BIG;
 const _g=(n,c)=>{let a=[];if(c==='red')a.push('red');else if(c==='green')a.push('green');else if(c==='violet')a.push('violet');if(n===0){a.push('violet');a.push('red')}else if(n===5){a.push('violet');a.push('green')}return a};
 
-// Pattern 1: Alternating pattern
-const _p1=(d)=>{if(d.length<3)return null;
-let pred=null;
-if(d[0]===BIG&&d[1]===SMALL&&d[2]===BIG){
-pred=SMALL
-}else if(d[0]===SMALL&&d[1]===BIG&&d[2]===SMALL){
-pred=BIG
-}else{
-pred=_inv(d[0])
+// Pattern 1: Simple alternating with 3-loss toggle
+const _p1=(d)=>{if(d.length<1)return null;
+// Check last 3 P1-only predictions
+const lastP1Only=_h.filter(x=>x.ps&&x.ps.includes('P1')&&x.ps.length===1).slice(0,3);
+const recentLosses=lastP1Only.filter(x=>x.res===LOSS).length;
+
+// Toggle mode every 3 losses
+if(recentLosses===3){
+_pStats.p1.lc=_pStats.p1.lc===0?1:0; // Toggle between 0 and 1
 }
 
-// Check Pattern 1 specific reverse (3 consecutive P1 losses)
-const lastP1=_h.filter(x=>x.ps&&x.ps.includes('P1')&&x.ps.length===1).slice(0,3);
-const p1LossCount=lastP1.filter(x=>x.res===LOSS).length;
-_pStats.p1.lc=p1LossCount;
-if(p1LossCount>=3){
-pred=_inv(pred)
+let pred;
+if(_pStats.p1.lc===1){
+// Reverse mode: Same as Box 1
+pred=d[0]
+}else{
+// Normal mode: Opposite of Box 1 (alternating)
+pred=_inv(d[0])
 }
 
 return{pr:pred,conf:85}
