@@ -25,7 +25,7 @@
 </div>
 
 <div class="prediction-container">
-<div class="prediction-header"><h3>🔮 NEXT PREDICTOR</h3></div>
+<div class="prediction-header"><h3>🤖 AI MODEL PREDICTION</h3></div>
 <div class="prediction-content">
 <div class="prediction-result" id="currPred"><div class="loading" style="font-size:16px">[ SCANNING... ]</div></div>
 <div class="confidence-bar"><div class="confidence-fill" id="confBar" style="width:0%"></div></div>
@@ -59,6 +59,7 @@ const _0x4a=['Big','Small','win','loss'];
 let _p=null,_c=null,_h=[],_lp=null,_ct;
 let _p1State={last:null,lossCount:0,mode:'alt'};
 let _p3Mem=[];
+let _aiHistory=[];
 
 const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
 const _k={u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),u3:_d('476574486973746f7279497373756550616765'),u4:_d('2e6a736f6e'),i:1000,m:59};
@@ -74,9 +75,11 @@ else if(n===5){a.push('violet');a.push('green')}
 return a
 };
 
-const _pattern1=lastActual=>{
+const _pattern1=(lastActual,sh)=>{
+if(sh&&sh.length>0){
+const lastResult=sh[0];
 if(_p1State.mode==='alt'){
-const pred=_p1State.last===_0x4a[0]?_0x4a[1]:_0x4a[0];
+const pred=lastResult===_0x4a[0]?_0x4a[1]:_0x4a[0];
 if(lastActual&&_p&&_p.p1!==lastActual){
 _p1State.lossCount++;
 if(_p1State.lossCount>=3){
@@ -86,14 +89,15 @@ _p1State.lossCount=0
 }else{
 _p1State.lossCount=0
 }
-_p1State.last=pred;
 return pred
 }else{
-const pred=_p1State.last===_0x4a[0]?_0x4a[0]:_0x4a[1];
+const pred=lastResult===_0x4a[0]?_0x4a[1]:_0x4a[0];
 _p1State.mode='alt';
-_p1State.last=pred;
+_p1State.lossCount=0;
 return pred
 }
+}
+return _0x4a[0]
 };
 
 const _pattern2=sh=>{
@@ -117,6 +121,38 @@ return sh[9]||sh[sh.length-1]
 const last=sh[9]||sh[sh.length-1];
 return last===_0x4a[0]?_0x4a[1]:_0x4a[0]
 }
+};
+
+const _aiModel=(p1,p2,p3,lastActual)=>{
+let agreeCount=0;
+let agreedValue=null;
+if(p1===p2){agreeCount++;agreedValue=p1}
+if(p2===p3){agreeCount++;agreedValue=p2}
+if(p1===p3){agreeCount++;agreedValue=p1}
+if(p1===p2&&p2===p3)agreeCount=3;
+let finalPred=agreedValue||p1;
+if(_aiHistory.length>0){
+const lastRound=_aiHistory[0];
+if(lastRound.agreed>=2){
+if(lastRound.result===_0x4a[2]){
+const currentAgree=(p1===p2?1:0)+(p2===p3?1:0)+(p1===p3?1:0);
+if(currentAgree>=2){
+if(p1===p2)finalPred=p1;
+else if(p2===p3)finalPred=p2;
+else if(p1===p3)finalPred=p1
+}
+}else if(lastRound.result===_0x4a[3]){
+const currentAgree=(p1===p2?1:0)+(p2===p3?1:0)+(p1===p3?1:0);
+if(currentAgree>=2){
+if(p1===p2)finalPred=p1===_0x4a[0]?_0x4a[1]:_0x4a[0];
+else if(p2===p3)finalPred=p2===_0x4a[0]?_0x4a[1]:_0x4a[0];
+else if(p1===p3)finalPred=p1===_0x4a[0]?_0x4a[1]:_0x4a[0]
+}
+}
+}
+}
+const confidence=agreeCount===3?95:(agreeCount===2?85:(agreeCount===1?70:60));
+return{pred:finalPred,conf:confidence,agreed:agreeCount}
 };
 
 const _a=d=>{
@@ -162,7 +198,7 @@ if(isAlternating&&alternateCount>=4){
 pred=lastWasBig?_0x4a[1]:_0x4a[0];
 conf=88+Math.min(alternateCount*2,10);
 return{p:pred,c:Math.min(conf,97)}
-}
+  }
 if(cs>=7){
 pred=_0x4a[0];
 conf=92+Math.min((cs-7)*2,6);
@@ -323,19 +359,27 @@ _p3Mem=sh.slice(0,11)
 const pd=_a(sh);
 _c=pd;
 
-const pat1=_pattern1(ts);
+const pat1=_pattern1(ts,sh);
 const pat2=_pattern2(sh);
 const pat3=_pattern3(sh);
 
+const aiResult=_aiModel(pat1,pat2,pat3,ts);
+
+_c.p=aiResult.pred;
+_c.c=aiResult.conf;
 _c.p1=pat1;
 _c.p2=pat2;
 _c.p3=pat3;
+_c.agreed=aiResult.agreed;
 
 if(_lp!==tp){
 if(_p){
-const im=_p.p===ts,re={per:tp,pred:_p.p,act:ts,res:im?_0x4a[2]:_0x4a[3],num:tn};
+const im=_p.p===ts;
+const re={per:tp,pred:_p.p,act:ts,res:im?_0x4a[2]:_0x4a[3],num:tn};
 _h.unshift(re);
-if(_h.length>50)_h=_h.slice(0,50)
+if(_h.length>50)_h=_h.slice(0,50);
+_aiHistory.unshift({agreed:_p.agreed,result:im?_0x4a[2]:_0x4a[3],pred:_p.p});
+if(_aiHistory.length>10)_aiHistory=_aiHistory.slice(0,10)
 }
 _p={..._c};
 _lp=tp
