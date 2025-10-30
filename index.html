@@ -58,8 +58,8 @@ const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.
 const _0x4a=['Big','Small','win','loss'];
 let _p=null,_c=null,_h=[],_lp=null,_ct;
 let _p1State={lossCount:0};
-let _p3OldPos10=null;
 let _aiHistory=[];
+let _storedPos10=null;
 
 const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
 const _k={u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),u3:_d('476574486973746f7279497373756550616765'),u4:_d('2e6a736f6e'),i:1000,m:59};
@@ -94,21 +94,19 @@ return sh[3]
 return sh[3]===_0x4a[0]?_0x4a[1]:_0x4a[0]
 }
 };
+
 const _pattern3=sh=>{
-if(sh.length<10)return _0x4a[0];
-const currentPos10=sh[9];
-const latestPos1=sh[0];
+if(sh.length<10)return _storedPos10||_0x4a[0];
+const pos1=sh[0];
+const pos10=sh[9];
+_storedPos10=pos10;
+if(sh.length<11)return pos10;
+const pos11=sh[10];
 let prediction;
-if(_p3OldPos10===null){
-_p3OldPos10=currentPos10;
-prediction=currentPos10
+if(pos1===pos11){
+prediction=pos10
 }else{
-if(_p3OldPos10===latestPos1){
-prediction=currentPos10
-}else{
-prediction=currentPos10===_0x4a[0]?_0x4a[1]:_0x4a[0]
-}
-_p3OldPos10=currentPos10
+prediction=pos10===_0x4a[0]?_0x4a[1]:_0x4a[0]
 }
 return prediction
 };
@@ -171,9 +169,9 @@ try{
 const t=new Date().getTime(),_u=_k.u1+_k.u2+_k.u3+_k.u4,_q=`?${_d('7473')}=${t}`,_f=_u+_q,r=await fetch(_f),d=await r.json();
 let ls=[];
 const _pk=['data','list'],_sk=['list'];
-if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,10);
-else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,10);
-else if(Array.isArray(d))ls=d.slice(0,10);
+if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,15);
+else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,15);
+else if(Array.isArray(d))ls=d.slice(0,15);
 const tb=document.getElementById("tb");
 tb.innerHTML="";
 if(ls.length===0){
@@ -231,7 +229,7 @@ if(e.res===_0x4a[2])wc++;
 if(e.res===_0x4a[3])lc++
 });
 
-ls.forEach((it,ix)=>{
+ls.slice(0,10).forEach((it,ix)=>{
 const tr=document.createElement("tr"),tdp=document.createElement("td");
 tdp.className="period-cell";
 const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');
@@ -292,4 +290,4 @@ _s()
 })();
 </script>
 </body>
-</html>
+  </html>
