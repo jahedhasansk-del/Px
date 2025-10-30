@@ -59,6 +59,7 @@ const _0x4a=['Big','Small','win','loss'];
 let _p=null,_c=null,_h=[],_lp=null,_ct;
 let _p1State={last:null,lossCount:0,mode:'alt'};
 let _p3Mem=[];
+let _p3OldPos10=null;
 let _aiHistory=[];
 
 const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
@@ -112,15 +113,22 @@ return sh[3]===_0x4a[0]?_0x4a[1]:_0x4a[0]
 };
 
 const _pattern3=sh=>{
-if(_p3Mem.length===0||sh.length<10)return _0x4a[0];
-const removed=_p3Mem[0];
-const lastPred=sh[0];
-if(removed===lastPred){
-return sh[9]||sh[sh.length-1]
+if(sh.length<10)return _0x4a[0];
+const currentPos10=sh[9];
+const latestPos1=sh[0];
+let prediction;
+if(_p3OldPos10===null){
+_p3OldPos10=currentPos10;
+prediction=currentPos10
 }else{
-const last=sh[9]||sh[sh.length-1];
-return last===_0x4a[0]?_0x4a[1]:_0x4a[0]
+if(_p3OldPos10===latestPos1){
+prediction=currentPos10
+}else{
+prediction=currentPos10===_0x4a[0]?_0x4a[1]:_0x4a[0]
 }
+_p3OldPos10=currentPos10
+}
+return prediction
 };
 
 const _aiModel=(p1,p2,p3,lastActual)=>{
@@ -161,8 +169,7 @@ let cs=0,cb=0,lcs=0,lcb=0;
 for(let i=0;i<d.length;i++){
 if(d[i]===_0x4a[1]){cs++;if(cb>0)lcb=cb;cb=0}
 else{cb++;if(cs>0)lcs=cs;cs=0}
-}
-const lastWasBig=d[0]===_0x4a[0];
+  const lastWasBig=d[0]===_0x4a[0];
 let isAlternating=true;
 let alternateCount=0;
 if(d.length>=3){
@@ -198,7 +205,7 @@ if(isAlternating&&alternateCount>=4){
 pred=lastWasBig?_0x4a[1]:_0x4a[0];
 conf=88+Math.min(alternateCount*2,10);
 return{p:pred,c:Math.min(conf,97)}
-  }
+}
 if(cs>=7){
 pred=_0x4a[0];
 conf=92+Math.min((cs-7)*2,6);
@@ -345,16 +352,6 @@ const sh=ls.map(i=>{
 const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";
 return _x(rn)
 });
-
-if(_p3Mem.length>0&&sh.length>0){
-const oldFirst=_p3Mem[_p3Mem.length-1];
-if(oldFirst!==sh[0]){
-_p3Mem.unshift(sh[0]);
-if(_p3Mem.length>11)_p3Mem=_p3Mem.slice(0,11)
-}
-}else{
-_p3Mem=sh.slice(0,11)
-}
 
 const pd=_a(sh);
 _c=pd;
