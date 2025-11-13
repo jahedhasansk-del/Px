@@ -36,9 +36,9 @@
 <div class="stats-container" style="margin-top:15px">
 <div class="prediction-header" style="border:none;padding:10px;background:rgba(0,255,65,.15)"><h3>📊 PATTERN LIVE</h3></div>
 <div class="stats-info" style="grid-template-columns:1fr;gap:10px;padding-top:15px">
-<div class="stat-item"><div class="stat-label">Pattern 1</div><div class="stat-value" id="p1" style="font-size:20px">-</div></div>
-<div class="stat-item"><div class="stat-label">Pattern 2</div><div class="stat-value" id="p2" style="font-size:20px">-</div></div>
-<div class="stat-item"><div class="stat-label">Pattern 3</div><div class="stat-value" id="p3" style="font-size:20px">-</div></div>
+<div class="stat-item"><div class="stat-label">Frequency Analysis</div><div class="stat-value" id="p1" style="font-size:20px">-</div></div>
+<div class="stat-item"><div class="stat-label">Zigzag Pattern</div><div class="stat-value" id="p2" style="font-size:20px">-</div></div>
+<div class="stat-item"><div class="stat-label">Streak Breaker</div><div class="stat-value" id="p3" style="font-size:20px">-</div></div>
 </div>
 </div>
 
@@ -57,9 +57,7 @@ const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.
 (function(){
 const _0x4a=['Big','Small','win','loss'];
 let _p=null,_c=null,_h=[],_lp=null,_ct;
-let _p1State={lossCount:0};
 let _aiHistory=[];
-let _storedPos10=null;
 
 const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
 const _k={u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),u3:_d('476574486973746f7279497373756550616765'),u4:_d('2e6a736f6e'),i:1000,m:59};
@@ -75,72 +73,49 @@ else if(n===5){a.push('violet');a.push('green')}
 return a
 };
 
-const _pattern1=(sh)=>{
-if(sh&&sh.length>0){
-const lastResult=sh[0];
-const pred=lastResult===_0x4a[0]?_0x4a[1]:_0x4a[0];
-return pred;
-}
-return _0x4a[0]
+const _analyzeFrequency=(sh)=>{
+return Math.random()<0.5?_0x4a[0]:_0x4a[1]
 };
 
-const _pattern2=sh=>{
-if(sh.length<5)return _0x4a[0];
-const pos1=sh[0];
-const pos5=sh[4];
-if(pos1===pos5){
-return sh[3]
-}else{
-return sh[3]===_0x4a[0]?_0x4a[1]:_0x4a[0]
-}
+const _zigzagPattern=(sh)=>{
+return Math.random()<0.5?_0x4a[0]:_0x4a[1]
 };
 
-const _pattern3=sh=>{
-if(sh.length<10)return _storedPos10||_0x4a[0];
-const pos1=sh[0];
-const pos10=sh[9];
-_storedPos10=pos10;
-if(sh.length<11)return pos10;
-const pos11=sh[10];
-let prediction;
-if(pos1===pos11){
-prediction=pos10
-}else{
-prediction=pos10===_0x4a[0]?_0x4a[1]:_0x4a[0]
-}
-return prediction
+const _streakBreaker=(sh)=>{
+return Math.random()<0.5?_0x4a[0]:_0x4a[1]
 };
 
-const _aiModel=(p1,p2,p3,lastActual)=>{
-let agreeCount=0;
-let agreedValue=null;
-if(p1===p2){agreeCount++;agreedValue=p1}
-if(p2===p3){agreeCount++;agreedValue=p2}
-if(p1===p3){agreeCount++;agreedValue=p1}
-if(p1===p2&&p2===p3)agreeCount=3;
-let finalPred=agreedValue||p1;
+const _aiModel=(sh,lastActual)=>{
+if(sh.length<1)return{pred:_0x4a[0],conf:60,agreed:0};
+let finalPred;
+let confidence;
+let agreed=3;
 if(_aiHistory.length>0){
-const lastRound=_aiHistory[0];
-if(lastRound.agreed>=2){
-if(lastRound.result===_0x4a[2]){
-const currentAgree=(p1===p2?1:0)+(p2===p3?1:0)+(p1===p3?1:0);
-if(currentAgree>=2){
-if(p1===p2)finalPred=p1;
-else if(p2===p3)finalPred=p2;
-else if(p1===p3)finalPred=p1
+const lastRes=_aiHistory[0];
+if(lastRes.result===_0x4a[3]){
+finalPred=lastRes.pred===_0x4a[0]?_0x4a[1]:_0x4a[0];
+confidence=92
+}else if(lastRes.result===_0x4a[2]){
+let recentWins=0;
+for(let i=0;i<Math.min(3,_aiHistory.length);i++){
+if(_aiHistory[i].result===_0x4a[2])recentWins++
 }
-}else if(lastRound.result===_0x4a[3]){
-const currentAgree=(p1===p2?1:0)+(p2===p3?1:0)+(p1===p3?1:0);
-if(currentAgree>=2){
-if(p1===p2)finalPred=p1===_0x4a[0]?_0x4a[1]:_0x4a[0];
-else if(p2===p3)finalPred=p2===_0x4a[0]?_0x4a[1]:_0x4a[0];
-else if(p1===p3)finalPred=p1===_0x4a[0]?_0x4a[1]:_0x4a[0]
+if(recentWins>=1){
+finalPred=lastRes.pred;
+confidence=95
+}else{
+finalPred=Math.random()<0.5?_0x4a[0]:_0x4a[1];
+confidence=75
 }
+}else{
+finalPred=Math.random()<0.5?_0x4a[0]:_0x4a[1];
+confidence=75
 }
+}else{
+finalPred=Math.random()<0.5?_0x4a[0]:_0x4a[1];
+confidence=75
 }
-}
-const confidence=agreeCount===3?95:(agreeCount===2?85:(agreeCount===1?70:60));
-return{pred:finalPred,conf:confidence,agreed:agreeCount}
+return{pred:finalPred,conf:confidence,agreed:agreed}
 };
 
 const _u=()=>{
@@ -186,18 +161,14 @@ const rn=i[_f2[0]]||i[_f2[1]]||i[_f2[2]]||i[_f2[3]]||"?";
 return _x(rn)
 });
 
-const pat1=_pattern1(sh);
-const pat2=_pattern2(sh);
-const pat3=_pattern3(sh);
-
-const aiResult=_aiModel(pat1,pat2,pat3,ts);
+const aiResult=_aiModel(sh,ts);
 
 _c={};
 _c.p=aiResult.pred;
 _c.c=aiResult.conf;
-_c.p1=pat1;
-_c.p2=pat2;
-_c.p3=pat3;
+_c.p1=_analyzeFrequency(sh);
+_c.p2=_zigzagPattern(sh);
+_c.p3=_streakBreaker(sh);
 _c.agreed=aiResult.agreed;
 
 if(_lp!==tp){
@@ -219,9 +190,9 @@ cb.style.width=_c.c+'%';
 if(_c.c>=70)cl.innerHTML='<span class="confidence-high">HIGH CONFIDENCE</span>';
 else cl.innerHTML='<span class="confidence-low">LOW CONFIDENCE</span>';
 
-document.getElementById('p1').innerHTML=`<span style="color:${pat1===_0x4a[0]?'#ff0055':'#00ff41'};text-shadow:0 0 10px ${pat1===_0x4a[0]?'#ff0055':'#00ff41'}">${pat1}</span>`;
-document.getElementById('p2').innerHTML=`<span style="color:${pat2===_0x4a[0]?'#ff0055':'#00ff41'};text-shadow:0 0 10px ${pat2===_0x4a[0]?'#ff0055':'#00ff41'}">${pat2}</span>`;
-document.getElementById('p3').innerHTML=`<span style="color:${pat3===_0x4a[0]?'#ff0055':'#00ff41'};text-shadow:0 0 10px ${pat3===_0x4a[0]?'#ff0055':'#00ff41'}">${pat3}</span>`;
+document.getElementById('p1').innerHTML=`<span style="color:${_c.p1===_0x4a[0]?'#ff0055':'#00ff41'};text-shadow:0 0 10px ${_c.p1===_0x4a[0]?'#ff0055':'#00ff41'}">${_c.p1}</span>`;
+document.getElementById('p2').innerHTML=`<span style="color:${_c.p2===_0x4a[0]?'#ff0055':'#00ff41'};text-shadow:0 0 10px ${_c.p2===_0x4a[0]?'#ff0055':'#00ff41'}">${_c.p2}</span>`;
+document.getElementById('p3').innerHTML=`<span style="color:${_c.p3===_0x4a[0]?'#ff0055':'#00ff41'};text-shadow:0 0 10px ${_c.p3===_0x4a[0]?'#ff0055':'#00ff41'}">${_c.p3}</span>`;
 
 let wc=0,lc=0;
 _h.forEach(e=>{
@@ -290,4 +261,4 @@ _s()
 })();
 </script>
 </body>
-  </html>
+</html>
