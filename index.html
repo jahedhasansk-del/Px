@@ -12,178 +12,157 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 30px;
-            min-height: 100vh;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
         }
         
         .resume {
             max-width: 800px;
             margin: 0 auto;
             background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px 60px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
         
         .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 35px 40px;
             text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
         }
         
         .name {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            color: #000;
         }
         
-        .contact {
+        .title {
             font-size: 14px;
-            opacity: 0.95;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #666;
+            font-weight: normal;
         }
         
-        .contact span {
-            margin: 0 12px;
+        .contact-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+            font-size: 12px;
+            color: #333;
         }
         
-        .content {
-            padding: 35px 40px;
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .contact-label {
+            font-weight: bold;
+            margin-bottom: 2px;
         }
         
         .section {
-            margin-bottom: 28px;
+            margin-bottom: 25px;
         }
         
         .section-title {
-            font-size: 16px;
-            color: #1e3c72;
-            font-weight: 700;
+            font-size: 14px;
+            font-weight: bold;
+            color: #2d7a5e;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
             margin-bottom: 12px;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2d7a5e;
         }
         
-        .summary {
-            color: #555;
-            font-size: 14px;
-            line-height: 1.7;
+        .summary-box {
+            font-style: italic;
+            color: #333;
+            line-height: 1.6;
+            font-size: 13px;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+        
+        .job-header {
+            margin-bottom: 8px;
         }
         
         .job-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1e3c72;
-            margin-bottom: 3px;
+            font-weight: bold;
+            color: #000;
+            font-size: 14px;
         }
         
-        .job-info {
-            font-size: 13px;
-            color: #777;
-            margin-bottom: 10px;
+        .job-details {
+            font-style: italic;
+            color: #666;
+            font-size: 12px;
+            margin-top: 2px;
         }
         
-        .responsibilities {
+        .job-list {
             list-style: none;
-            margin-top: 8px;
+            margin: 10px 0;
+            padding-left: 15px;
         }
         
-        .responsibilities li {
-            padding-left: 18px;
-            margin-bottom: 6px;
+        .job-list li {
             position: relative;
-            color: #555;
-            font-size: 13px;
-            line-height: 1.6;
+            margin-bottom: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #333;
         }
         
-        .responsibilities li:before {
-            content: "▸";
+        .job-list li:before {
+            content: "•";
             position: absolute;
-            left: 0;
-            color: #667eea;
+            left: -15px;
             font-weight: bold;
         }
         
-        .edu-box {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-            border-left: 3px solid #667eea;
+        .edu-item {
+            margin-bottom: 12px;
         }
         
         .degree {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e3c72;
-            margin-bottom: 5px;
+            font-weight: bold;
+            color: #000;
+            font-size: 13px;
         }
         
         .edu-details {
-            font-size: 13px;
+            font-style: italic;
             color: #666;
+            font-size: 12px;
+            margin-top: 2px;
         }
         
-        .gpa {
-            color: #667eea;
-            font-weight: 600;
+        .coursework {
+            font-size: 12px;
+            color: #333;
+            line-height: 1.5;
+            margin-top: 5px;
         }
         
-        .two-col {
+        .skills-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            gap: 15px;
         }
         
-        .skills-list {
-            display: grid;
-            gap: 8px;
-        }
-        
-        .skill-item {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 13px;
-            color: #555;
-            border-left: 3px solid #667eea;
-        }
-        
-        .lang-item {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        .copy-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 14px 24px;
-            border-radius: 50px;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-        
-        .copy-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        .skill-category {
+            font-size: 12px;
+            color: #333;
+            line-height: 1.6;
         }
         
         @media print {
@@ -193,9 +172,7 @@
             }
             .resume {
                 box-shadow: none;
-            }
-            .copy-btn {
-                display: none;
+                padding: 40px;
             }
         }
     </style>
@@ -203,115 +180,94 @@
 <body>
     <div class="resume">
         <div class="header">
-            <div class="name">JAHED HASAN</div>
-            <div class="contact">
-                <span>📧 jahedhasanSk@gmail.com</span>
-                <span>📱 +880 1976-033930</span>
-                <span>📍 Dhaka, Bangladesh</span>
+            <h1 class="name">JAHED HASAN</h1>
+            <div class="title">DATA ENTRY OPERATOR</div>
+        </div>
+        
+        <div class="section-title">PROFESSIONAL SUMMARY</div>
+        <p class="summary-box">
+            I am a dedicated data entry operator with 2 years of extensive experience in financial data management and computer operations. I am looking forward to contributing to a dynamic team and supporting research and development goals.
+        </p>
+        
+        <div class="contact-info">
+            <div class="contact-item">
+                <span class="contact-label">Phone:</span>
+                <span>+880 1976-033930</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Email:</span>
+                <span>jahedhasanSk@gmail.com</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Address:</span>
+                <span>Dhaka, Bangladesh</span>
             </div>
         </div>
         
-        <div class="content">
-            <div class="section">
-                <div class="section-title">Professional Summary</div>
-                <p class="summary">
-                    Data Entry Operator with 2 years of experience in financial data management. Skilled in maintaining accurate records, processing transactions, and ensuring data integrity in fast-paced environments.
-                </p>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">Work Experience</div>
-                <div class="job-title">Data Entry Operator</div>
-                <div class="job-info">Installment/Finance Office • 2023 - Present</div>
-                <ul class="responsibilities">
-                    <li>Process customer installment payment records with high accuracy</li>
-                    <li>Enter and update financial transaction data into computer systems daily</li>
-                    <li>Maintain confidentiality of sensitive client information</li>
-                    <li>Generate reports and assist in database management</li>
-                </ul>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">Education</div>
-                <div class="edu-box">
-                    <div class="degree">Secondary School Certificate (SSC)</div>
-                    <div class="edu-details">Year: 2023 • <span class="gpa">GPA: 4.3/5.0</span></div>
-                </div>
-            </div>
-            
-            <div class="two-col">
-                <div class="section">
-                    <div class="section-title">Technical Skills</div>
-                    <div class="skills-list">
-                        <div class="skill-item">Data Entry & Management</div>
-                        <div class="skill-item">MS Office (Word, Excel)</div>
-                        <div class="skill-item">Database Management</div>
-                        <div class="skill-item">Fast & Accurate Typing</div>
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <div class="section-title">Languages</div>
-                    <div class="skills-list">
-                        <div class="lang-item">Bengali - Native</div>
-                        <div class="lang-item">English - Working</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <div class="section-title">Key Strengths</div>
-                <div class="skills-list">
-                    <div class="skill-item">Detail-oriented & Accurate • Reliable & Punctual</div>
-                    <div class="skill-item">Quick Learner • Strong Work Ethic • Team Player</div>
+        <div class="section">
+            <div class="section-title">EDUCATION</div>
+            <div class="edu-item">
+                <div class="degree">Secondary School Certificate (SSC) | 2023</div>
+                <div class="edu-details">Result: GPA 4.3 out of 5.0</div>
+                <div class="coursework">
+                    • Strong foundation in Mathematics, Science, and Computer Studies<br>
+                    • Developed analytical and problem-solving skills<br>
+                    • Achieved excellence in academic performance
                 </div>
             </div>
         </div>
+        
+        <div class="section">
+            <div class="section-title">WORK EXPERIENCE</div>
+            <div class="job-header">
+                <div class="job-title">Data Entry Operator | 2023 - Present</div>
+                <div class="job-details">Installment/Finance Office</div>
+            </div>
+            <ul class="job-list">
+                <li>Collaborated with finance team to process customer installment payment records with high accuracy</li>
+                <li>Conducted daily data entry and updates of financial transaction data into computer database systems</li>
+                <li>Analyzed and interpreted data, contributing to database management and report generation</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">KEY RESPONSIBILITIES</div>
+            <ul class="job-list">
+                <li>Maintained strict confidentiality of sensitive client information and financial documents</li>
+                <li>Generated monthly reports and assisted in organizing database records efficiently</li>
+                <li>Ensured data accuracy through verification and quality control procedures</li>
+                <li>Collaborated with team members to ensure smooth workflow and timely task completion</li>
+                <li>Handled customer inquiries and resolved data discrepancies with professionalism</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">TECHNICAL SKILLS</div>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    • Data Entry & Management<br>
+                    • Microsoft Office Suite<br>
+                    • Database Management Systems<br>
+                    • Fast & Accurate Typing
+                </div>
+                <div class="skill-category">
+                    • File Organization<br>
+                    • Data Verification<br>
+                    • Computer Operations<br>
+                    • Record Keeping
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">NOTABLE STRENGTHS</div>
+            <ul class="job-list">
+                <li>Detail-oriented with strong focus on accuracy and data integrity</li>
+                <li>Reliable, punctual, and committed to meeting deadlines</li>
+                <li>Quick learner with excellent adaptability to new systems and technologies</li>
+                <li>Strong work ethic with professional demeanor in all responsibilities</li>
+            </ul>
+        </div>
     </div>
-    
-    <button class="copy-btn" onclick="copyResume()">📋 Copy</button>
-    
-    <script>
-        function copyResume() {
-            const text = `JAHED HASAN
-📧 jahedhasanSk@gmail.com | 📱 +880 1976-033930 | 📍 Dhaka, Bangladesh
-
-PROFESSIONAL SUMMARY
-Data Entry Operator with 2 years of experience in financial data management. Skilled in maintaining accurate records, processing transactions, and ensuring data integrity in fast-paced environments.
-
-WORK EXPERIENCE
-Data Entry Operator | Installment/Finance Office | 2023 - Present
-- Process customer installment payment records with high accuracy
-- Enter and update financial transaction data into computer systems daily
-- Maintain confidentiality of sensitive client information
-- Generate reports and assist in database management
-
-EDUCATION
-Secondary School Certificate (SSC) | 2023 | GPA: 4.3/5.0
-
-TECHNICAL SKILLS
-- Data Entry & Management
-- MS Office (Word, Excel)
-- Database Management
-- Fast & Accurate Typing
-
-LANGUAGES
-- Bengali: Native
-- English: Working Proficiency
-
-KEY STRENGTHS
-Detail-oriented & Accurate • Reliable & Punctual • Quick Learner • Strong Work Ethic • Team Player`;
-            
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                btn.textContent = '✓ Copied!';
-                btn.style.background = '#10b981';
-                setTimeout(() => {
-                    btn.textContent = '📋 Copy';
-                    btn.style.background = '#667eea';
-                }, 2000);
-            });
-        }
-    </script>
 </body>
 </html>
