@@ -3,158 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Office Report Practice</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Jahed Hasan - Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            min-height: 100vh;
+        }
+        
+        .resume {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 35px 40px;
+            text-align: center;
+        }
+        
+        .name {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        
+        .contact {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        
+        .contact span {
+            margin: 0 12px;
+        }
+        
+        .content {
+            padding: 35px 40px;
+        }
+        
+        .section {
+            margin-bottom: 28px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            color: #1e3c72;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .summary {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        
+        .job-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 3px;
+        }
+        
+        .job-info {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 10px;
+        }
+        
+        .responsibilities {
+            list-style: none;
+            margin-top: 8px;
+        }
+        
+        .responsibilities li {
+            padding-left: 18px;
+            margin-bottom: 6px;
+            position: relative;
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .responsibilities li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .edu-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .degree {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+        
+        .edu-details {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .gpa {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        .skills-list {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .skill-item {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #555;
+            border-left: 3px solid #667eea;
+        }
+        
+        .lang-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .copy-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .copy-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        @media print {
+            body {
+                padding: 0;
+                background: white;
+            }
+            .resume {
+                box-shadow: none;
+            }
+            .copy-btn {
+                display: none;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-slate-200 min-h-screen p-4">
-    <div class="max-w-7xl mx-auto">
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">📊 Office Report Practice</h1>
-            <p class="text-gray-600">Generate data and practice Excel skills</p>
+<body>
+    <div class="resume">
+        <div class="header">
+            <div class="name">JAHED HASAN</div>
+            <div class="contact">
+                <span>📧 jahedhasanSk@gmail.com</span>
+                <span>📱 +880 1976-033930</span>
+                <span>📍 Dhaka, Bangladesh</span>
+            </div>
         </div>
-
-        <div class="grid md:grid-cols-3 gap-4 mb-6">
-            <button onclick="generateData('employee')" class="bg-blue-500 hover:bg-blue-600 text-white rounded-xl p-6 shadow-lg transition">
-                <div class="text-4xl mb-2">👥</div>
-                <h3 class="text-xl font-bold">Employee List</h3>
-                <p class="text-sm mt-2 opacity-90">50 entries</p>
-            </button>
-            <button onclick="generateData('sales')" class="bg-green-500 hover:bg-green-600 text-white rounded-xl p-6 shadow-lg transition">
-                <div class="text-4xl mb-2">💰</div>
-                <h3 class="text-xl font-bold">Sales Report</h3>
-                <p class="text-sm mt-2 opacity-90">40 entries</p>
-            </button>
-            <button onclick="generateData('attendance')" class="bg-purple-500 hover:bg-purple-600 text-white rounded-xl p-6 shadow-lg transition">
-                <div class="text-4xl mb-2">📅</div>
-                <h3 class="text-xl font-bold">Attendance Report</h3>
-                <p class="text-sm mt-2 opacity-90">30 entries</p>
-            </button>
-        </div>
-
-        <div id="result" class="hidden bg-white rounded-xl shadow-lg overflow-hidden">
-            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold" id="reportTitle"></h2>
-                        <p class="text-sm opacity-90" id="reportCount"></p>
-                    </div>
-                    <button onclick="downloadCSV()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg font-semibold transition">
-                        Download CSV
-                    </button>
+        
+        <div class="content">
+            <div class="section">
+                <div class="section-title">Professional Summary</div>
+                <p class="summary">
+                    Data Entry Operator with 2 years of experience in financial data management. Skilled in maintaining accurate records, processing transactions, and ensuring data integrity in fast-paced environments.
+                </p>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Work Experience</div>
+                <div class="job-title">Data Entry Operator</div>
+                <div class="job-info">Installment/Finance Office • 2023 - Present</div>
+                <ul class="responsibilities">
+                    <li>Process customer installment payment records with high accuracy</li>
+                    <li>Enter and update financial transaction data into computer systems daily</li>
+                    <li>Maintain confidentiality of sensitive client information</li>
+                    <li>Generate reports and assist in database management</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Education</div>
+                <div class="edu-box">
+                    <div class="degree">Secondary School Certificate (SSC)</div>
+                    <div class="edu-details">Year: 2023 • <span class="gpa">GPA: 4.3/5.0</span></div>
                 </div>
             </div>
-            <div class="overflow-x-auto p-6">
-                <table class="w-full text-sm" id="dataTable"></table>
+            
+            <div class="two-col">
+                <div class="section">
+                    <div class="section-title">Technical Skills</div>
+                    <div class="skills-list">
+                        <div class="skill-item">Data Entry & Management</div>
+                        <div class="skill-item">MS Office (Word, Excel)</div>
+                        <div class="skill-item">Database Management</div>
+                        <div class="skill-item">Fast & Accurate Typing</div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <div class="section-title">Languages</div>
+                    <div class="skills-list">
+                        <div class="lang-item">Bengali - Native</div>
+                        <div class="lang-item">English - Working</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-title">Key Strengths</div>
+                <div class="skills-list">
+                    <div class="skill-item">Detail-oriented & Accurate • Reliable & Punctual</div>
+                    <div class="skill-item">Quick Learner • Strong Work Ethic • Team Player</div>
+                </div>
             </div>
         </div>
     </div>
-
+    
+    <button class="copy-btn" onclick="copyResume()">📋 Copy</button>
+    
     <script>
-        const firstNames = ['Abdul','Mohammad','Ahmed','Rahim','Karim','Salam','Jamal','Kamal','Rafiq','Shafiq','Tarek','Sadiq','Nasir','Bashir','Amir','Nadir','Faruk','Monir','Tanvir','Sakib','Mahmud','Rashid','Habib','Salma','Nazma','Rumana','Shahana','Parvin','Nasrin','Sumaiya','Tasnim','Jannat','Ayesha','Fatema','Khadija'];
-        const lastNames = ['Hossain','Ahmed','Ali','Khan','Chowdhury','Rahman','Islam','Haque','Mia','Sheikh','Begum','Khatun','Akter','Sultana','Karim','Uddin'];
-        const departments = ['Accounting','Sales','Marketing','IT','HR','Admin','Production','Logistics'];
-        const designations = ['Manager','Executive','Officer','Supervisor','Coordinator','Analyst'];
-        const cities = ['Dhaka','Chattogram','Sylhet','Rajshahi','Khulna','Barishal','Rangpur'];
-        
-        let currentData = [];
-        let currentType = '';
+        function copyResume() {
+            const text = `JAHED HASAN
+📧 jahedhasanSk@gmail.com | 📱 +880 1976-033930 | 📍 Dhaka, Bangladesh
 
-        function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-        function randNum(min, max) { return Math.floor(Math.random() * (max - min + 1) + min); }
-        function randDate() {
-            const d = new Date(2020 + Math.random() * 5, Math.random() * 12, Math.random() * 28);
-            return d.toLocaleDateString('en-GB');
-        }
+PROFESSIONAL SUMMARY
+Data Entry Operator with 2 years of experience in financial data management. Skilled in maintaining accurate records, processing transactions, and ensuring data integrity in fast-paced environments.
 
-        function generateData(type) {
-            currentType = type;
-            let data = [];
-            
-            if (type === 'employee') {
-                for (let i = 1; i <= 50; i++) {
-                    data.push({
-                        ID: `EMP${String(i).padStart(4,'0')}`,
-                        Name: `${rand(firstNames)} ${rand(lastNames)}`,
-                        Department: rand(departments),
-                        Designation: rand(designations),
-                        Salary: randNum(15000, 80000),
-                        City: rand(cities),
-                        Mobile: `+880 1${randNum(100000000, 999999999)}`
-                    });
-                }
-            } else if (type === 'sales') {
-                for (let i = 1; i <= 40; i++) {
-                    const qty = randNum(1, 50);
-                    const price = randNum(1000, 50000);
-                    data.push({
-                        Invoice: `INV-${String(i).padStart(4,'0')}`,
-                        Date: randDate(),
-                        Customer: `${rand(firstNames)} ${rand(lastNames)}`,
-                        Quantity: qty,
-                        UnitPrice: price,
-                        Total: qty * price,
-                        City: rand(cities)
-                    });
-                }
-            } else if (type === 'attendance') {
-                for (let i = 1; i <= 30; i++) {
-                    const present = randNum(20, 24);
-                    data.push({
-                        EmpID: `EMP${String(i).padStart(4,'0')}`,
-                        Name: `${rand(firstNames)} ${rand(lastNames)}`,
-                        Department: rand(departments),
-                        Present: present,
-                        Absent: randNum(0, 2),
-                        Leave: randNum(0, 2),
-                        Percentage: ((present/24)*100).toFixed(1) + '%'
-                    });
-                }
-            }
-            
-            currentData = data;
-            displayData(data, type);
-        }
+WORK EXPERIENCE
+Data Entry Operator | Installment/Finance Office | 2023 - Present
+- Process customer installment payment records with high accuracy
+- Enter and update financial transaction data into computer systems daily
+- Maintain confidentiality of sensitive client information
+- Generate reports and assist in database management
 
-        function displayData(data, type) {
-            document.getElementById('result').classList.remove('hidden');
-            document.getElementById('reportTitle').textContent = type.charAt(0).toUpperCase() + type.slice(1) + ' Report';
-            document.getElementById('reportCount').textContent = `Total ${data.length} entries`;
+EDUCATION
+Secondary School Certificate (SSC) | 2023 | GPA: 4.3/5.0
+
+TECHNICAL SKILLS
+- Data Entry & Management
+- MS Office (Word, Excel)
+- Database Management
+- Fast & Accurate Typing
+
+LANGUAGES
+- Bengali: Native
+- English: Working Proficiency
+
+KEY STRENGTHS
+Detail-oriented & Accurate • Reliable & Punctual • Quick Learner • Strong Work Ethic • Team Player`;
             
-            const table = document.getElementById('dataTable');
-            const headers = Object.keys(data[0]);
-            
-            let html = '<thead><tr class="bg-gray-100 border-b-2">';
-            headers.forEach(h => html += `<th class="px-4 py-3 text-left font-bold">${h}</th>`);
-            html += '</tr></thead><tbody>';
-            
-            data.slice(0, 10).forEach((row, i) => {
-                html += `<tr class="${i % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b hover:bg-blue-50">`;
-                Object.values(row).forEach(v => {
-                    html += `<td class="px-4 py-3 whitespace-nowrap">${typeof v === 'number' && v > 1000 ? v.toLocaleString() : v}</td>`;
-                });
-                html += '</tr>';
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = '✓ Copied!';
+                btn.style.background = '#10b981';
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.style.background = '#667eea';
+                }, 2000);
             });
-            
-            html += '</tbody>';
-            table.innerHTML = html;
-        }
-
-        function downloadCSV() {
-            if (currentData.length === 0) return;
-            
-            const headers = Object.keys(currentData[0]);
-            let csv = headers.join(',') + '\n';
-            
-            currentData.forEach(row => {
-                csv += Object.values(row).map(v => `"${v}"`).join(',') + '\n';
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${currentType}_report_${Date.now()}.csv`;
-            a.click();
         }
     </script>
 </body>
