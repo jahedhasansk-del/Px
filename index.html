@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>GNET Intro</title>
+<title>GNET Logo</title>
 
 <style>
 body{
@@ -11,83 +11,57 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  background:#0a0f1c;
+  background:#070c16;
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* container */
-.box{
+/* wrapper */
+.logo-wrap{
   position:relative;
   width:260px;
-  height:200px;
+  height:260px;
 }
 
-/* layers */
-.layer{
+/* bottom blue layer */
+.layer-blue{
   position:absolute;
-  width:200px;
-  height:200px;
-  left:30px;
-  border-radius:26px;
-  transform:rotate(45deg) translateY(40px);
-  opacity:0;
-  animation:layerUp 0.8s ease forwards;
-}
-
-.layer.l1{
-  background:#1e40af;
-  bottom:0;
-  animation-delay:0s;
-}
-
-.layer.l2{
+  inset:0;
   background:#2563eb;
-  bottom:12px;
-  animation-delay:.4s;
+  border-radius:28px;
+  transform:rotate(45deg) translateY(16px);
 }
 
-.layer.l3{
-  background:#0f172a;
-  bottom:24px;
-  animation-delay:.8s;
+/* main dark layer */
+.layer-dark{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,#0f172a,#0b1220);
+  border-radius:28px;
+  transform:rotate(45deg);
+  box-shadow:0 18px 40px rgba(0,0,0,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 /* text */
-.logo{
-  position:absolute;
-  inset:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:44px;
+.layer-dark span{
+  transform:rotate(-45deg);
+  color:#f8fafc;
+  font-size:42px;
   font-weight:600;
   letter-spacing:2px;
-  color:#e5e7eb;
-  opacity:0;
-  animation:textIn .8s ease forwards;
-  animation-delay:1.8s;
-}
-
-@keyframes layerUp{
-  to{
-    opacity:1;
-    transform:rotate(45deg) translateY(0);
-  }
-}
-
-@keyframes textIn{
-  to{opacity:1;}
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <div class="layer l1"></div>
-  <div class="layer l2"></div>
-  <div class="layer l3"></div>
-  <div class="logo">GNET</div>
+<div class="logo-wrap">
+  <div class="layer-blue"></div>
+  <div class="layer-dark">
+    <span>GNET</span>
+  </div>
 </div>
 
 </body>
