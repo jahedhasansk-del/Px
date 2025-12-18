@@ -3,101 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <title>GNET Intro</title>
+
 <style>
-body {
-  margin: 0;
-  height: 100vh;
-  background: radial-gradient(circle at center, #0b0f2a, #02040f);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  font-family: 'Poppins', sans-serif;
-  color: white;
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#0b0f1a;
+  font-family:Arial, Helvetica, sans-serif;
+  overflow:hidden;
 }
 
-.container {
-  text-align: center;
+/* Container */
+.intro{
+  position:relative;
+  width:220px;
+  height:220px;
 }
 
-.layer {
-  width: 220px;
-  height: 220px;
-  border-radius: 20px;
-  position: absolute;
-  opacity: 0;
-  transform: translateY(100px) scale(0.8);
-  animation: layerIn 1s forwards;
+/* Layers */
+.layer{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border-radius:22px;
+  opacity:0;
+  transform:translateY(40px);
+  animation:layerIn 0.8s ease-out forwards;
 }
 
-.layer1 {
-  background: linear-gradient(135deg, #00d2ff, #3a47d5);
-  animation-delay: 0s;
-  box-shadow: 0 0 40px #3a47d5;
+.layer.one{
+  background:#1e293b;
+  animation-delay:0s;
 }
 
-.layer2 {
-  background: linear-gradient(135deg, #7f00ff, #e100ff);
-  animation-delay: 0.5s;
-  box-shadow: 0 0 40px #a100ff;
+.layer.two{
+  background:#1d4ed8;
+  animation-delay:0.4s;
 }
 
-.layer3 {
-  background: #0f172a;
-  animation-delay: 1s;
-  box-shadow: 0 0 40px #00eaff;
+.layer.three{
+  background:#0f172a;
+  animation-delay:0.8s;
 }
 
-@keyframes layerIn {
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+/* GNET text */
+.logo{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:48px;
+  font-weight:bold;
+  color:#e5e7eb;
+  opacity:0;
+  animation:textIn 0.8s ease-out forwards;
+  animation-delay:1.8s;
+}
+
+@keyframes layerIn{
+  to{
+    opacity:1;
+    transform:translateY(0);
   }
 }
 
-.text {
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-}
-
-#gnet {
-  font-size: 48px;
-  font-weight: bold;
-  margin-top: 260px;
-  animation-delay: 2.2s;
-  background: linear-gradient(90deg, #00eaff, #ff6aff);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-#sub {
-  font-size: 28px;
-  margin-top: 10px;
-  animation-delay: 3.5s;
-}
-
-#thank {
-  font-size: 20px;
-  margin-top: 5px;
-  opacity: 0.7;
-  animation-delay: 4.5s;
-}
-
-@keyframes fadeIn {
-  to { opacity: 1; }
+@keyframes textIn{
+  to{
+    opacity:1;
+  }
 }
 </style>
 </head>
 
 <body>
-<div class="container">
-  <div class="layer layer1"></div>
-  <div class="layer layer2"></div>
-  <div class="layer layer3"></div>
-
-  <div id="gnet" class="text">GNET</div>
-  <div id="sub" class="text">SUBSCRIBE NOW</div>
-  <div id="thank" class="text">THANK YOU</div>
-</div>
+  <div class="intro">
+    <div class="layer one"></div>
+    <div class="layer two"></div>
+    <div class="layer three"></div>
+    <div class="logo">GNET</div>
+  </div>
 </body>
 </html>
