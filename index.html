@@ -2,55 +2,82 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>GNET Logo</title>
+<title>GNET Intro</title>
 
 <style>
 body{
   margin:0;
   height:100vh;
   display:flex;
+  flex-direction:column;
   justify-content:center;
   align-items:center;
-  background:#070c16;
-  font-family: "Segoe UI", Arial, sans-serif;
+  background:radial-gradient(circle at center,#0f172a,#070b16);
+  font-family:"Segoe UI", Arial, sans-serif;
+  color:#fff;
 }
 
-/* wrapper */
+/* logo wrapper */
 .logo-wrap{
   position:relative;
   width:260px;
   height:260px;
+  margin-bottom:40px;
 }
 
-/* bottom blue layer */
-.layer-blue{
+/* stacked layers */
+.layer{
   position:absolute;
   inset:0;
-  background:#2563eb;
-  border-radius:28px;
-  transform:rotate(45deg) translateY(16px);
-}
-
-/* main dark layer */
-.layer-dark{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,#0f172a,#0b1220);
-  border-radius:28px;
+  border-radius:32px;
   transform:rotate(45deg);
-  box-shadow:0 18px 40px rgba(0,0,0,.6);
+}
+
+/* bottom layers */
+.layer.l1{
+  background:#1e3a8a;
+  transform:rotate(45deg) translateY(28px);
+  filter:brightness(.7);
+}
+
+.layer.l2{
+  background:#2563eb;
+  transform:rotate(45deg) translateY(16px);
+  filter:brightness(.85);
+}
+
+/* top card */
+.layer.l3{
+  background:linear-gradient(180deg,#111c3a,#0b1224);
+  box-shadow:0 30px 60px rgba(0,0,0,.6);
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
-/* text */
-.layer-dark span{
+/* text on card */
+.layer.l3 span{
   transform:rotate(-45deg);
-  color:#f8fafc;
   font-size:42px;
   font-weight:600;
   letter-spacing:2px;
+  background:linear-gradient(90deg,#c7e4ff,#f1d6ff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+/* subscribe text */
+.subscribe{
+  font-size:26px;
+  letter-spacing:2px;
+  margin-bottom:10px;
+}
+
+/* thank you */
+.thank{
+  font-size:18px;
+  opacity:.5;
+  letter-spacing:3px;
 }
 </style>
 </head>
@@ -58,11 +85,15 @@ body{
 <body>
 
 <div class="logo-wrap">
-  <div class="layer-blue"></div>
-  <div class="layer-dark">
+  <div class="layer l1"></div>
+  <div class="layer l2"></div>
+  <div class="layer l3">
     <span>GNET</span>
   </div>
 </div>
+
+<div class="subscribe">SUBSCRIBE NOW</div>
+<div class="thank">THANK YOU</div>
 
 </body>
 </html>
