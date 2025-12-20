@@ -1,99 +1,448 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>GNET Intro</title>
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>WinGo Pro Signal</title>
 <style>
-body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  background:radial-gradient(circle at center,#0f172a,#070b16);
-  font-family:"Segoe UI", Arial, sans-serif;
-  color:#fff;
-}
-
-/* logo wrapper */
-.logo-wrap{
-  position:relative;
-  width:260px;
-  height:260px;
-  margin-bottom:40px;
-}
-
-/* stacked layers */
-.layer{
-  position:absolute;
-  inset:0;
-  border-radius:32px;
-  transform:rotate(45deg);
-}
-
-/* bottom layers */
-.layer.l1{
-  background:#1e3a8a;
-  transform:rotate(45deg) translateY(28px);
-  filter:brightness(.7);
-}
-
-.layer.l2{
-  background:#2563eb;
-  transform:rotate(45deg) translateY(16px);
-  filter:brightness(.85);
-}
-
-/* top card */
-.layer.l3{
-  background:linear-gradient(180deg,#111c3a,#0b1224);
-  box-shadow:0 30px 60px rgba(0,0,0,.6);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-/* text on card */
-.layer.l3 span{
-  transform:rotate(-45deg);
-  font-size:42px;
-  font-weight:600;
-  letter-spacing:2px;
-  background:linear-gradient(90deg,#c7e4ff,#f1d6ff);
-  -webkit-background-clip:text;
-  color:transparent;
-}
-
-/* subscribe text */
-.subscribe{
-  font-size:26px;
-  letter-spacing:2px;
-  margin-bottom:10px;
-}
-
-/* thank you */
-.thank{
-  font-size:18px;
-  opacity:.5;
-  letter-spacing:3px;
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;position:relative;overflow-x:hidden}
+body::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");z-index:0;opacity:.3}
+.container{max-width:900px;margin:0 auto;position:relative;z-index:1}
+.header{text-align:center;margin-bottom:30px;background:rgba(255,255,255,.95);padding:30px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,.1),transparent);animation:shine 3s infinite}
+@keyframes shine{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.logo{font-size:42px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;margin-bottom:10px;letter-spacing:2px}
+.subtitle{color:#666;font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:600}
+.prediction-box{background:rgba(255,255,255,.95);border-radius:20px;padding:40px;margin-bottom:25px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;overflow:hidden}
+.prediction-box::after{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#667eea,#764ba2,#f093fb);animation:loading 2s ease-in-out infinite}
+@keyframes loading{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+.pred-title{text-align:center;color:#764ba2;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:25px}
+.pred-result{text-align:center;font-size:72px;font-weight:900;margin-bottom:20px;text-transform:uppercase;letter-spacing:8px;animation:popIn .6s cubic-bezier(0.68,-0.55,0.265,1.55)}
+@keyframes popIn{0%{opacity:0;transform:scale(.3) rotate(-10deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+.pred-big{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 8px rgba(245,87,108,.3))}
+.pred-small{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 8px rgba(79,172,254,.3))}
+.confidence-info{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:20px;flex-wrap:wrap}
+.conf-badge{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:12px 30px;border-radius:50px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:1px;box-shadow:0 10px 25px rgba(102,126,234,.4)}
+.loss-indicator{background:linear-gradient(135deg,#f5576c 0%,#f093fb 100%);color:white;padding:12px 25px;border-radius:50px;font-weight:700;font-size:13px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px;margin-bottom:25px}
+.stat-card{background:rgba(255,255,255,.95);border-radius:15px;padding:25px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2);transition:all .3s ease;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#667eea,#764ba2)}
+.stat-card:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.3)}
+.stat-label{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:600}
+.stat-value{font-size:36px;font-weight:900;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-win{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-loss{background:linear-gradient(135deg,#f5576c 0%,#f093fb 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.history-section{background:rgba(255,255,255,.95);border-radius:20px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin-bottom:25px}
+.section-title{font-size:20px;font-weight:800;color:#764ba2;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;text-align:center}
+.history-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:15px;margin-bottom:20px}
+.history-item{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);border-radius:12px;padding:15px;text-align:center;transition:all .3s ease;border:3px solid transparent}
+.history-item:hover{transform:scale(1.05);border-color:#667eea}
+.history-big{border-left:5px solid #f5576c}
+.history-small{border-left:5px solid #4facfe}
+.history-label{font-size:11px;color:#666;text-transform:uppercase;margin-bottom:5px;font-weight:600}
+.history-value{font-size:22px;font-weight:900;color:#333}
+.table-wrapper{background:rgba(255,255,255,.95);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+table{width:100%;border-collapse:collapse}
+thead{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+th{padding:18px 12px;text-align:center;font-weight:700;color:white;font-size:13px;text-transform:uppercase;letter-spacing:1px}
+tbody tr{transition:all .3s ease;border-bottom:1px solid #f0f0f0}
+tbody tr:hover{background:linear-gradient(135deg,rgba(102,126,234,.1) 0%,rgba(118,75,162,.1) 100%);transform:scale(1.01)}
+td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600}
+.period-cell{font-family:'Courier New',monospace;font-size:12px;color:#666}
+.num-cell{font-size:28px;font-weight:900}
+.size-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.size-big{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white}
+.size-small{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:white}
+.color-dots{display:flex;justify-content:center;gap:6px}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.dot-red{background:#f5576c}
+.dot-green{background:#00f2fe}
+.dot-violet{background:#764ba2}
+.result-badge{padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}
+.result-win{background:#4facfe;color:white}
+.result-loss{background:#f5576c;color:white}
+.refresh-btn{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:18px 35px;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(102,126,234,.5);display:flex;align-items:center;gap:10px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1px}
+.refresh-btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(102,126,234,.7)}
+.refresh-btn:active{transform:translateY(-1px)}
+.refresh-icon{font-size:20px;transition:transform .5s}
+.refresh-icon.spin{animation:rotate .5s linear}
+@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.time-display{text-align:center;margin-top:20px;padding:15px;background:rgba(255,255,255,.2);border-radius:15px;backdrop-filter:blur(10px)}
+.current-time{font-size:32px;font-weight:900;color:white;text-shadow:0 2px 10px rgba(0,0,0,.3);letter-spacing:2px}
+.loading{text-align:center;padding:20px;color:#764ba2;font-size:16px;font-weight:600}
+@media (max-width:768px){
+.logo{font-size:32px}
+.pred-result{font-size:48px;letter-spacing:4px}
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.history-grid{grid-template-columns:repeat(3,1fr)}
+.refresh-btn{bottom:20px;right:20px;padding:15px 25px;font-size:14px}
+th,td{padding:12px 8px;font-size:11px}
+.num-cell{font-size:22px}
 }
 </style>
 </head>
-
 <body>
-
-<div class="logo-wrap">
-  <div class="layer l1"></div>
-  <div class="layer l2"></div>
-  <div class="layer l3">
-    <span>GNET</span>
-  </div>
+<div class="container">
+<div class="header">
+<div class="logo">⚡ WINGO PRO SIGNAL</div>
+<div class="subtitle">Advanced Pattern Analyzer</div>
 </div>
 
-<div class="subscribe">SUBSCRIBE NOW</div>
-<div class="thank">THANK YOU</div>
+<div class="prediction-box">
+<div class="pred-title">🎯 Next Prediction</div>
+<div class="pred-result" id="predResult">
+<div class="loading">Analyzing...</div>
+</div>
+<div class="confidence-info">
+<div class="conf-badge" id="confBadge">Calculating...</div>
+<div class="loss-indicator" id="lossIndicator" style="display:none">⚠️ Loss Streak: <span id="lossCount">0</span></div>
+</div>
+</div>
 
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-label">Total Win</div>
+<div class="stat-value stat-win" id="winCount">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Total Loss</div>
+<div class="stat-value stat-loss" id="lossCountStat">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Total Games</div>
+<div class="stat-value" id="totalGames">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Accuracy</div>
+<div class="stat-value" id="accuracy">0%</div>
+</div>
+</div>
+
+<div class="history-section">
+<div class="section-title">📊 Last 10 History Pattern</div>
+<div class="history-grid" id="historyPattern"></div>
+</div>
+
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+<th>Period</th>
+<th>Number</th>
+<th>Size</th>
+<th>Color</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody id="tableBody">
+<tr><td colspan="5" class="loading">Loading data...</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="time-display">
+<div class="current-time" id="currentTime">00:00:00</div>
+</div>
+</div>
+
+<button class="refresh-btn" onclick="refreshData()">
+<span class="refresh-icon" id="refreshIcon">↻</span>
+<span>Refresh</span>
+</button>
+
+<script>
+const API_URL = 'https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json';
+let predictionHistory = [];
+let currentPrediction = null;
+let lastPeriod = null;
+let consecutiveLoss = 0;
+
+function getSize(num) {
+  const n = parseInt(num);
+  return n >= 5 ? 'Big' : 'Small';
+}
+
+function getColors(num) {
+  const n = parseInt(num);
+  let colors = [];
+  if (n === 0) colors = ['red', 'violet'];
+  else if (n === 5) colors = ['green', 'violet'];
+  else if (n % 2 === 0) colors = ['red'];
+  else colors = ['green'];
+  return colors;
+}
+
+function calculateNewPrediction(last10Sizes) {
+  if (last10Sizes.length < 10) return { prediction: 'Big', confidence: 50 };
+  
+  let bigCount = 0;
+  let smallCount = 0;
+  
+  last10Sizes.forEach(size => {
+    if (size === 'Big') bigCount++;
+    else smallCount++;
+  });
+  
+  let prediction;
+  let confidence;
+  
+  // ২টা লস হলে উল্টো দিকে
+  if (consecutiveLoss >= 2) {
+    // উল্টো দিকে প্রেডিকশন
+    prediction = bigCount > smallCount ? 'Small' : 'Big';
+    confidence = 78 + Math.min(consecutiveLoss * 3, 18);
+  } else {
+    // স্বাভাবিক: যেটা বেশি আছে সেটাই
+    prediction = bigCount > smallCount ? 'Big' : 'Small';
+    
+    const diff = Math.abs(bigCount - smallCount);
+    if (diff >= 7) confidence = 92;
+    else if (diff >= 5) confidence = 85;
+    else if (diff >= 3) confidence = 75;
+    else confidence = 60;
+  }
+  
+  return { prediction, confidence };
+}
+
+async function loadData() {
+  try {
+    const response = await fetch(`${API_URL}?ts=${Date.now()}`);
+    const data = await response.json();
+    
+    let gameList = [];
+    if (data && data.data && data.data.list) {
+      gameList = data.data.list.slice(0, 20);
+    } else if (data && data.list) {
+      gameList = data.list.slice(0, 20);
+    } else if (Array.isArray(data)) {
+      gameList = data.slice(0, 20);
+    }
+    
+    if (gameList.length === 0) {
+      document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="loading">No data available</td></tr>';
+      return;
+    }
+    
+    // সর্বশেষ ১০টা হিস্টরির Big/Small বের করা
+    const last10Sizes = gameList.slice(0, 10).map(item => {
+      const num = String(item.result || item.number || item.num || item.openResult || '0');
+      return getSize(num);
+    });
+    
+    // প্যাটার্ন দেখানো
+    const patternContainer = document.getElementById('historyPattern');
+    patternContainer.innerHTML = '';
+    last10Sizes.forEach((size, idx) => {
+      const div = document.createElement('div');
+      div.className = `history-item history-${size.toLowerCase()}`;
+      div.innerHTML = `
+        <div class="history-label">#${idx + 1}</div>
+        <div class="history-value">${size}</div>
+      `;
+      patternContainer.appendChild(div);
+    });
+    
+    // বর্তমান পিরিয়ড এবং নাম্বার
+    const currentPeriod = String(
+      gameList[0].issue || 
+      gameList[0].period || 
+      gameList[0].issueNo || 
+      gameList[0].periodId || 
+      gameList[0].issueNumber || 
+      ''
+    );
+    const currentNum = String(
+      gameList[0].result || 
+      gameList[0].number || 
+      gameList[0].num || 
+      gameList[0].openResult || 
+      '0'
+    );
+    const currentSize = getSize(currentNum);
+    
+    // নতুন পিরিয়ড চেক করা
+    if (lastPeriod && lastPeriod !== currentPeriod) {
+      // আগের প্রেডিকশন চেক করা
+      if (currentPrediction) {
+        const isCorrect = currentPrediction.prediction === currentSize;
+        
+        predictionHistory.unshift({
+          period: currentPeriod,
+          predicted: currentPrediction.prediction,
+          actual: currentSize,
+          result: isCorrect ? 'Win' : 'Loss',
+          number: currentNum
+        });
+        
+        if (predictionHistory.length > 100) {
+          predictionHistory = predictionHistory.slice(0, 100);
+        }
+        
+        // লস স্ট্রিক আপডেট - নতুন লজিক
+        if (isCorrect) {
+          // Win হলে রিসেট
+          consecutiveLoss = 0;
+        } else {
+          // Loss হলে
+          if (consecutiveLoss >= 2) {
+            // যদি আগে ২+ লস ছিল (মানে উল্টো প্রেডিকশন দিয়েছিল)
+            // এখন আবার লস মানে আগেরটা আসলে win ছিল
+            // তাই নতুন করে ১ থেকে শুরু
+            consecutiveLoss = 1;
+          } else {
+            // নরমাল লস কাউন্ট
+            consecutiveLoss++;
+          }
+        }
+      }
+    }
+    
+    // পিরিয়ড সেভ করা
+    lastPeriod = currentPeriod;
+    
+    // নতুন প্রেডিকশন ক্যালকুলেট করা
+    currentPrediction = calculateNewPrediction(last10Sizes);
+    
+    // প্রেডিকশন দেখানো
+    const predResult = document.getElementById('predResult');
+    const confBadge = document.getElementById('confBadge');
+    const lossIndicator = document.getElementById('lossIndicator');
+    const lossCountSpan = document.getElementById('lossCount');
+    
+    if (currentPrediction) {
+      predResult.innerHTML = `<span class="pred-${currentPrediction.prediction.toLowerCase()}">${currentPrediction.prediction}</span>`;
+      confBadge.textContent = `Confidence: ${currentPrediction.confidence}%`;
+      
+      if (consecutiveLoss >= 2) {
+        lossIndicator.style.display = 'block';
+        lossCountSpan.textContent = consecutiveLoss;
+      } else {
+        lossIndicator.style.display = 'none';
+      }
+    }
+    
+    // Stats আপডেট
+    let winCount = 0;
+    let lossCount = 0;
+    predictionHistory.forEach(h => {
+      if (h.result === 'Win') winCount++;
+      else if (h.result === 'Loss') lossCount++;
+    });
+    
+    const totalGames = winCount + lossCount;
+    const accuracyRate = totalGames > 0 ? Math.round((winCount / totalGames) * 100) : 0;
+    
+    document.getElementById('winCount').textContent = winCount;
+    document.getElementById('lossCountStat').textContent = lossCount;
+    document.getElementById('totalGames').textContent = totalGames;
+    document.getElementById('accuracy').textContent = accuracyRate + '%';
+    
+    // টেবিল আপডেট
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+    
+    gameList.forEach(item => {
+      const period = String(
+        item.issue || 
+        item.period || 
+        item.issueNo || 
+        item.periodId || 
+        item.issueNumber || 
+        item.gameNo || 
+        item.drawNo || 
+        'N/A'
+      );
+      const num = String(
+        item.result || 
+        item.number || 
+        item.num || 
+        item.openResult || 
+        '0'
+      );
+      const size = getSize(num);
+      const colors = getColors(parseInt(num));
+      
+      const matchedHistory = predictionHistory.find(h => String(h.period) === period);
+      
+      const tr = document.createElement('tr');
+      
+      // Period column
+      const tdPeriod = document.createElement('td');
+      tdPeriod.className = 'period-cell';
+      tdPeriod.textContent = period;
+      
+      // Number column
+      const tdNum = document.createElement('td');
+      tdNum.className = 'num-cell';
+      tdNum.textContent = num;
+      
+      // Size column
+      const tdSize = document.createElement('td');
+      tdSize.innerHTML = `<span class="size-badge size-${size.toLowerCase()}">${size}</span>`;
+      
+      // Color column
+      const tdColor = document.createElement('td');
+      tdColor.className = 'color-dots';
+      colors.forEach(c => {
+        const dot = document.createElement('span');
+        dot.className = `dot dot-${c}`;
+        tdColor.appendChild(dot);
+      });
+      
+      // Result column
+      const tdResult = document.createElement('td');
+      if (matchedHistory) {
+        if (matchedHistory.result === 'Win') {
+          tdResult.innerHTML = '<span class="result-badge result-win">✓ WIN</span>';
+        } else {
+          tdResult.innerHTML = '<span class="result-badge result-loss">✗ LOSS</span>';
+        }
+      } else {
+        tdResult.textContent = '-';
+      }
+      
+      tr.appendChild(tdPeriod);
+      tr.appendChild(tdNum);
+      tr.appendChild(tdSize);
+      tr.appendChild(tdColor);
+      tr.appendChild(tdResult);
+      
+      tbody.appendChild(tr);
+    });
+    
+  } catch (error) {
+    console.error('Error:', error);
+    document.getElementById('tableBody').innerHTML = '<tr><td colspan="5" class="loading">Error loading data</td></tr>';
+  }
+}
+
+function updateTime() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  document.getElementById('currentTime').textContent = `${h}:${m}:${s}`;
+  
+  // প্রতি মিনিটে ডেটা লোড করা
+  if (now.getSeconds() === 0) {
+    loadData();
+  }
+}
+
+function refreshData() {
+  const icon = document.getElementById('refreshIcon');
+  icon.classList.add('spin');
+  setTimeout(() => icon.classList.remove('spin'), 500);
+  loadData();
+}
+
+// শুরুতে ডেটা লোড করা
+loadData();
+setInterval(updateTime, 1000);
+updateTime();
+</script>
 </body>
 </html>
