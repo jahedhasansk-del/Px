@@ -1,448 +1,425 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinGo 1M Pattern Predictor - Hacker Style</title>
+    <title>WinGo 1M Hacker Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+        
         body {
+            font-family: 'Roboto Mono', monospace;
             background: #000;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            overflow-x: hidden;
+            color: #4ade80;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
         }
-
-        .header {
-            border: 2px solid #0f0;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: rgba(0, 255, 0, 0.05);
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-            animation: glow 2s ease-in-out infinite;
+        
+        .glow-yellow {
+            box-shadow: 0 0 20px rgba(250, 204, 21, 0.3);
         }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); }
-            50% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.5); }
+        
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .title {
-            font-size: 28px;
-            text-align: center;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px #0f0;
+        
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: #0a3d0a;
         }
-
-        .status-bar {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 15px;
+        
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: #4ade80;
+            border-radius: 4px;
         }
-
-        .status-item {
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid #0f0;
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-
-        .countdown {
-            font-size: 36px;
-            color: #ff0;
-            text-shadow: 0 0 10px #ff0;
-        }
-
-        .prediction-box {
-            border: 3px solid #ff0;
-            padding: 25px;
-            margin: 20px 0;
-            background: rgba(255, 255, 0, 0.05);
-            box-shadow: 0 0 25px rgba(255, 255, 0, 0.4);
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
+        
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
-
-        .prediction-title {
-            font-size: 24px;
-            color: #ff0;
-            margin-bottom: 15px;
-            text-align: center;
+        
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-
-        .prediction-content {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-
-        .pred-number {
-            font-size: 72px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 0 20px #ff0;
-        }
-
-        .pred-details {
-            text-align: center;
-        }
-
-        .color-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
-            margin: 5px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .green { background: #0f0; color: #000; }
-        .red { background: #f00; }
-        .violet { background: linear-gradient(90deg, #8b00ff, #ff0080); }
-
-        .patterns-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .pattern-card {
-            border: 2px solid #0f0;
-            padding: 15px;
-            background: rgba(0, 255, 0, 0.03);
-        }
-
-        .pattern-header {
-            font-size: 14px;
-            margin-bottom: 10px;
-            color: #0ff;
-        }
-
-        .pattern-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin: 10px 0;
-        }
-
-        .result-cell {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #0f0;
-            font-weight: bold;
-            font-size: 18px;
-            border-radius: 5px;
-        }
-
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        .history-table th,
-        .history-table td {
-            border: 1px solid #0f0;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .history-table th {
-            background: rgba(0, 255, 0, 0.2);
-            color: #ff0;
-        }
-
-        .loading {
-            text-align: center;
-            font-size: 24px;
-            color: #0ff;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50%, 100% { opacity: 1; }
-            25%, 75% { opacity: 0.3; }
-        }
-
-        .match-indicator {
-            background: rgba(255, 0, 0, 0.2);
-            border: 2px solid #f00;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: center;
-            font-size: 20px;
-        }
-
-        .active-pattern {
-            border-color: #ff0;
-            background: rgba(255, 255, 0, 0.1);
-            box-shadow: 0 0 20px rgba(255, 255, 0, 0.3);
-        }
-
-        .no-prediction {
-            text-align: center;
-            color: #f00;
-            font-size: 18px;
-            padding: 20px;
-            border: 2px dashed #f00;
-        }
-
-        @media (max-width: 768px) {
-            .title { font-size: 20px; }
-            .countdown { font-size: 28px; }
-            .pred-number { font-size: 48px; }
+        
+        .animate-spin {
+            animation: spin 1s linear infinite;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="title">WINGO 1M PATTERN PREDICTOR</div>
-            <div class="status-bar">
-                <div class="status-item">
-                    <div>NEXT DRAW</div>
-                    <div class="countdown" id="countdown">00:59</div>
-                </div>
-                <div class="status-item">
-                    <div>PATTERN MATCH</div>
-                    <div style="font-size: 24px; color: #ff0;" id="matchCount">0/10</div>
-                </div>
-                <div class="status-item">
-                    <div>TOTAL PATTERNS</div>
-                    <div style="font-size: 24px; color: #0ff;" id="totalPatterns">0</div>
-                </div>
-                <div class="status-item">
-                    <div>LAST UPDATE</div>
-                    <div style="font-size: 14px;" id="lastUpdate">--:--:--</div>
-                </div>
+<body class="bg-black text-green-400 p-4">
+    <div id="app" class="max-w-7xl mx-auto">
+        <!-- Loading Screen -->
+        <div id="loading" class="flex items-center justify-center min-h-screen">
+            <div class="text-center">
+                <div class="inline-block w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p class="text-green-500 text-xl">LOADING DATA...</p>
+                <p class="text-green-700 text-sm mt-2">Fetching from API</p>
             </div>
         </div>
 
-        <div id="predictionBox"></div>
-        <div id="activePattern"></div>
+        <!-- Main Content -->
+        <div id="mainContent" style="display: none;">
+            <!-- Header -->
+            <div class="border-2 border-green-500 bg-black/80 p-4 mb-4 glow">
+                <div class="flex items-center justify-between flex-wrap gap-4">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-8 h-8 text-yellow-400 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+                        </svg>
+                        <div>
+                            <h1 class="text-2xl font-bold text-green-400">WINGO 1M PREDICTOR</h1>
+                            <p class="text-xs text-green-500">[ ADVANCED PATTERN RECOGNITION SYSTEM ]</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div id="countdown" class="text-3xl font-bold text-yellow-400">59s</div>
+                        <div class="text-xs text-green-500">NEXT DRAW</div>
+                    </div>
+                </div>
+            </div>
 
-        <h2 style="color: #0ff; margin: 30px 0 15px 0; font-size: 22px;">ALL PATTERNS (10 PERIODS EACH)</h2>
-        <div class="patterns-container" id="patternsContainer"></div>
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <div class="border border-green-500 bg-black/60 p-3">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span class="text-xs">PERIOD</span>
+                    </div>
+                    <div id="currentPeriod" class="text-lg font-bold">Loading...</div>
+                </div>
+                <div class="border border-green-500 bg-black/60 p-3">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                        <span class="text-xs">ACCURACY</span>
+                    </div>
+                    <div id="accuracy" class="text-lg font-bold text-yellow-400">0%</div>
+                </div>
+                <div class="border border-green-500 bg-black/60 p-3">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                        <span class="text-xs">WINS</span>
+                    </div>
+                    <div id="wins" class="text-lg font-bold text-green-400">0</div>
+                </div>
+                <div class="border border-green-500 bg-black/60 p-3">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                        <span class="text-xs">LOSSES</span>
+                    </div>
+                    <div id="losses" class="text-lg font-bold text-red-400">0</div>
+                </div>
+            </div>
 
-        <h2 style="color: #0ff; margin: 30px 0 15px 0; font-size: 22px;">RECENT HISTORY</h2>
-        <div style="overflow-x: auto;">
-            <table class="history-table" id="historyTable">
-                <thead>
-                    <tr>
-                        <th>PERIOD</th>
-                        <th>RESULT</th>
-                        <th>COLOR</th>
-                        <th>SIZE</th>
-                    </tr>
-                </thead>
-                <tbody id="historyBody"></tbody>
-            </table>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <!-- Prediction Panel -->
+                <div class="lg:col-span-1">
+                    <div class="border-2 border-yellow-500 bg-black/80 p-4 glow-yellow">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>
+                            </svg>
+                            <h2 class="text-lg font-bold text-yellow-400">PREDICTION</h2>
+                        </div>
+                        
+                        <div id="predictionContent">
+                            <div class="text-center py-8">
+                                <svg class="w-12 h-12 mx-auto mb-2 text-green-500 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/>
+                                    <path d="M9 15l3-3 3 3"/>
+                                </svg>
+                                <p class="text-green-500">WAITING FOR PATTERN...</p>
+                                <p class="text-xs text-green-700 mt-2">Minimum 2/10 match required</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Panel -->
+                <div class="lg:col-span-2">
+                    <div class="border-2 border-green-500 bg-black/80 p-4 glow">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/>
+                            </svg>
+                            <h2 class="text-lg font-bold">HISTORY DATA</h2>
+                            <span id="historyCount" class="text-xs text-green-700 ml-auto">0 RECORDS</span>
+                        </div>
+                        
+                        <div id="historyList" class="h-96 overflow-y-auto space-y-1 scrollbar-custom"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pattern Analysis -->
+            <div class="mt-4 border-2 border-green-500 bg-black/80 p-4">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    <h2 class="text-lg font-bold">PATTERN ANALYSIS</h2>
+                    <span id="patternCount" class="text-xs text-green-700 ml-auto">0 PATTERNS DETECTED</span>
+                </div>
+                
+                <div id="patternList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 max-h-64 overflow-y-auto scrollbar-custom"></div>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-4 text-center text-xs text-green-700">
+                <p>[ SYSTEM STATUS: <span class="text-green-400">ONLINE</span> ] • [ PATTERN MATCHING: <span class="text-green-400">ACTIVE</span> ] • [ AUTO-UPDATE: 60s ]</p>
+            </div>
         </div>
     </div>
 
     <script>
-        let historyData = [];
+        let history = [];
         let patterns = [];
-        let currentPattern = null;
         let prediction = null;
+        let matchedPattern = null;
+        let stats = { wins: 0, losses: 0 };
+        let countdown = 59;
+        let currentPeriod = 0;
+        let lossCount = 0;
 
-        function getColor(num) {
-            if (num === 0) return 'violet-red';
-            if (num === 5) return 'violet-green';
-            if ([1, 3, 7, 9].includes(num)) return 'green';
-            return 'red';
-        }
-
-        function getSize(num) {
-            return num >= 5 ? 'BIG' : 'SMALL';
-        }
-
-        function getColorClass(color) {
-            if (color.includes('violet')) return 'violet';
-            if (color === 'green') return 'green';
-            return 'red';
-        }
-
+        // Fetch data from API
         async function fetchData() {
             try {
                 const response = await fetch('https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json');
                 const data = await response.json();
                 
-                if (data && data.data && data.data.gameslist) {
-                    historyData = data.data.gameslist;
+                if (data && data.data && data.data.issueList) {
+                    history = data.data.issueList.map(item => {
+                        const number = parseInt(item.number);
+                        return {
+                            period: parseInt(item.issueNumber),
+                            number: number,
+                            color: getColor(number),
+                            size: number < 5 ? 'small' : 'big'
+                        };
+                    }).reverse();
+                    
+                    if (history.length > 0) {
+                        currentPeriod = history[history.length - 1].period + 1;
+                        document.getElementById('currentPeriod').textContent = currentPeriod;
+                    }
+                    
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                    
+                    updateHistoryDisplay();
                     analyzePatterns();
-                    updateUI();
-                    updateLastUpdate();
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('API Error:', error);
             }
+        }
+
+        function getColor(num) {
+            if (num === 0) return 'red-violet';
+            if (num === 5) return 'green-violet';
+            if ([1,3,7,9].includes(num)) return 'green';
+            return 'red';
+        }
+
+        function getNumberColorClass(num) {
+            if (num === 0) return 'bg-gradient-to-r from-red-500 to-purple-500';
+            if (num === 5) return 'bg-gradient-to-r from-green-500 to-purple-500';
+            if ([1,3,7,9].includes(num)) return 'bg-green-500';
+            return 'bg-red-500';
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            const recent = history.slice(-50).reverse();
+            
+            historyList.innerHTML = recent.map(item => `
+                <div class="flex items-center gap-2 border border-green-800 bg-black/40 p-2 hover:bg-green-950/30 transition-colors">
+                    <span class="text-xs text-green-600 w-32">${item.period}</span>
+                    <div class="${getNumberColorClass(item.number)} w-8 h-8 rounded flex items-center justify-center text-sm font-bold text-white">
+                        ${item.number}
+                    </div>
+                    <span class="text-xs flex-1">${item.color.toUpperCase()}</span>
+                    <span class="text-xs text-yellow-400">${item.size.toUpperCase()}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('historyCount').textContent = `${history.length} RECORDS`;
         }
 
         function analyzePatterns() {
-            patterns = [];
+            if (history.length < 30) return;
             
-            for (let i = 0; i < historyData.length; i += 10) {
-                const group = historyData.slice(i, i + 10);
-                if (group.length === 10) {
-                    const pattern = {
-                        startPeriod: group[9].issue,
-                        endPeriod: group[0].issue,
-                        results: group.map(g => parseInt(g.result)),
-                        colors: group.map(g => getColor(parseInt(g.result))),
-                        sizes: group.map(g => getSize(parseInt(g.result)))
-                    };
-                    patterns.push(pattern);
-                }
+            patterns = [];
+            for (let i = history.length - 100; i >= 0; i -= 10) {
+                if (i - 10 < 0) break;
+                
+                const group = history.slice(i, i + 10);
+                const numbers = group.map(g => g.number);
+                const avg = numbers.reduce((a, b) => a + b, 0) / numbers.length;
+                
+                patterns.push({
+                    startPeriod: group[0].period,
+                    numbers: numbers,
+                    avg: avg
+                });
             }
             
-            findBestPattern();
+            patterns = patterns.slice(0, 50);
+            updatePatternDisplay();
+            findMatchingPattern();
         }
 
-        function findBestPattern() {
-            if (historyData.length < 10) return;
+        function updatePatternDisplay() {
+            const patternList = document.getElementById('patternList');
             
-            const recent10 = historyData.slice(0, 10).map(g => parseInt(g.result));
+            patternList.innerHTML = patterns.slice(0, 12).map((pattern, idx) => `
+                <div class="border border-green-700 bg-green-950/10 p-2">
+                    <div class="text-xs text-green-600 mb-1">P-${pattern.startPeriod}</div>
+                    <div class="flex gap-1 mb-2">
+                        ${pattern.numbers.map(num => `
+                            <div class="${getNumberColorClass(num)} w-6 h-6 rounded flex items-center justify-center text-xs text-white">
+                                ${num}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="text-xs">
+                        <span class="text-green-500">Avg: </span>
+                        <span class="text-yellow-400">${pattern.avg.toFixed(1)}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('patternCount').textContent = `${patterns.length} PATTERNS DETECTED`;
+        }
+
+        function findMatchingPattern() {
+            if (history.length < 10) return;
+            
+            const recent = history.slice(-10);
             let bestMatch = null;
             let bestScore = 0;
 
-            patterns.forEach((pattern, idx) => {
-                if (idx === 0) return;
-                
-                let matchScore = 0;
-                for (let i = 0; i < Math.min(recent10.length, pattern.results.length); i++) {
-                    if (recent10[i] === pattern.results[i]) matchScore++;
+            patterns.forEach(pattern => {
+                let score = 0;
+                for (let i = 0; i < 10; i++) {
+                    if (recent[i].number === pattern.numbers[i]) score++;
                 }
                 
-                if (matchScore >= 2 && matchScore > bestScore) {
-                    bestScore = matchScore;
-                    bestMatch = Object.assign({}, pattern, {matchScore: matchScore, index: idx});
+                if (score >= 2 && score > bestScore) {
+                    bestScore = score;
+                    bestMatch = { pattern, score };
                 }
             });
 
-            if (bestMatch && bestMatch.matchScore >= 2) {
-                currentPattern = bestMatch;
-                
-                const nextInPattern = bestMatch.results[recent10.length] || bestMatch.results[0];
-                prediction = {
-                    number: nextInPattern,
-                    color: getColor(nextInPattern),
-                    size: getSize(nextInPattern),
-                    confidence: Math.min(95, 60 + (bestMatch.matchScore * 5))
-                };
-            } else {
-                currentPattern = null;
+            if (bestMatch && lossCount === 0) {
+                matchedPattern = bestMatch;
+                generatePrediction(bestMatch.pattern);
+            } else if (lossCount > 0) {
+                lossCount = 0;
+                matchedPattern = null;
                 prediction = null;
+                updatePredictionDisplay();
             }
         }
 
-        function updateUI() {
-            document.getElementById('matchCount').textContent = 
-                currentPattern ? currentPattern.matchScore + '/10' : '0/10';
+        function generatePrediction(pattern) {
+            const freq = {};
+            pattern.numbers.forEach(num => {
+                freq[num] = (freq[num] || 0) + 1;
+            });
             
-            document.getElementById('totalPatterns').textContent = patterns.length;
+            const mostFrequent = Object.keys(freq).reduce((a, b) => freq[a] > freq[b] ? a : b);
+            const predictedNumber = parseInt(mostFrequent);
+            
+            prediction = {
+                number: predictedNumber,
+                color: getColor(predictedNumber),
+                size: predictedNumber < 5 ? 'small' : 'big',
+                confidence: Math.min(95, 60 + (matchedPattern?.score || 0) * 5)
+            };
+            
+            updatePredictionDisplay();
+        }
 
-            const predBox = document.getElementById('predictionBox');
+        function updatePredictionDisplay() {
+            const content = document.getElementById('predictionContent');
+            
             if (prediction) {
-                predBox.innerHTML = '<div class="prediction-box">' +
-                    '<div class="prediction-title">NEXT PREDICTION</div>' +
-                    '<div class="prediction-content">' +
-                    '<div class="pred-number">' + prediction.number + '</div>' +
-                    '<div class="pred-details">' +
-                    '<div class="color-badge ' + getColorClass(prediction.color) + '">' + prediction.color.toUpperCase() + '</div>' +
-                    '<div class="color-badge green" style="background: #666;">' + prediction.size + '</div>' +
-                    '<div style="margin-top: 10px; font-size: 18px;">CONFIDENCE: ' + prediction.confidence + '%</div>' +
-                    '</div></div>' +
-                    '<div style="text-align: center; margin-top: 15px; color: #0ff;">PATTERN MATCHED: ' + currentPattern.matchScore + ' TIMES</div>' +
-                    '</div>';
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-center">
+                            <div class="${getNumberColorClass(prediction.number)} w-24 h-24 mx-auto rounded-lg flex items-center justify-center text-4xl font-bold text-white shadow-lg">
+                                ${prediction.number}
+                            </div>
+                            <div class="mt-2 text-sm">
+                                <span class="text-yellow-400">CONFIDENCE: </span>
+                                <span class="font-bold">${prediction.confidence}%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="border border-green-500 p-3 bg-green-950/20">
+                            <p class="text-xs mb-2">COLOR: <span class="font-bold text-yellow-400">${prediction.color.toUpperCase()}</span></p>
+                            <p class="text-xs">SIZE: <span class="font-bold text-yellow-400">${prediction.size.toUpperCase()}</span></p>
+                        </div>
+                        
+                        ${matchedPattern ? `
+                            <div class="border border-green-500 p-3 bg-green-950/20">
+                                <p class="text-xs mb-2">PATTERN MATCH</p>
+                                <p class="text-xs">Score: <span class="text-yellow-400 font-bold">${matchedPattern.score.toFixed(1)}/10</span></p>
+                                <p class="text-xs">Period: ${matchedPattern.pattern.startPeriod}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
             } else {
-                predBox.innerHTML = '<div class="no-prediction">NO STRONG PATTERN DETECTED - WAITING FOR 2+ MATCHES</div>';
+                content.innerHTML = `
+                    <div class="text-center py-8">
+                        <svg class="w-12 h-12 mx-auto mb-2 text-green-500 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7z"/>
+                        </svg>
+                        <p class="text-green-500">WAITING FOR PATTERN...</p>
+                        <p class="text-xs text-green-700 mt-2">Minimum 2/10 match required</p>
+                    </div>
+                `;
             }
-
-            const activePatternDiv = document.getElementById('activePattern');
-            if (currentPattern) {
-                activePatternDiv.innerHTML = '<h2 style="color: #ff0; margin: 30px 0 15px 0; font-size: 22px;">ACTIVE MATCHING PATTERN</h2>' +
-                    createPatternCard(currentPattern, true);
-            } else {
-                activePatternDiv.innerHTML = '';
-            }
-
-            const patternsContainer = document.getElementById('patternsContainer');
-            patternsContainer.innerHTML = patterns.map((p, idx) => 
-                createPatternCard(p, false, idx)
-            ).join('');
-
-            const historyBody = document.getElementById('historyBody');
-            historyBody.innerHTML = historyData.slice(0, 50).map(game => 
-                '<tr>' +
-                '<td>' + game.issue + '</td>' +
-                '<td style="font-size: 20px; font-weight: bold;">' + game.result + '</td>' +
-                '<td><span class="color-badge ' + getColorClass(getColor(parseInt(game.result))) + '">' + getColor(parseInt(game.result)) + '</span></td>' +
-                '<td><span class="color-badge green" style="background: #666;">' + getSize(parseInt(game.result)) + '</span></td>' +
-                '</tr>'
-            ).join('');
         }
 
-        function createPatternCard(pattern, isActive, idx) {
-            const activeClass = isActive ? 'active-pattern' : '';
-            return '<div class="pattern-card ' + activeClass + '">' +
-                '<div class="pattern-header">' +
-                (isActive ? 'ACTIVE ' : '') + 'PATTERN ' + (idx !== undefined ? idx + 1 : '') + '<br>' +
-                'Period: ' + pattern.startPeriod + ' - ' + pattern.endPeriod +
-                (pattern.matchScore ? '<br><span style="color: #ff0;">MATCHES: ' + pattern.matchScore + '/10</span>' : '') +
-                '</div>' +
-                '<div class="pattern-grid">' +
-                pattern.results.map((r, i) => 
-                    '<div class="result-cell ' + getColorClass(pattern.colors[i]) + '">' + r + '</div>'
-                ).join('') +
-                '</div></div>';
+        function updateStats() {
+            document.getElementById('wins').textContent = stats.wins;
+            document.getElementById('losses').textContent = stats.losses;
+            const total = stats.wins + stats.losses;
+            const accuracy = total > 0 ? ((stats.wins / total) * 100).toFixed(1) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
         }
 
-        function updateCountdown() {
-            const now = new Date();
-            const seconds = now.getSeconds();
-            const remaining = 59 - seconds;
-            
-            const mins = Math.floor(remaining / 60);
-            const secs = remaining % 60;
-            document.getElementById('countdown').textContent = 
-                (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
-
-            if (remaining === 59) {
+        // Countdown timer
+        setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+                countdown = 59;
                 fetchData();
             }
-        }
+            document.getElementById('countdown').textContent = String(countdown).padStart(2, '0') + 's';
+        }, 1000);
 
-        function updateLastUpdate() {
-            const now = new Date();
-            document.getElementById('lastUpdate').textContent = 
-                now.toLocaleTimeString('en-US', { hour12: false });
-        }
-
+        // Initial load
         fetchData();
-        setInterval(updateCountdown, 1000);
         setInterval(fetchData, 60000);
     </script>
 </body>
