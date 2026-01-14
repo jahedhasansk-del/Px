@@ -71,6 +71,7 @@ td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600
 .time-display{text-align:center;margin-top:20px;padding:15px;background:rgba(255,255,255,.2);border-radius:15px;backdrop-filter:blur(10px)}
 .current-time{font-size:32px;font-weight:900;color:white;text-shadow:0 2px 10px rgba(0,0,0,.3);letter-spacing:2px}
 .loading{text-align:center;padding:20px;color:#764ba2;font-size:16px;font-weight:600}
+.data-count{text-align:center;color:white;font-size:13px;margin-top:10px;opacity:.8}
 @media (max-width:768px){
 .logo{font-size:32px}
 .pred-result{font-size:48px;letter-spacing:4px}
@@ -87,6 +88,7 @@ th,td{padding:12px 8px;font-size:11px}
 <div class="header">
 <div class="logo">⚡ WINGO PRO SIGNAL</div>
 <div class="subtitle">Advanced Pattern Analyzer</div>
+<div class="data-count" id="dataCount">Loading data...</div>
 </div>
 <div class="prediction-box">
 <div class="pred-title">🎯 Next Prediction</div>
@@ -123,6 +125,7 @@ let currentPred=null;
 let lastPeriod=null;
 let activePatternIdx=null;
 let lastLossPattern=null;
+let allPeriods=[];
 
 function getSize(n){return parseInt(n)>=5?'Big':'Small'}
 function getColors(n){
@@ -130,6 +133,28 @@ const num=parseInt(n);
 if(num===0)return['red','violet'];
 if(num===5)return['green','violet'];
 return num%2===0?['red']:['green'];
+}
+
+function savePeriods(data){
+try{
+const stored={periods:data,timestamp:Date.now()};
+sessionStorage.setItem('wingoPeriods',JSON.stringify(stored));
+}catch(e){
+console.error('Save error:',e);
+}
+}
+
+function loadSavedPeriods(){
+try{
+const stored=sessionStorage.getItem('wingoPeriods');
+if(stored){
+const parsed=JSON.parse(stored);
+return parsed.periods||[];
+}
+}catch(e){
+console.error('Load error:',e);
+}
+return[];
 }
 
 function savePatterns(data){
@@ -171,8 +196,34 @@ const processed=gameList.map(item=>({
 period:String(item.issue||item.period||item.issueNo||item.periodId||item.issueNumber||''),
 num:String(item.result||item.number||item.num||item.openResult||'0')
 }));
-savePatterns(processed);
-const last10=processed.slice(0,10);
+
+// Load saved periods from memory
+const savedData=loadSavedPeriods();
+if(savedData.length>0){
+allPeriods=savedData;
+}
+
+// Merge new data with existing
+processed.forEach(newItem=>{
+const exists=allPeriods.find(p=>p.period===newItem.period);
+if(!exists){
+allPeriods.unshift(newItem);
+}
+});
+
+// Keep only last 300 periods
+if(allPeriods.length>300){
+allPeriods=allPeriods.slice(0,300);
+}
+
+// Save to memory
+savePeriods(allPeriods);
+
+// Update data count display
+document.getElementById('dataCount').textContent=`Total Periods Stored: ${allPeriods.length}/300`;
+
+savePatterns(allPeriods);
+const last10=allPeriods.slice(0,10);
 const last10Sizes=last10.map(d=>getSize(d.num));
 const patternContainer=document.getElementById('historyPattern');
 patternContainer.innerHTML='';
@@ -182,8 +233,8 @@ div.className=`history-item history-${size.toLowerCase()}`;
 div.innerHTML=`<div class="history-label">#${idx+1}</div><div class="history-value">${size}</div>`;
 patternContainer.appendChild(div);
 });
-const currentPeriod=processed[0].period;
-const currentNum=processed[0].num;
+const currentPeriod=allPeriods[0].period;
+const currentNum=allPeriods[0].num;
 const currentSize=getSize(currentNum);
 if(lastPeriod&&lastPeriod!==currentPeriod){
 if(currentPred){
@@ -202,7 +253,7 @@ lastLossPattern=activePatternIdx;
 }
 }
 lastPeriod=currentPeriod;
-const last2=processed.slice(0,2);
+const last2=allPeriods.slice(0,2);
 const match=findMatch(last2);
 if(match){
 currentPred={prediction:match.next,confidence:match.conf};
@@ -247,7 +298,7 @@ document.getElementById('totalGames').textContent=totalG;
 document.getElementById('accuracy').textContent=accRate+'%';
 const tbody=document.getElementById('tableBody');
 tbody.innerHTML='';
-processed.slice(0,20).forEach(item=>{
+allPeriods.slice(0,20).forEach(item=>{
 const period=item.period;
 const num=item.num;
 const size=getSize(num);
