@@ -1,36 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>WinGo Pro Signal</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;position:relative;overflow-x:hidden}
-body::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");z-index:0;opacity:.3}
-.container{max-width:900px;margin:0 auto;position:relative;z-index:1}
-.header{text-align:center;margin-bottom:30px;background:rgba(255,255,255,.95);padding:30px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;overflow:hidden}
-.header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,.1),transparent);animation:shine 3s infinite}
-@keyframes shine{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px}
+.container{max-width:900px;margin:0 auto}
+.header{text-align:center;margin-bottom:30px;background:rgba(255,255,255,.95);padding:30px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .logo{font-size:42px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;margin-bottom:10px;letter-spacing:2px}
 .subtitle{color:#666;font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:600}
-.prediction-box{background:rgba(255,255,255,.95);border-radius:20px;padding:40px;margin-bottom:25px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;overflow:hidden}
-.prediction-box::after{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#667eea,#764ba2,#f093fb);animation:loading 2s ease-in-out infinite}
-@keyframes loading{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+.prediction-box{background:rgba(255,255,255,.95);border-radius:20px;padding:40px;margin-bottom:25px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .pred-title{text-align:center;color:#764ba2;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:25px}
-.pred-result{text-align:center;font-size:72px;font-weight:900;margin-bottom:20px;text-transform:uppercase;letter-spacing:8px;animation:popIn .6s cubic-bezier(0.68,-0.55,0.265,1.55)}
-@keyframes popIn{0%{opacity:0;transform:scale(.3) rotate(-10deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
-.pred-big{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 8px rgba(245,87,108,.3))}
-.pred-small{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 8px rgba(79,172,254,.3))}
+.pred-result{text-align:center;font-size:72px;font-weight:900;margin-bottom:20px;text-transform:uppercase;letter-spacing:8px}
+.pred-big{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.pred-small{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .confidence-info{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:20px;flex-wrap:wrap}
-.conf-badge{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:12px 30px;border-radius:50px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:1px;box-shadow:0 10px 25px rgba(102,126,234,.4)}
+.conf-badge{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:12px 30px;border-radius:50px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:1px}
 .pattern-badge{background:linear-gradient(135deg,#00f2fe 0%,#4facfe 100%);color:white;padding:12px 25px;border-radius:50px;font-weight:700;font-size:13px}
-.loss-indicator{background:linear-gradient(135deg,#f5576c 0%,#f093fb 100%);color:white;padding:12px 25px;border-radius:50px;font-weight:700;font-size:13px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.loss-indicator{background:linear-gradient(135deg,#f5576c 0%,#f093fb 100%);color:white;padding:12px 25px;border-radius:50px;font-weight:700;font-size:13px}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px;margin-bottom:25px}
-.stat-card{background:rgba(255,255,255,.95);border-radius:15px;padding:25px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2);transition:all .3s ease;position:relative;overflow:hidden}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#667eea,#764ba2)}
-.stat-card:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.3)}
+.stat-card{background:rgba(255,255,255,.95);border-radius:15px;padding:25px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}
 .stat-label{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:600}
 .stat-value{font-size:36px;font-weight:900;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .stat-win{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -38,8 +29,7 @@ body::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;backgrou
 .history-section{background:rgba(255,255,255,.95);border-radius:20px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin-bottom:25px}
 .section-title{font-size:20px;font-weight:800;color:#764ba2;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;text-align:center}
 .history-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:15px;margin-bottom:20px}
-.history-item{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);border-radius:12px;padding:15px;text-align:center;transition:all .3s ease;border:3px solid transparent}
-.history-item:hover{transform:scale(1.05);border-color:#667eea}
+.history-item{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);border-radius:12px;padding:15px;text-align:center}
 .history-big{border-left:5px solid #f5576c}
 .history-small{border-left:5px solid #4facfe}
 .history-label{font-size:11px;color:#666;text-transform:uppercase;margin-bottom:5px;font-weight:600}
@@ -48,8 +38,7 @@ body::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;backgrou
 table{width:100%;border-collapse:collapse}
 thead{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
 th{padding:18px 12px;text-align:center;font-weight:700;color:white;font-size:13px;text-transform:uppercase;letter-spacing:1px}
-tbody tr{transition:all .3s ease;border-bottom:1px solid #f0f0f0}
-tbody tr:hover{background:linear-gradient(135deg,rgba(102,126,234,.1) 0%,rgba(118,75,162,.1) 100%);transform:scale(1.01)}
+tbody tr{border-bottom:1px solid #f0f0f0}
 td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600}
 .period-cell{font-family:'Courier New',monospace;font-size:12px;color:#666}
 .num-cell{font-size:28px;font-weight:900}
@@ -64,13 +53,8 @@ td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600
 .result-badge{padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}
 .result-win{background:#4facfe;color:white}
 .result-loss{background:#f5576c;color:white}
-.refresh-btn{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:18px 35px;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(102,126,234,.5);display:flex;align-items:center;gap:10px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1px}
-.refresh-btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(102,126,234,.7)}
-.refresh-btn:active{transform:translateY(-1px)}
-.refresh-icon{font-size:20px;transition:transform .5s}
-.refresh-icon.spin{animation:rotate .5s linear}
-@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.time-display{text-align:center;margin-top:20px;padding:15px;background:rgba(255,255,255,.2);border-radius:15px;backdrop-filter:blur(10px)}
+.refresh-btn{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:18px 35px;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(102,126,234,.5);z-index:1000;text-transform:uppercase;letter-spacing:1px}
+.time-display{text-align:center;margin-top:20px;padding:15px;background:rgba(255,255,255,.2);border-radius:15px}
 .current-time{font-size:32px;font-weight:900;color:white;text-shadow:0 2px 10px rgba(0,0,0,.3);letter-spacing:2px}
 .loading{text-align:center;padding:20px;color:#764ba2;font-size:16px;font-weight:600}
 @media (max-width:768px){
@@ -78,9 +62,6 @@ td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600
 .pred-result{font-size:48px;letter-spacing:4px}
 .stats-grid{grid-template-columns:repeat(2,1fr)}
 .history-grid{grid-template-columns:repeat(3,1fr)}
-.refresh-btn{bottom:20px;right:20px;padding:15px 25px;font-size:14px}
-th,td{padding:12px 8px;font-size:11px}
-.num-cell{font-size:22px}
 }
 </style>
 </head>
@@ -95,8 +76,8 @@ th,td{padding:12px 8px;font-size:11px}
 <div class="pred-result" id="predResult"><div class="loading">Analyzing...</div></div>
 <div class="confidence-info">
 <div class="conf-badge" id="confBadge">Calculating...</div>
-<div class="pattern-badge" id="patternBadge" style="display:none">Pattern Match: <span id="patternMatch">0</span>%</div>
-<div class="loss-indicator" id="lossIndicator" style="display:none">⚠️ Loss Streak: <span id="lossCount">0</span></div>
+<div class="pattern-badge" id="patternBadge" style="display:none"></div>
+<div class="loss-indicator" id="lossIndicator" style="display:none"></div>
 </div>
 </div>
 <div class="stats-grid">
@@ -117,7 +98,7 @@ th,td{padding:12px 8px;font-size:11px}
 <div class="stat-value" id="accuracy">0%</div>
 </div>
 <div class="stat-card">
-<div class="stat-label">Patterns Stored</div>
+<div class="stat-label">Patterns</div>
 <div class="stat-value" id="patternCount">0</div>
 </div>
 </div>
@@ -145,15 +126,13 @@ th,td{padding:12px 8px;font-size:11px}
 <div class="current-time" id="currentTime">00:00:00</div>
 </div>
 </div>
-<button class="refresh-btn" onclick="refreshData()">
-<span class="refresh-icon" id="refreshIcon">↻</span>
-<span>Refresh</span>
-</button>
+<button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
 <script>
 const API='https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json';
-let patterns=[],history=[],pred=null,lastP=null,lossStreak=0,allData=[];
+let patterns={},history=[],pred=null,lastP=null,lossStreak=0,allData=[];
 
 function getSize(n){return parseInt(n)>=5?'Big':'Small'}
+
 function getColors(n){
 const x=parseInt(n);
 if(x===0)return['red','violet'];
@@ -161,21 +140,23 @@ if(x===5)return['green','violet'];
 return x%2===0?['red']:['green'];
 }
 
-function arrEq(a,b){
-if(a.length!==b.length)return false;
-for(let i=0;i<a.length;i++)if(a[i]!==b[i])return false;
-return true;
-}
+function arrToKey(a){return a.join('-')}
 
 function findBestPattern(cur){
-let best=null,maxMatch=0,maxConf=0;
-for(let p of patterns){
-if(arrEq(p.seq,cur)){
-const conf=Math.min(95,70+p.wins*2);
-if(conf>maxConf){maxConf=conf;best=p;}
+const key=arrToKey(cur);
+if(patterns[key]){
+const p=patterns[key];
+let bestNext=null,maxWins=0;
+for(let next in p){
+if(p[next].w>maxWins){maxWins=p[next].w;bestNext=next;}
+}
+if(bestNext&&maxWins>0){
+const total=p[bestNext].w+p[bestNext].l;
+const acc=Math.round((p[bestNext].w/total)*100);
+return{pred:bestNext,conf:Math.min(95,60+maxWins*3),match:acc};
 }
 }
-return best?{pred:best.next,conf:maxConf,match:100}:null;
+return null;
 }
 
 function calcPred(last10){
@@ -200,20 +181,16 @@ return{pred:p,conf:c,match:best?best.match:0};
 }
 
 function savePattern(seq,next,win){
-let found=false;
-for(let p of patterns){
-if(arrEq(p.seq,seq)&&p.next===next){
-if(win)p.wins++;else p.losses++;
-found=true;break;
-}
-}
-if(!found)patterns.push({seq:[...seq],next:next,wins:win?1:0,losses:win?0:1});
-if(patterns.length>300)patterns=patterns.slice(-300);
+const key=arrToKey(seq);
+if(!patterns[key])patterns[key]={};
+if(!patterns[key][next])patterns[key][next]={w:0,l:0};
+if(win)patterns[key][next].w++;
+else patterns[key][next].l++;
 }
 
 async function loadData(){
 try{
-const r=await fetch(`${API}?ts=${Date.now()}`);
+const r=await fetch(API+'?ts='+Date.now());
 const d=await r.json();
 let list=[];
 if(d&&d.data&&d.data.list)list=d.data.list;
@@ -226,17 +203,14 @@ return;
 }
 
 allData=list.slice(0,300);
-const last10=allData.slice(0,10).map(i=>{
-const n=String(i.result||i.number||i.num||i.openResult||'0');
-return getSize(n);
-});
+const last10=allData.slice(0,10).map(i=>getSize(String(i.result||i.number||i.num||i.openResult||'0')));
 
 const pDiv=document.getElementById('historyPattern');
 pDiv.innerHTML='';
 last10.forEach((s,i)=>{
 const d=document.createElement('div');
-d.className=`history-item history-${s.toLowerCase()}`;
-d.innerHTML=`<div class="history-label">#${i+1}</div><div class="history-value">${s}</div>`;
+d.className='history-item history-'+(s==='Big'?'big':'small');
+d.innerHTML='<div class="history-label">#'+(i+1)+'</div><div class="history-value">'+s+'</div>';
 pDiv.appendChild(d);
 });
 
@@ -266,20 +240,19 @@ const pRes=document.getElementById('predResult');
 const cBadge=document.getElementById('confBadge');
 const pBadge=document.getElementById('patternBadge');
 const lInd=document.getElementById('lossIndicator');
-const lCnt=document.getElementById('lossCount');
 
 if(pred){
-pRes.innerHTML=`<span class="pred-${pred.pred.toLowerCase()}">${pred.pred}</span>`;
-cBadge.textContent=`Confidence: ${pred.conf}%`;
+pRes.innerHTML='<span class="pred-'+(pred.pred==='Big'?'big':'small')+'">'+pred.pred+'</span>';
+cBadge.textContent='Confidence: '+pred.conf+'%';
 if(pred.match>0){
 pBadge.style.display='block';
-document.getElementById('patternMatch').textContent=pred.match;
+pBadge.textContent='Pattern Match: '+pred.match+'%';
 }else{
 pBadge.style.display='none';
 }
 if(lossStreak>=2){
 lInd.style.display='block';
-lCnt.textContent=lossStreak;
+lInd.textContent='⚠️ Loss Streak: '+lossStreak;
 }else{
 lInd.style.display='none';
 }
@@ -294,7 +267,7 @@ document.getElementById('winCount').textContent=wC;
 document.getElementById('lossCountStat').textContent=lC;
 document.getElementById('totalGames').textContent=tG;
 document.getElementById('accuracy').textContent=acc+'%';
-document.getElementById('patternCount').textContent=patterns.length;
+document.getElementById('patternCount').textContent=Object.keys(patterns).length;
 
 const tb=document.getElementById('tableBody');
 tb.innerHTML='';
@@ -315,13 +288,13 @@ td2.className='num-cell';
 td2.textContent=n;
 
 const td3=document.createElement('td');
-td3.innerHTML=`<span class="size-badge size-${s.toLowerCase()}">${s}</span>`;
+td3.innerHTML='<span class="size-badge size-'+(s==='Big'?'big':'small')+'">'+s+'</span>';
 
 const td4=document.createElement('td');
 td4.className='color-dots';
 c.forEach(x=>{
 const dot=document.createElement('span');
-dot.className=`dot dot-${x}`;
+dot.className='dot dot-'+x;
 td4.appendChild(dot);
 });
 
@@ -351,14 +324,11 @@ const n=new Date();
 const h=String(n.getHours()).padStart(2,'0');
 const m=String(n.getMinutes()).padStart(2,'0');
 const s=String(n.getSeconds()).padStart(2,'0');
-document.getElementById('currentTime').textContent=`${h}:${m}:${s}`;
+document.getElementById('currentTime').textContent=h+':'+m+':'+s;
 if(s==='59')setTimeout(loadData,1000);
 }
 
 function refreshData(){
-const i=document.getElementById('refreshIcon');
-i.classList.add('spin');
-setTimeout(()=>i.classList.remove('spin'),500);
 loadData();
 }
 
