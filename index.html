@@ -129,7 +129,7 @@ td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600
 <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
 <script>
 const API='https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json';
-let patternGroups=[],history=[],pred=null,lastP=null,lossStreak=0,allData=[],matchedPatterns=0;
+let patternDB=[],gameHistory=[],currentPred=null,lastPeriod=null,lossStreak=0;
 
 function getSize(n){return parseInt(n)>=5?'Big':'Small'}
 
@@ -140,185 +140,227 @@ if(x===5)return['green','violet'];
 return x%2===0?['red']:['green'];
 }
 
-function getLastDigit(period){
-const s=String(period);
-return parseInt(s.charAt(s.length-1));
+function getLastDigit(p){
+const s=String(p);
+return parseInt(s[s.length-1]);
 }
 
-function savePatternGroups(data){
-patternGroups=[];
-for(let i=0;i+10<=data.length;i+=10){
-const group=data.slice(i,i+10);
-const pattern=group.map(item=>getSize(String(item.result||item.number||item.num||item.openResult||'0')));
+function buildPatternGroups(data){
+patternDB=[];
+let i=0;
+while(i+10<data.length){
+const group=[];
+for(let j=0;j<10;j++){
+const item=data[i+j];
+const period=String(item.issue||item.period||item.issueNo||item.periodId||'');
+const num=String(item.result||item.number||item.num||item.openResult||'0');
+const size=getSize(num);
+group.push({period:period,number:num,size:size});
+}
 const nextItem=data[i+10];
 if(nextItem){
-const nextSize=getSize(String(nextItem.result||nextItem.number||nextItem.num||nextItem.openResult||'0'));
-patternGroups.push({pattern:pattern,next:nextSize,startPeriod:group[0].issue||group[0].period});
+const nextPeriod=String(nextItem.issue||nextItem.period||nextItem.issueNo||nextItem.periodId||'');
+const nextNum=String(nextItem.result||nextItem.number||nextItem.num||nextItem.openResult||'0');
+const nextSize=getSize(nextNum);
+patternDB.push({
+pattern:group.map(g=>g.size),
+nextSize:nextSize,
+startPeriod:group[0].period,
+endPeriod:group[9].period
+});
 }
+i+=10;
 }
+console.log('Pattern groups built:',patternDB.length);
 }
 
-function findMatchingPatterns(last2){
-if(last2.length<2)return[];
+function findMatchingPatterns(recent2){
+if(recent2.length<2)return[];
 const matches=[];
-for(let i=0;i<patternGroups.length;i++){
-const pg=patternGroups[i];
-if(pg.pattern.length>=2){
-const pg2=[pg.pattern[0],pg.pattern[1]];
-if(pg2[0]===last2[0]&&pg2[1]===last2[1]){
-matches.push(pg);
-}
+for(let i=0;i<patternDB.length;i++){
+const p=patternDB[i];
+if(p.pattern.length>=2&&p.pattern[0]===recent2[0]&&p.pattern[1]===recent2[1]){
+matches.push(p);
 }
 }
 return matches;
 }
 
-function calcPred(last10){
-if(last10.length<10)return{pred:'Big',conf:50,matches:0};
-const last2=[last10[0],last10[1]];
-const matches=findMatchingPatterns(last2);
-matchedPatterns=matches.length;
+function calculatePrediction(last10Sizes){
+if(last10Sizes.length<10)return{prediction:'Big',confidence:50,matched:0};
+const recent2=[last10Sizes[0],last10Sizes[1]];
+const matches=findMatchingPatterns(recent2);
+console.log('Matches found:',matches.length);
 
 if(matches.length>0){
-let bigC=0,smallC=0;
+let bigCount=0,smallCount=0;
 matches.forEach(m=>{
-if(m.next==='Big')bigC++;
-else smallC++;
+if(m.nextSize==='Big')bigCount++;
+else smallCount++;
 });
-const pred=bigC>smallC?'Big':'Small';
-const total=bigC+smallC;
-const conf=Math.min(95,Math.round((Math.max(bigC,smallC)/total)*100));
-return{pred:pred,conf:conf,matches:matches.length};
+const pred=bigCount>smallCount?'Big':'Small';
+const total=bigCount+smallCount;
+const conf=Math.min(95,Math.round((Math.max(bigCount,smallCount)/total)*100));
+return{prediction:pred,confidence:conf,matched:matches.length};
 }
 
 let bC=0,sC=0;
-last10.forEach(s=>{if(s==='Big')bC++;else sC++;});
+last10Sizes.forEach(s=>{if(s==='Big')bC++;else sC++;});
 
 let p,c;
-const rev=lossStreak>=2&&(Math.floor(lossStreak/2)%2===1);
-if(rev){
+if(lossStreak>=2){
 p=bC>sC?'Small':'Big';
-c=75+Math.min(lossStreak*3,20);
+c=70+Math.min(lossStreak*5,20);
 }else{
 p=bC>sC?'Big':'Small';
 const d=Math.abs(bC-sC);
-if(d>=7)c=92;else if(d>=5)c=85;else if(d>=3)c=75;else c=60;
+if(d>=7)c=90;else if(d>=5)c=80;else if(d>=3)c=70;else c=60;
 }
-return{pred:p,conf:c,matches:0};
+return{prediction:p,confidence:c,matched:0};
 }
 
 async function loadData(){
 try{
-const r=await fetch(API+'?ts='+Date.now());
-const d=await r.json();
-let list=[];
-if(d&&d.data&&d.data.list)list=d.data.list;
-else if(d&&d.list)list=d.list;
-else if(Array.isArray(d))list=d;
+const response=await fetch(API+'?t='+Date.now());
+const data=await response.json();
+console.log('API Response:',data);
 
-if(list.length===0){
-document.getElementById('tableBody').innerHTML='<tr><td colspan="5" class="loading">No data</td></tr>';
+let gameList=[];
+if(data&&data.data&&data.data.list){
+gameList=data.data.list;
+}else if(data&&data.list){
+gameList=data.list;
+}else if(Array.isArray(data)){
+gameList=data;
+}
+
+if(gameList.length===0){
+document.getElementById('tableBody').innerHTML='<tr><td colspan="5" class="loading">No data available</td></tr>';
 return;
 }
 
-allData=list.slice(0,500);
+buildPatternGroups(gameList);
 
-savePatternGroups(allData);
-
-const last10=allData.slice(0,10).map(i=>getSize(String(i.result||i.number||i.num||i.openResult||'0')));
-
-const pDiv=document.getElementById('historyPattern');
-pDiv.innerHTML='';
-last10.forEach((s,i)=>{
-const d=document.createElement('div');
-d.className='history-item history-'+(s==='Big'?'big':'small');
-d.innerHTML='<div class="history-label">#'+(i+1)+'</div><div class="history-value">'+s+'</div>';
-pDiv.appendChild(d);
+const last10Items=gameList.slice(0,10);
+const last10Sizes=last10Items.map(item=>{
+const num=String(item.result||item.number||item.num||item.openResult||'0');
+return getSize(num);
 });
 
-const curP=String(allData[0].issue||allData[0].period||allData[0].issueNo||allData[0].periodId||'');
-const curN=String(allData[0].result||allData[0].number||allData[0].num||allData[0].openResult||'0');
-const curS=getSize(curN);
+const patternDiv=document.getElementById('historyPattern');
+patternDiv.innerHTML='';
+last10Sizes.forEach((sz,idx)=>{
+const div=document.createElement('div');
+div.className='history-item '+(sz==='Big'?'history-big':'history-small');
+div.innerHTML='<div class="history-label">#'+(idx+1)+'</div><div class="history-value">'+sz+'</div>';
+patternDiv.appendChild(div);
+});
 
-if(lastP&&lastP!==curP){
-if(pred){
-const ok=pred.pred===curS;
-history.unshift({period:curP,predicted:pred.pred,actual:curS,result:ok?'Win':'Loss',number:curN});
-if(history.length>300)history=history.slice(0,300);
+const currentItem=gameList[0];
+const currentPeriod=String(currentItem.issue||currentItem.period||currentItem.issueNo||currentItem.periodId||'');
+const currentNumber=String(currentItem.result||currentItem.number||currentItem.num||currentItem.openResult||'0');
+const currentSize=getSize(currentNumber);
 
-if(ok)lossStreak=0;else lossStreak++;
+console.log('Current Period:',currentPeriod,'Number:',currentNumber,'Size:',currentSize);
+
+if(lastPeriod&&lastPeriod!==currentPeriod){
+if(currentPred){
+const isWin=currentPred.prediction===currentSize;
+gameHistory.unshift({
+period:currentPeriod,
+number:currentNumber,
+predicted:currentPred.prediction,
+actual:currentSize,
+result:isWin?'Win':'Loss'
+});
+if(gameHistory.length>500)gameHistory=gameHistory.slice(0,500);
+console.log('Game result:',isWin?'WIN':'LOSS');
+if(isWin)lossStreak=0;
+else lossStreak++;
 }
 }
-lastP=curP;
 
-pred=calcPred(last10);
+lastPeriod=currentPeriod;
 
-const pRes=document.getElementById('predResult');
-const cBadge=document.getElementById('confBadge');
-const pBadge=document.getElementById('patternBadge');
-const lInd=document.getElementById('lossIndicator');
+currentPred=calculatePrediction(last10Sizes);
+console.log('Prediction:',currentPred);
 
-if(pred){
-pRes.innerHTML='<span class="pred-'+(pred.pred==='Big'?'big':'small')+'">'+pred.pred+'</span>';
-cBadge.textContent='Confidence: '+pred.conf+'%';
-if(pred.matches>0){
-pBadge.style.display='block';
-pBadge.textContent='Matched: '+pred.matches+' Patterns';
+const predResult=document.getElementById('predResult');
+const confBadge=document.getElementById('confBadge');
+const patternBadge=document.getElementById('patternBadge');
+const lossInd=document.getElementById('lossIndicator');
+
+if(currentPred){
+predResult.innerHTML='<span class="pred-'+(currentPred.prediction==='Big'?'big':'small')+'">'+currentPred.prediction+'</span>';
+confBadge.textContent='Confidence: '+currentPred.confidence+'%';
+
+if(currentPred.matched>0){
+patternBadge.style.display='block';
+patternBadge.textContent='Matched: '+currentPred.matched+' Patterns';
 }else{
-pBadge.style.display='none';
+patternBadge.style.display='none';
 }
+
 if(lossStreak>=2){
-lInd.style.display='block';
-lInd.textContent='⚠️ Loss Streak: '+lossStreak;
+lossInd.style.display='block';
+lossInd.textContent='⚠️ Loss: '+lossStreak;
 }else{
-lInd.style.display='none';
+lossInd.style.display='none';
 }
 }
 
-let wC=0,lC=0;
-history.forEach(h=>{if(h.result==='Win')wC++;else if(h.result==='Loss')lC++;});
-const tG=wC+lC;
-const acc=tG>0?Math.round((wC/tG)*100):0;
+let winC=0,lossC=0;
+gameHistory.forEach(g=>{
+if(g.result==='Win')winC++;
+else lossC++;
+});
+const totalG=winC+lossC;
+const accRate=totalG>0?Math.round((winC/totalG)*100):0;
 
-document.getElementById('winCount').textContent=wC;
-document.getElementById('lossCountStat').textContent=lC;
-document.getElementById('totalGames').textContent=tG;
-document.getElementById('accuracy').textContent=acc+'%';
-document.getElementById('patternCount').textContent=patternGroups.length;
+document.getElementById('winCount').textContent=winC;
+document.getElementById('lossCountStat').textContent=lossC;
+document.getElementById('totalGames').textContent=totalG;
+document.getElementById('accuracy').textContent=accRate+'%';
+document.getElementById('patternCount').textContent=patternDB.length;
 
-const tb=document.getElementById('tableBody');
-tb.innerHTML='';
-allData.slice(0,20).forEach(i=>{
-const p=String(i.issue||i.period||i.issueNo||i.periodId||'N/A');
-const n=String(i.result||i.number||i.num||i.openResult||'0');
-const s=getSize(n);
-const c=getColors(parseInt(n));
-const m=history.find(h=>String(h.period)===p);
+const tbody=document.getElementById('tableBody');
+tbody.innerHTML='';
+gameList.slice(0,20).forEach(item=>{
+const period=String(item.issue||item.period||item.issueNo||item.periodId||item.issueNumber||'N/A');
+const num=String(item.result||item.number||item.num||item.openResult||'0');
+const size=getSize(num);
+const colors=getColors(parseInt(num));
+
+const matchedGame=gameHistory.find(g=>g.period===period);
+
 const tr=document.createElement('tr');
 
 const td1=document.createElement('td');
 td1.className='period-cell';
-td1.textContent=p;
+td1.textContent=period;
 
 const td2=document.createElement('td');
 td2.className='num-cell';
-td2.textContent=n;
+td2.textContent=num;
 
 const td3=document.createElement('td');
-td3.innerHTML='<span class="size-badge size-'+(s==='Big'?'big':'small')+'">'+s+'</span>';
+td3.innerHTML='<span class="size-badge size-'+(size==='Big'?'big':'small')+'">'+size+'</span>';
 
 const td4=document.createElement('td');
 td4.className='color-dots';
-c.forEach(x=>{
+colors.forEach(color=>{
 const dot=document.createElement('span');
-dot.className='dot dot-'+x;
+dot.className='dot dot-'+color;
 td4.appendChild(dot);
 });
 
 const td5=document.createElement('td');
-if(m){
-if(m.result==='Win')td5.innerHTML='<span class="result-badge result-win">✓ WIN</span>';
-else td5.innerHTML='<span class="result-badge result-loss">✗ LOSS</span>';
+if(matchedGame){
+if(matchedGame.result==='Win'){
+td5.innerHTML='<span class="result-badge result-win">✓ WIN</span>';
+}else{
+td5.innerHTML='<span class="result-badge result-loss">✗ LOSS</span>';
+}
 }else{
 td5.textContent='-';
 }
@@ -328,27 +370,35 @@ tr.appendChild(td2);
 tr.appendChild(td3);
 tr.appendChild(td4);
 tr.appendChild(td5);
-tb.appendChild(tr);
+tbody.appendChild(tr);
 });
-}catch(e){
-console.error('Error:',e);
-document.getElementById('tableBody').innerHTML='<tr><td colspan="5" class="loading">Error loading</td></tr>';
+
+}catch(error){
+console.error('Error loading data:',error);
+document.getElementById('tableBody').innerHTML='<tr><td colspan="5" class="loading">Error: '+error.message+'</td></tr>';
 }
 }
 
 function updateTime(){
-const n=new Date();
-const h=String(n.getHours()).padStart(2,'0');
-const m=String(n.getMinutes()).padStart(2,'0');
-const s=String(n.getSeconds()).padStart(2,'0');
+const now=new Date();
+const h=String(now.getHours()).padStart(2,'0');
+const m=String(now.getMinutes()).padStart(2,'0');
+const s=String(now.getSeconds()).padStart(2,'0');
 document.getElementById('currentTime').textContent=h+':'+m+':'+s;
-if(s==='59')setTimeout(loadData,1000);
+if(s==='59'){
+setTimeout(()=>{
+console.log('Auto refresh at 59 seconds');
+loadData();
+},1000);
+}
 }
 
 function refreshData(){
+console.log('Manual refresh');
 loadData();
 }
 
+console.log('App initialized');
 loadData();
 setInterval(updateTime,1000);
 updateTime();
