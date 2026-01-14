@@ -129,7 +129,7 @@ td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600
 <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
 <script>
 const API='https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json';
-let patterns={},history=[],pred=null,lastP=null,lossStreak=0,allData=[];
+let patternGroups=[],history=[],pred=null,lastP=null,lossStreak=0,allData=[],matchedPatterns=0;
 
 function getSize(n){return parseInt(n)>=5?'Big':'Small'}
 
@@ -140,29 +140,56 @@ if(x===5)return['green','violet'];
 return x%2===0?['red']:['green'];
 }
 
-function arrToKey(a){return a.join('-')}
+function getLastDigit(period){
+const s=String(period);
+return parseInt(s.charAt(s.length-1));
+}
 
-function findBestPattern(cur){
-const key=arrToKey(cur);
-if(patterns[key]){
-const p=patterns[key];
-let bestNext=null,maxWins=0;
-for(let next in p){
-if(p[next].w>maxWins){maxWins=p[next].w;bestNext=next;}
-}
-if(bestNext&&maxWins>0){
-const total=p[bestNext].w+p[bestNext].l;
-const acc=Math.round((p[bestNext].w/total)*100);
-return{pred:bestNext,conf:Math.min(95,60+maxWins*3),match:acc};
+function savePatternGroups(data){
+patternGroups=[];
+for(let i=0;i+10<=data.length;i+=10){
+const group=data.slice(i,i+10);
+const pattern=group.map(item=>getSize(String(item.result||item.number||item.num||item.openResult||'0')));
+const nextItem=data[i+10];
+if(nextItem){
+const nextSize=getSize(String(nextItem.result||nextItem.number||nextItem.num||nextItem.openResult||'0'));
+patternGroups.push({pattern:pattern,next:nextSize,startPeriod:group[0].issue||group[0].period});
 }
 }
-return null;
+}
+
+function findMatchingPatterns(last2){
+if(last2.length<2)return[];
+const matches=[];
+for(let i=0;i<patternGroups.length;i++){
+const pg=patternGroups[i];
+if(pg.pattern.length>=2){
+const pg2=[pg.pattern[0],pg.pattern[1]];
+if(pg2[0]===last2[0]&&pg2[1]===last2[1]){
+matches.push(pg);
+}
+}
+}
+return matches;
 }
 
 function calcPred(last10){
-if(last10.length<10)return{pred:'Big',conf:50,match:0};
-const best=findBestPattern(last10);
-if(best&&lossStreak<2)return best;
+if(last10.length<10)return{pred:'Big',conf:50,matches:0};
+const last2=[last10[0],last10[1]];
+const matches=findMatchingPatterns(last2);
+matchedPatterns=matches.length;
+
+if(matches.length>0){
+let bigC=0,smallC=0;
+matches.forEach(m=>{
+if(m.next==='Big')bigC++;
+else smallC++;
+});
+const pred=bigC>smallC?'Big':'Small';
+const total=bigC+smallC;
+const conf=Math.min(95,Math.round((Math.max(bigC,smallC)/total)*100));
+return{pred:pred,conf:conf,matches:matches.length};
+}
 
 let bC=0,sC=0;
 last10.forEach(s=>{if(s==='Big')bC++;else sC++;});
@@ -177,15 +204,7 @@ p=bC>sC?'Big':'Small';
 const d=Math.abs(bC-sC);
 if(d>=7)c=92;else if(d>=5)c=85;else if(d>=3)c=75;else c=60;
 }
-return{pred:p,conf:c,match:best?best.match:0};
-}
-
-function savePattern(seq,next,win){
-const key=arrToKey(seq);
-if(!patterns[key])patterns[key]={};
-if(!patterns[key][next])patterns[key][next]={w:0,l:0};
-if(win)patterns[key][next].w++;
-else patterns[key][next].l++;
+return{pred:p,conf:c,matches:0};
 }
 
 async function loadData(){
@@ -202,7 +221,10 @@ document.getElementById('tableBody').innerHTML='<tr><td colspan="5" class="loadi
 return;
 }
 
-allData=list.slice(0,300);
+allData=list.slice(0,500);
+
+savePatternGroups(allData);
+
 const last10=allData.slice(0,10).map(i=>getSize(String(i.result||i.number||i.num||i.openResult||'0')));
 
 const pDiv=document.getElementById('historyPattern');
@@ -224,11 +246,6 @@ const ok=pred.pred===curS;
 history.unshift({period:curP,predicted:pred.pred,actual:curS,result:ok?'Win':'Loss',number:curN});
 if(history.length>300)history=history.slice(0,300);
 
-if(allData.length>=11){
-const seq10=allData.slice(1,11).map(i=>getSize(String(i.result||i.number||i.num||i.openResult||'0')));
-savePattern(seq10,curS,ok);
-}
-
 if(ok)lossStreak=0;else lossStreak++;
 }
 }
@@ -244,9 +261,9 @@ const lInd=document.getElementById('lossIndicator');
 if(pred){
 pRes.innerHTML='<span class="pred-'+(pred.pred==='Big'?'big':'small')+'">'+pred.pred+'</span>';
 cBadge.textContent='Confidence: '+pred.conf+'%';
-if(pred.match>0){
+if(pred.matches>0){
 pBadge.style.display='block';
-pBadge.textContent='Pattern Match: '+pred.match+'%';
+pBadge.textContent='Matched: '+pred.matches+' Patterns';
 }else{
 pBadge.style.display='none';
 }
@@ -267,7 +284,7 @@ document.getElementById('winCount').textContent=wC;
 document.getElementById('lossCountStat').textContent=lC;
 document.getElementById('totalGames').textContent=tG;
 document.getElementById('accuracy').textContent=acc+'%';
-document.getElementById('patternCount').textContent=Object.keys(patterns).length;
+document.getElementById('patternCount').textContent=patternGroups.length;
 
 const tb=document.getElementById('tableBody');
 tb.innerHTML='';
