@@ -35,22 +35,22 @@ body::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;backgrou
 .stat-loss{background:linear-gradient(135deg,#f5576c 0%,#f093fb 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .history-section{background:rgba(255,255,255,.95);border-radius:20px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin-bottom:25px}
 .section-title{font-size:20px;font-weight:800;color:#764ba2;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;text-align:center}
-.history-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:15px;margin-bottom:20px}
-.history-item{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);border-radius:12px;padding:15px;text-align:center;transition:all .3s ease;border:3px solid transparent}
-.history-item:hover{transform:scale(1.05);border-color:#667eea}
-.history-big{border-left:5px solid #f5576c}
-.history-small{border-left:5px solid #4facfe}
-.history-label{font-size:11px;color:#666;text-transform:uppercase;margin-bottom:5px;font-weight:600}
-.history-value{font-size:22px;font-weight:900;color:#333}
+.match-info{background:rgba(255,215,0,.1);border-radius:15px;padding:15px;margin-top:15px;border:2px solid #ffd700}
+.match-title{font-size:14px;font-weight:700;color:#764ba2;margin-bottom:10px;text-align:center}
+.match-list{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.match-item{background:linear-gradient(135deg,#fff9e6 0%,#ffe8a3 100%);padding:8px 15px;border-radius:20px;font-size:12px;font-weight:600;color:#333;border:2px solid #ffd700}
 .table-wrapper{background:rgba(255,255,255,.95);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 table{width:100%;border-collapse:collapse}
 thead{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
 th{padding:18px 12px;text-align:center;font-weight:700;color:white;font-size:13px;text-transform:uppercase;letter-spacing:1px}
 tbody tr{transition:all .3s ease;border-bottom:1px solid #f0f0f0}
 tbody tr:hover{background:linear-gradient(135deg,rgba(102,126,234,.1) 0%,rgba(118,75,162,.1) 100%);transform:scale(1.01)}
+tbody tr.match-row{background:linear-gradient(135deg,rgba(255,215,0,.15) 0%,rgba(255,215,0,.25) 100%);border-left:5px solid #ffd700}
+tbody tr.match-row:hover{background:linear-gradient(135deg,rgba(255,215,0,.25) 0%,rgba(255,215,0,.35) 100%)}
 td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600}
 .period-cell{font-family:'Courier New',monospace;font-size:12px;color:#666}
 .num-cell{font-size:28px;font-weight:900}
+.num-cell.matched{color:#ff6b00;text-shadow:0 2px 8px rgba(255,107,0,.4);font-size:32px}
 .size-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
 .size-big{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white}
 .size-small{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:white}
@@ -62,6 +62,7 @@ td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600
 .result-badge{padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}
 .result-win{background:#4facfe;color:white}
 .result-loss{background:#f5576c;color:white}
+.match-badge{background:#ffd700;color:#333;padding:4px 10px;border-radius:15px;font-size:10px;font-weight:700;margin-left:5px}
 .refresh-btn{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:18px 35px;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(102,126,234,.5);display:flex;align-items:center;gap:10px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1px}
 .refresh-btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(102,126,234,.7)}
 .refresh-btn:active{transform:translateY(-1px)}
@@ -76,7 +77,6 @@ td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600
 .logo{font-size:32px}
 .pred-result{font-size:48px;letter-spacing:4px}
 .stats-grid{grid-template-columns:repeat(2,1fr)}
-.history-grid{grid-template-columns:repeat(3,1fr)}
 .refresh-btn{bottom:20px;right:20px;padding:15px 25px;font-size:14px}
 th,td{padding:12px 8px;font-size:11px}
 .num-cell{font-size:22px}
@@ -90,42 +90,59 @@ th,td{padding:12px 8px;font-size:11px}
 <div class="subtitle">Advanced Pattern Analyzer</div>
 <div class="data-count" id="dataCount">Loading data...</div>
 </div>
+
 <div class="prediction-box">
 <div class="pred-title">🎯 Next Prediction</div>
 <div class="pred-result" id="predResult"><div class="loading">Analyzing...</div></div>
 <div class="confidence-info">
 <div class="conf-badge" id="confBadge">Calculating...</div>
-<div class="pattern-badge" id="patternBadge" style="display:none">Match: <span id="patternMatch">0</span></div>
+<div class="pattern-badge" id="patternBadge" style="display:none">Matches: <span id="patternMatch">0</span></div>
 </div>
 </div>
+
 <div class="stats-grid">
 <div class="stat-card"><div class="stat-label">Total Win</div><div class="stat-value stat-win" id="winCount">0</div></div>
 <div class="stat-card"><div class="stat-label">Total Loss</div><div class="stat-value stat-loss" id="lossCountStat">0</div></div>
 <div class="stat-card"><div class="stat-label">Total Games</div><div class="stat-value" id="totalGames">0</div></div>
 <div class="stat-card"><div class="stat-label">Accuracy</div><div class="stat-value" id="accuracy">0%</div></div>
 </div>
+
 <div class="history-section">
-<div class="section-title">📊 Last 10 History Pattern</div>
-<div class="history-grid" id="historyPattern"></div>
+<div class="section-title">🔢 Number Pattern Analysis</div>
+<div id="numberPatternInfo" class="match-info">
+<div class="match-title">Last Number: <span id="lastNumber" style="font-size:20px;color:#f5576c">-</span> → Next Prediction</div>
+<div class="match-list" id="numberMatchList"></div>
 </div>
+</div>
+
+<div class="history-section">
+<div class="section-title">🎨 Color Pattern Analysis</div>
+<div id="colorPatternInfo" class="match-info">
+<div class="match-title">Last 3 Colors Pattern Match</div>
+<div class="match-list" id="colorMatchList"></div>
+</div>
+</div>
+
 <div class="table-wrapper">
 <table>
 <thead><tr><th>Period</th><th>Number</th><th>Size</th><th>Color</th><th>Result</th></tr></thead>
 <tbody id="tableBody"><tr><td colspan="5" class="loading">Loading data...</td></tr></tbody>
 </table>
 </div>
+
 <div class="time-display"><div class="current-time" id="currentTime">00:00:00</div></div>
 </div>
+
 <button class="refresh-btn" onclick="refreshData()"><span class="refresh-icon" id="refreshIcon">↻</span><span>Refresh</span></button>
+
 <script>
 const API='https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json';
-let patterns=[];
 let predHistory=[];
 let currentPred=null;
 let lastPeriod=null;
-let activePatternIdx=null;
-let lastLossPattern=null;
 let allPeriods=[];
+let numberMatches=[];
+let colorMatches=[];
 
 function getSize(n){return parseInt(n)>=5?'Big':'Small'}
 function getColors(n){
@@ -133,6 +150,10 @@ const num=parseInt(n);
 if(num===0)return['red','violet'];
 if(num===5)return['green','violet'];
 return num%2===0?['red']:['green'];
+}
+function getColorString(n){
+const colors=getColors(n);
+return colors.join(',');
 }
 
 let periodsStorage=[];
@@ -145,27 +166,46 @@ function loadSavedPeriods(){
 return periodsStorage;
 }
 
-function savePatterns(data){
-patterns=[];
-for(let i=0;i+10<=data.length;i+=10){
-const chunk=data.slice(i,i+10);
-const pat=chunk.map(d=>getSize(d.num));
-patterns.push({start:parseInt(chunk[0].period),pattern:pat,next:data[i+10]?getSize(data[i+10].num):null});
+function findNumberMatches(lastNum){
+if(!lastNum)return[];
+const matches=[];
+for(let i=0;i<allPeriods.length-1;i++){
+if(allPeriods[i].num===lastNum){
+const nextNum=allPeriods[i+1].num;
+matches.push({
+period:allPeriods[i].period,
+currentNum:lastNum,
+nextNum:nextNum,
+index:i
+});
 }
+}
+return matches;
 }
 
-function findMatch(last2){
-if(last2.length<2)return null;
-const s1=getSize(last2[0].num);
-const s2=getSize(last2[1].num);
-for(let i=0;i<patterns.length;i++){
-if(lastLossPattern===i)continue;
-const p=patterns[i];
-if(p.pattern.length>=2&&p.pattern[0]===s1&&p.pattern[1]===s2&&p.next){
-return{idx:i,next:p.next,conf:95};
+function findColorPatternMatches(last3Colors){
+if(!last3Colors||last3Colors.length<3)return[];
+const c1=last3Colors[0];
+const c2=last3Colors[1];
+const c3=last3Colors[2];
+const matches=[];
+for(let i=2;i<allPeriods.length-1;i++){
+const h1=getColorString(parseInt(allPeriods[i].num));
+const h2=getColorString(parseInt(allPeriods[i-1].num));
+const h3=getColorString(parseInt(allPeriods[i-2].num));
+if(h1===c1&&h2===c2&&h3===c3){
+const nextColor=getColorString(parseInt(allPeriods[i+1].num));
+matches.push({
+period:allPeriods[i].period,
+pattern:[c1,c2,c3],
+nextColor:nextColor,
+nextNum:allPeriods[i+1].num,
+index:i,
+positions:[i,i-1,i-2]
+});
 }
 }
-return null;
+return matches;
 }
 
 async function loadData(){
@@ -185,13 +225,11 @@ period:String(item.issue||item.period||item.issueNo||item.periodId||item.issueNu
 num:String(item.result||item.number||item.num||item.openResult||'0')
 }));
 
-// Load saved periods from memory
 const savedData=loadSavedPeriods();
 if(savedData.length>0){
 allPeriods=[...savedData];
 }
 
-// Merge new data with existing - Add new periods at the beginning
 const newPeriods=[];
 processed.forEach(item=>{
 const exists=allPeriods.find(p=>p.period===item.period);
@@ -200,85 +238,110 @@ newPeriods.push(item);
 }
 });
 
-// Add new periods at start
 if(newPeriods.length>0){
 allPeriods=[...newPeriods,...allPeriods];
 }
 
-// Keep only last 300 periods
-if(allPeriods.length>300){
-allPeriods=allPeriods.slice(0,300);
+if(allPeriods.length>500){
+allPeriods=allPeriods.slice(0,500);
 }
 
-// Save to memory
 savePeriods(allPeriods);
 
-// Update data count display
-document.getElementById('dataCount').textContent=`Total Periods Stored: ${allPeriods.length}/300`;
+document.getElementById('dataCount').textContent=`Total Periods Stored: ${allPeriods.length}/500`;
 
-savePatterns(allPeriods);
-const last10=allPeriods.slice(0,10);
-const last10Sizes=last10.map(d=>getSize(d.num));
-const patternContainer=document.getElementById('historyPattern');
-patternContainer.innerHTML='';
-last10Sizes.forEach((size,idx)=>{
-const div=document.createElement('div');
-div.className=`history-item history-${size.toLowerCase()}`;
-div.innerHTML=`<div class="history-label">#${idx+1}</div><div class="history-value">${size}</div>`;
-patternContainer.appendChild(div);
+const lastNum=allPeriods[0].num;
+numberMatches=findNumberMatches(lastNum);
+
+const last3Colors=allPeriods.slice(0,3).map(p=>getColorString(parseInt(p.num)));
+colorMatches=findColorPatternMatches(last3Colors);
+
+document.getElementById('lastNumber').textContent=lastNum;
+const numberMatchList=document.getElementById('numberMatchList');
+if(numberMatches.length>0){
+const nextNumFreq={};
+numberMatches.forEach(m=>{
+nextNumFreq[m.nextNum]=(nextNumFreq[m.nextNum]||0)+1;
 });
+const sortedNums=Object.entries(nextNumFreq).sort((a,b)=>b[1]-a[1]);
+numberMatchList.innerHTML='';
+sortedNums.forEach(([num,count])=>{
+const div=document.createElement('div');
+div.className='match-item';
+div.innerHTML=`Number <strong>${num}</strong>: ${count} times (${Math.round(count/numberMatches.length*100)}%)`;
+numberMatchList.appendChild(div);
+});
+}else{
+numberMatchList.innerHTML='<div class="match-item">No previous matches found</div>';
+}
+
+const colorMatchList=document.getElementById('colorMatchList');
+if(colorMatches.length>0){
+const nextColorFreq={};
+colorMatches.forEach(m=>{
+const key=`${m.nextColor} (${m.nextNum})`;
+nextColorFreq[key]=(nextColorFreq[key]||0)+1;
+});
+const sortedColors=Object.entries(nextColorFreq).sort((a,b)=>b[1]-a[1]);
+colorMatchList.innerHTML='';
+sortedColors.forEach(([colorInfo,count])=>{
+const div=document.createElement('div');
+div.className='match-item';
+div.innerHTML=`${colorInfo}: ${count} times (${Math.round(count/colorMatches.length*100)}%)`;
+colorMatchList.appendChild(div);
+});
+}else{
+colorMatchList.innerHTML='<div class="match-item">No color pattern matches found</div>';
+}
+
 const currentPeriod=allPeriods[0].period;
 const currentNum=allPeriods[0].num;
 const currentSize=getSize(currentNum);
+
 if(lastPeriod&&lastPeriod!==currentPeriod){
 if(currentPred){
-const isCorrect=currentPred.prediction===currentSize;
+const isCorrect=currentPred.prediction===currentNum;
 predHistory.unshift({
 period:currentPeriod,
 predicted:currentPred.prediction,
-actual:currentSize,
+actual:currentNum,
 result:isCorrect?'Win':'Loss',
 number:currentNum
 });
-if(predHistory.length>300)predHistory=predHistory.slice(0,300);
-if(!isCorrect){
-lastLossPattern=activePatternIdx;
-}
+if(predHistory.length>500)predHistory=predHistory.slice(0,500);
 }
 }
 lastPeriod=currentPeriod;
-const last2=allPeriods.slice(0,2);
-const match=findMatch(last2);
-if(match){
-currentPred={prediction:match.next,confidence:match.conf};
-activePatternIdx=match.idx;
-}else{
-let bigC=0,smallC=0;
-last10.forEach(d=>{
-const s=getSize(d.num);
-if(s==='Big')bigC++;
-else smallC++;
+
+let predNum='0';
+let confidence=50;
+if(numberMatches.length>0){
+const nextNumFreq={};
+numberMatches.forEach(m=>{
+nextNumFreq[m.nextNum]=(nextNumFreq[m.nextNum]||0)+1;
 });
-const pred=bigC>smallC?'Big':'Small';
-const diff=Math.abs(bigC-smallC);
-const conf=diff>=7?85:diff>=5?75:65;
-currentPred={prediction:pred,confidence:conf};
-activePatternIdx=null;
+const sortedNums=Object.entries(nextNumFreq).sort((a,b)=>b[1]-a[1]);
+predNum=sortedNums[0][0];
+confidence=Math.min(95,60+Math.round((sortedNums[0][1]/numberMatches.length)*35));
 }
+
+currentPred={prediction:predNum,confidence:confidence,matchCount:numberMatches.length+colorMatches.length};
+
 const predResult=document.getElementById('predResult');
 const confBadge=document.getElementById('confBadge');
 const patternBadge=document.getElementById('patternBadge');
 const patternMatch=document.getElementById('patternMatch');
 if(currentPred){
-predResult.innerHTML=`<span class="pred-${currentPred.prediction.toLowerCase()}">${currentPred.prediction}</span>`;
+predResult.innerHTML=`<span class="pred-big" style="font-size:72px">${currentPred.prediction}</span>`;
 confBadge.textContent=`Confidence: ${currentPred.confidence}%`;
-if(match){
+if(numberMatches.length>0||colorMatches.length>0){
 patternBadge.style.display='block';
-patternMatch.textContent=`Pattern #${match.idx+1}`;
+patternMatch.textContent=`${numberMatches.length} Number + ${colorMatches.length} Color`;
 }else{
 patternBadge.style.display='none';
 }
 }
+
 let winC=0,lossC=0;
 predHistory.forEach(h=>{
 if(h.result==='Win')winC++;
@@ -290,23 +353,48 @@ document.getElementById('winCount').textContent=winC;
 document.getElementById('lossCountStat').textContent=lossC;
 document.getElementById('totalGames').textContent=totalG;
 document.getElementById('accuracy').textContent=accRate+'%';
+
 const tbody=document.getElementById('tableBody');
 tbody.innerHTML='';
+
+const matchedPeriods=new Set();
+numberMatches.forEach(match=>{
+matchedPeriods.add(allPeriods[match.index].period);
+});
+colorMatches.forEach(match=>{
+match.positions.forEach(pos=>{
+if(allPeriods[pos]){
+matchedPeriods.add(allPeriods[pos].period);
+}
+});
+});
+
 allPeriods.slice(0,50).forEach(item=>{
-const period=item.period;
 const num=item.num;
 const size=getSize(num);
 const colors=getColors(parseInt(num));
-const matchedHist=predHistory.find(h=>String(h.period)===period);
+const matchedHist=predHistory.find(h=>String(h.period)===item.period);
+const isMatched=matchedPeriods.has(item.period);
 const tr=document.createElement('tr');
+if(isMatched)tr.className='match-row';
+
 const tdPeriod=document.createElement('td');
 tdPeriod.className='period-cell';
-tdPeriod.textContent=period;
+tdPeriod.textContent=item.period.slice(-6);
+if(isMatched){
+const badge=document.createElement('span');
+badge.className='match-badge';
+badge.textContent='★';
+tdPeriod.appendChild(badge);
+}
+
 const tdNum=document.createElement('td');
-tdNum.className='num-cell';
+tdNum.className='num-cell'+(isMatched?' matched':'');
 tdNum.textContent=num;
+
 const tdSize=document.createElement('td');
 tdSize.innerHTML=`<span class="size-badge size-${size.toLowerCase()}">${size}</span>`;
+
 const tdColor=document.createElement('td');
 tdColor.className='color-dots';
 colors.forEach(c=>{
@@ -314,12 +402,14 @@ const dot=document.createElement('span');
 dot.className=`dot dot-${c}`;
 tdColor.appendChild(dot);
 });
+
 const tdResult=document.createElement('td');
 if(matchedHist){
 tdResult.innerHTML=matchedHist.result==='Win'?'<span class="result-badge result-win">✓ WIN</span>':'<span class="result-badge result-loss">✗ LOSS</span>';
 }else{
 tdResult.textContent='-';
 }
+
 tr.appendChild(tdPeriod);
 tr.appendChild(tdNum);
 tr.appendChild(tdSize);
