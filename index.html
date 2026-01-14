@@ -135,26 +135,14 @@ if(num===5)return['green','violet'];
 return num%2===0?['red']:['green'];
 }
 
+let periodsStorage=[];
+
 function savePeriods(data){
-try{
-const stored={periods:data,timestamp:Date.now()};
-sessionStorage.setItem('wingoPeriods',JSON.stringify(stored));
-}catch(e){
-console.error('Save error:',e);
-}
+periodsStorage=data;
 }
 
 function loadSavedPeriods(){
-try{
-const stored=sessionStorage.getItem('wingoPeriods');
-if(stored){
-const parsed=JSON.parse(stored);
-return parsed.periods||[];
-}
-}catch(e){
-console.error('Load error:',e);
-}
-return[];
+return periodsStorage;
 }
 
 function savePatterns(data){
@@ -200,16 +188,22 @@ num:String(item.result||item.number||item.num||item.openResult||'0')
 // Load saved periods from memory
 const savedData=loadSavedPeriods();
 if(savedData.length>0){
-allPeriods=savedData;
+allPeriods=[...savedData];
 }
 
-// Merge new data with existing
-processed.forEach(newItem=>{
-const exists=allPeriods.find(p=>p.period===newItem.period);
+// Merge new data with existing - Add new periods at the beginning
+const newPeriods=[];
+processed.forEach(item=>{
+const exists=allPeriods.find(p=>p.period===item.period);
 if(!exists){
-allPeriods.unshift(newItem);
+newPeriods.push(item);
 }
 });
+
+// Add new periods at start
+if(newPeriods.length>0){
+allPeriods=[...newPeriods,...allPeriods];
+}
 
 // Keep only last 300 periods
 if(allPeriods.length>300){
@@ -298,7 +292,7 @@ document.getElementById('totalGames').textContent=totalG;
 document.getElementById('accuracy').textContent=accRate+'%';
 const tbody=document.getElementById('tableBody');
 tbody.innerHTML='';
-allPeriods.slice(0,20).forEach(item=>{
+allPeriods.slice(0,50).forEach(item=>{
 const period=item.period;
 const num=item.num;
 const size=getSize(num);
@@ -345,7 +339,7 @@ const h=String(now.getHours()).padStart(2,'0');
 const m=String(now.getMinutes()).padStart(2,'0');
 const s=String(now.getSeconds()).padStart(2,'0');
 document.getElementById('currentTime').textContent=`${h}:${m}:${s}`;
-if(s==='59')setTimeout(loadData,1000);
+if(s==='00'||s==='30')setTimeout(loadData,1000);
 }
 
 function refreshData(){
