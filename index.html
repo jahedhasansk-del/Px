@@ -1,72 +1,334 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<title>WinGo Pattern</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>WinGo Pro Signal</title>
 <style>
-body{font-family:arial;background:#111;color:#fff;text-align:center}
-#sig{font-size:48px;margin:20px}
-small{opacity:.6}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;position:relative;overflow-x:hidden}
+body::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");z-index:0;opacity:.3}
+.container{max-width:900px;margin:0 auto;position:relative;z-index:1}
+.header{text-align:center;margin-bottom:30px;background:rgba(255,255,255,.95);padding:30px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(255,255,255,.1),transparent);animation:shine 3s infinite}
+@keyframes shine{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.logo{font-size:42px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;margin-bottom:10px;letter-spacing:2px}
+.subtitle{color:#666;font-size:14px;letter-spacing:3px;text-transform:uppercase;font-weight:600}
+.prediction-box{background:rgba(255,255,255,.95);border-radius:20px;padding:40px;margin-bottom:25px;box-shadow:0 20px 60px rgba(0,0,0,.3);position:relative;overflow:hidden}
+.prediction-box::after{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#667eea,#764ba2,#f093fb);animation:loading 2s ease-in-out infinite}
+@keyframes loading{0%,100%{transform:translateX(-100%)}50%{transform:translateX(100%)}}
+.pred-title{text-align:center;color:#764ba2;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:25px}
+.pred-result{text-align:center;font-size:72px;font-weight:900;margin-bottom:20px;text-transform:uppercase;letter-spacing:8px;animation:popIn .6s cubic-bezier(0.68,-0.55,0.265,1.55)}
+@keyframes popIn{0%{opacity:0;transform:scale(.3) rotate(-10deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+.pred-big{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 8px rgba(245,87,108,.3))}
+.pred-small{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 4px 8px rgba(79,172,254,.3))}
+.confidence-info{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:20px;flex-wrap:wrap}
+.conf-badge{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:12px 30px;border-radius:50px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:1px;box-shadow:0 10px 25px rgba(102,126,234,.4)}
+.pattern-badge{background:linear-gradient(135deg,#00f2fe 0%,#4facfe 100%);color:white;padding:12px 25px;border-radius:50px;font-weight:700;font-size:13px}
+.loss-indicator{background:linear-gradient(135deg,#f5576c 0%,#f093fb 100%);color:white;padding:12px 25px;border-radius:50px;font-weight:700;font-size:13px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:20px;margin-bottom:25px}
+.stat-card{background:rgba(255,255,255,.95);border-radius:15px;padding:25px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2);transition:all .3s ease;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#667eea,#764ba2)}
+.stat-card:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,.3)}
+.stat-label{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:600}
+.stat-value{font-size:36px;font-weight:900;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-win{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-loss{background:linear-gradient(135deg,#f5576c 0%,#f093fb 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.history-section{background:rgba(255,255,255,.95);border-radius:20px;padding:30px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin-bottom:25px}
+.section-title{font-size:20px;font-weight:800;color:#764ba2;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;text-align:center}
+.history-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:15px;margin-bottom:20px}
+.history-item{background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);border-radius:12px;padding:15px;text-align:center;transition:all .3s ease;border:3px solid transparent}
+.history-item:hover{transform:scale(1.05);border-color:#667eea}
+.history-big{border-left:5px solid #f5576c}
+.history-small{border-left:5px solid #4facfe}
+.history-label{font-size:11px;color:#666;text-transform:uppercase;margin-bottom:5px;font-weight:600}
+.history-value{font-size:22px;font-weight:900;color:#333}
+.table-wrapper{background:rgba(255,255,255,.95);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+table{width:100%;border-collapse:collapse}
+thead{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
+th{padding:18px 12px;text-align:center;font-weight:700;color:white;font-size:13px;text-transform:uppercase;letter-spacing:1px}
+tbody tr{transition:all .3s ease;border-bottom:1px solid #f0f0f0}
+tbody tr:hover{background:linear-gradient(135deg,rgba(102,126,234,.1) 0%,rgba(118,75,162,.1) 100%);transform:scale(1.01)}
+td{padding:16px 12px;text-align:center;color:#333;font-size:13px;font-weight:600}
+.period-cell{font-family:'Courier New',monospace;font-size:12px;color:#666}
+.num-cell{font-size:28px;font-weight:900}
+.size-badge{display:inline-block;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.size-big{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);color:white}
+.size-small{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);color:white}
+.color-dots{display:flex;justify-content:center;gap:6px}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.dot-red{background:#f5576c}
+.dot-green{background:#00f2fe}
+.dot-violet{background:#764ba2}
+.result-badge{padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}
+.result-win{background:#4facfe;color:white}
+.result-loss{background:#f5576c;color:white}
+.refresh-btn{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:18px 35px;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(102,126,234,.5);display:flex;align-items:center;gap:10px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1px}
+.refresh-btn:hover{transform:translateY(-3px);box-shadow:0 15px 40px rgba(102,126,234,.7)}
+.refresh-btn:active{transform:translateY(-1px)}
+.refresh-icon{font-size:20px;transition:transform .5s}
+.refresh-icon.spin{animation:rotate .5s linear}
+@keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.time-display{text-align:center;margin-top:20px;padding:15px;background:rgba(255,255,255,.2);border-radius:15px;backdrop-filter:blur(10px)}
+.current-time{font-size:32px;font-weight:900;color:white;text-shadow:0 2px 10px rgba(0,0,0,.3);letter-spacing:2px}
+.loading{text-align:center;padding:20px;color:#764ba2;font-size:16px;font-weight:600}
+@media (max-width:768px){
+.logo{font-size:32px}
+.pred-result{font-size:48px;letter-spacing:4px}
+.stats-grid{grid-template-columns:repeat(2,1fr)}
+.history-grid{grid-template-columns:repeat(3,1fr)}
+.refresh-btn{bottom:20px;right:20px;padding:15px 25px;font-size:14px}
+th,td{padding:12px 8px;font-size:11px}
+.num-cell{font-size:22px}
+}
 </style>
 </head>
 <body>
-
-<h2>WINGO SIGNAL</h2>
-<div id="sig">...</div>
-<small id="info"></small>
-
+<div class="container">
+<div class="header">
+<div class="logo">⚡ WINGO PRO SIGNAL</div>
+<div class="subtitle">Advanced Pattern Analyzer</div>
+</div>
+<div class="prediction-box">
+<div class="pred-title">🎯 Next Prediction</div>
+<div class="pred-result" id="predResult"><div class="loading">Analyzing...</div></div>
+<div class="confidence-info">
+<div class="conf-badge" id="confBadge">Calculating...</div>
+<div class="pattern-badge" id="patternBadge" style="display:none">Pattern: <span id="patternMatch">0</span></div>
+<div class="loss-indicator" id="lossIndicator" style="display:none">⚠️ Loss: <span id="lossCount">0</span></div>
+</div>
+</div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-label">Total Win</div><div class="stat-value stat-win" id="winCount">0</div></div>
+<div class="stat-card"><div class="stat-label">Total Loss</div><div class="stat-value stat-loss" id="lossCountStat">0</div></div>
+<div class="stat-card"><div class="stat-label">Total Games</div><div class="stat-value" id="totalGames">0</div></div>
+<div class="stat-card"><div class="stat-label">Accuracy</div><div class="stat-value" id="accuracy">0%</div></div>
+</div>
+<div class="history-section">
+<div class="section-title">📊 Last 10 History Pattern</div>
+<div class="history-grid" id="historyPattern"></div>
+</div>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Period</th><th>Number</th><th>Size</th><th>Color</th><th>Result</th></tr></thead>
+<tbody id="tableBody"><tr><td colspan="5" class="loading">Loading data...</td></tr></tbody>
+</table>
+</div>
+<div class="time-display"><div class="current-time" id="currentTime">00:00:00</div></div>
+</div>
+<button class="refresh-btn" onclick="refreshData()"><span class="refresh-icon" id="refreshIcon">↻</span><span>Refresh</span></button>
 <script>
-const API="https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json";
-let mem=[],patterns={},active=null,loss=0,lastPeriod=null;
+const API='https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json';
+let allPatterns=[];
+let predHistory=[];
+let currentPred=null;
+let lastPeriod=null;
+let consecutiveLoss=0;
+let matchedPattern=null;
 
-const size=n=>n>=5?"B":"S";
-const key=a=>a.join("");
-
-function buildPatterns(){
-  patterns={};
-  for(let i=0;i+10<=mem.length;i+=10){
-    let p=key(mem.slice(i,i+10));
-    patterns[p]=(patterns[p]||0)+1;
-  }
+function getSize(n){return parseInt(n)>=5?'Big':'Small'}
+function getColors(n){
+const num=parseInt(n);
+if(num===0)return['red','violet'];
+if(num===5)return['green','violet'];
+return num%2===0?['red']:['green'];
 }
 
-function nextSignal(){
-  let last10=key(mem.slice(0,10));
-  let best=null,max=1;
-  for(let p in patterns)
-    if(p!==last10 && patterns[p]>max && p.slice(0,8)==last10.slice(2))
-      max=patterns[p],best=p;
-  return best?best[9]:null;
+function savePattern(data){
+const pattern=data.map(d=>getSize(d.num)).join('');
+const periodStart=parseInt(data[0].period);
+allPatterns.push({start:periodStart,pattern:pattern,data:data});
+if(allPatterns.length>300)allPatterns.shift();
 }
 
-async function load(){
-  let j=await fetch(API+"?t="+Date.now()).then(r=>r.json());
-  let list=j.data?.list||[];
-  let cur=list[0];
-  if(!cur) return;
-
-  let period=cur.issue, num=+cur.result;
-  if(period!==lastPeriod){
-    mem.unshift(size(num));
-    if(mem.length>300) mem.pop();
-    buildPatterns();
-
-    if(active){
-      if(active!==size(num)) loss++;
-      else loss=0;
-    }
-    active=nextSignal();
-    lastPeriod=period;
-  }
-
-  document.getElementById("sig").textContent=
-    active?active=="B"?"BIG":"SMALL":"WAIT";
-  document.getElementById("info").textContent=
-    "Memory:"+mem.length+" Loss:"+loss;
+function findMatchingPattern(current10){
+const currentPattern=current10.map(d=>getSize(d.num)).join('');
+let bestMatch=null;
+let maxScore=0;
+for(let i=0;i<allPatterns.length;i++){
+const p=allPatterns[i];
+if(p.pattern.length<10)continue;
+let score=0;
+for(let j=0;j<10&&j<p.pattern.length;j++){
+if(currentPattern[j]===p.pattern[j])score++;
+}
+if(score>maxScore&&score>=7){
+maxScore=score;
+bestMatch={pattern:p,score:score,next:p.data[10]?getSize(p.data[10].num):null};
+}
+}
+return bestMatch;
 }
 
-load();
-setInterval(load,60000);
+function calculatePrediction(last10,matchData){
+if(last10.length<10)return{prediction:'Big',confidence:50};
+let bigC=0,smallC=0;
+last10.forEach(d=>{
+const s=getSize(d.num);
+if(s==='Big')bigC++;
+else smallC++;
+});
+let pred,conf;
+if(matchData&&matchData.next&&matchData.score>=8){
+pred=matchData.next;
+conf=85+matchData.score*2;
+matchedPattern=matchData;
+}else if(consecutiveLoss>=2){
+const rev=Math.floor(consecutiveLoss/2)%2===1;
+pred=rev?(bigC>smallC?'Small':'Big'):(bigC>smallC?'Big':'Small');
+conf=75+Math.min(consecutiveLoss*3,20);
+matchedPattern=null;
+}else{
+pred=bigC>smallC?'Big':'Small';
+const diff=Math.abs(bigC-smallC);
+conf=diff>=7?92:diff>=5?85:diff>=3?75:60;
+matchedPattern=null;
+}
+return{prediction:pred,confidence:conf};
+}
+
+async function loadData(){
+try{
+const res=await fetch(`${API}?ts=${Date.now()}`);
+const data=await res.json();
+let gameList=[];
+if(data&&data.data&&data.data.list)gameList=data.data.list.slice(0,300);
+else if(data&&data.list)gameList=data.list.slice(0,300);
+else if(Array.isArray(data))gameList=data.slice(0,300);
+if(gameList.length===0){
+document.getElementById('tableBody').innerHTML='<tr><td colspan="5" class="loading">No data</td></tr>';
+return;
+}
+const processed=gameList.map(item=>({
+period:String(item.issue||item.period||item.issueNo||item.periodId||item.issueNumber||''),
+num:String(item.result||item.number||item.num||item.openResult||'0')
+}));
+for(let i=0;i<=processed.length-10;i+=10){
+const chunk=processed.slice(i,i+10);
+if(chunk.length===10)savePattern(chunk);
+}
+const last10=processed.slice(0,10);
+const last10Sizes=last10.map(d=>getSize(d.num));
+const patternContainer=document.getElementById('historyPattern');
+patternContainer.innerHTML='';
+last10Sizes.forEach((size,idx)=>{
+const div=document.createElement('div');
+div.className=`history-item history-${size.toLowerCase()}`;
+div.innerHTML=`<div class="history-label">#${idx+1}</div><div class="history-value">${size}</div>`;
+patternContainer.appendChild(div);
+});
+const currentPeriod=processed[0].period;
+const currentNum=processed[0].num;
+const currentSize=getSize(currentNum);
+if(lastPeriod&&lastPeriod!==currentPeriod){
+if(currentPred){
+const isCorrect=currentPred.prediction===currentSize;
+predHistory.unshift({
+period:currentPeriod,
+predicted:currentPred.prediction,
+actual:currentSize,
+result:isCorrect?'Win':'Loss',
+number:currentNum
+});
+if(predHistory.length>300)predHistory=predHistory.slice(0,300);
+consecutiveLoss=isCorrect?0:consecutiveLoss+1;
+}
+}
+lastPeriod=currentPeriod;
+const matchData=findMatchingPattern(last10);
+currentPred=calculatePrediction(last10,matchData);
+const predResult=document.getElementById('predResult');
+const confBadge=document.getElementById('confBadge');
+const patternBadge=document.getElementById('patternBadge');
+const lossIndicator=document.getElementById('lossIndicator');
+const lossCountSpan=document.getElementById('lossCount');
+const patternMatch=document.getElementById('patternMatch');
+if(currentPred){
+predResult.innerHTML=`<span class="pred-${currentPred.prediction.toLowerCase()}">${currentPred.prediction}</span>`;
+confBadge.textContent=`Confidence: ${currentPred.confidence}%`;
+if(matchedPattern&&matchedPattern.score>=8){
+patternBadge.style.display='block';
+patternMatch.textContent=`${matchedPattern.score}/10`;
+}else{
+patternBadge.style.display='none';
+}
+lossIndicator.style.display=consecutiveLoss>=2?'block':'none';
+lossCountSpan.textContent=consecutiveLoss;
+}
+let winC=0,lossC=0;
+predHistory.forEach(h=>{
+if(h.result==='Win')winC++;
+else if(h.result==='Loss')lossC++;
+});
+const totalG=winC+lossC;
+const accRate=totalG>0?Math.round((winC/totalG)*100):0;
+document.getElementById('winCount').textContent=winC;
+document.getElementById('lossCountStat').textContent=lossC;
+document.getElementById('totalGames').textContent=totalG;
+document.getElementById('accuracy').textContent=accRate+'%';
+const tbody=document.getElementById('tableBody');
+tbody.innerHTML='';
+processed.slice(0,20).forEach(item=>{
+const period=item.period;
+const num=item.num;
+const size=getSize(num);
+const colors=getColors(parseInt(num));
+const matchedHist=predHistory.find(h=>String(h.period)===period);
+const tr=document.createElement('tr');
+const tdPeriod=document.createElement('td');
+tdPeriod.className='period-cell';
+tdPeriod.textContent=period;
+const tdNum=document.createElement('td');
+tdNum.className='num-cell';
+tdNum.textContent=num;
+const tdSize=document.createElement('td');
+tdSize.innerHTML=`<span class="size-badge size-${size.toLowerCase()}">${size}</span>`;
+const tdColor=document.createElement('td');
+tdColor.className='color-dots';
+colors.forEach(c=>{
+const dot=document.createElement('span');
+dot.className=`dot dot-${c}`;
+tdColor.appendChild(dot);
+});
+const tdResult=document.createElement('td');
+if(matchedHist){
+tdResult.innerHTML=matchedHist.result==='Win'?'<span class="result-badge result-win">✓ WIN</span>':'<span class="result-badge result-loss">✗ LOSS</span>';
+}else{
+tdResult.textContent='-';
+}
+tr.appendChild(tdPeriod);
+tr.appendChild(tdNum);
+tr.appendChild(tdSize);
+tr.appendChild(tdColor);
+tr.appendChild(tdResult);
+tbody.appendChild(tr);
+});
+}catch(err){
+console.error('Error:',err);
+document.getElementById('tableBody').innerHTML='<tr><td colspan="5" class="loading">Error loading data</td></tr>';
+}
+}
+
+function updateTime(){
+const now=new Date();
+const h=String(now.getHours()).padStart(2,'0');
+const m=String(now.getMinutes()).padStart(2,'0');
+const s=String(now.getSeconds()).padStart(2,'0');
+document.getElementById('currentTime').textContent=`${h}:${m}:${s}`;
+if(s==='59')setTimeout(loadData,1000);
+}
+
+function refreshData(){
+const icon=document.getElementById('refreshIcon');
+icon.classList.add('spin');
+setTimeout(()=>icon.classList.remove('spin'),500);
+loadData();
+}
+
+loadData();
+setInterval(updateTime,1000);
+updateTime();
 </script>
 </body>
 </html>
