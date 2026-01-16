@@ -37,8 +37,8 @@ body::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;backgrou
 .num-main{font-size:20px;color:#0ff;font-weight:bold}
 .num-count{font-size:11px;color:#0ff;margin-top:3px;opacity:.8}
 .num-percent{font-size:9px;color:#0ff;opacity:.6}
-.table-section{background:#001a00;border:2px solid #00ff00;margin-bottom:20px}
-.table-head{background:#002200;border-bottom:2px solid #00ff00;padding:12px;display:grid;grid-template-columns:100px 70px 80px 100px;gap:10px;font-size:12px;color:#0ff;font-weight:bold}
+.table-section{background:#001a00;border:2px solid #00ff00;margin-bottom:20px;max-height:600px;overflow-y:auto}
+.table-head{background:#002200;border-bottom:2px solid #00ff00;padding:12px;display:grid;grid-template-columns:100px 70px 80px 100px;gap:10px;font-size:12px;color:#0ff;font-weight:bold;position:sticky;top:0;z-index:10}
 .table-row{border-bottom:1px solid #003300;padding:12px;display:grid;grid-template-columns:100px 70px 80px 100px;gap:10px;font-size:12px;transition:all .3s}
 .table-row:hover{background:#002200;box-shadow:inset 0 0 10px rgba(0,255,0,.2)}
 .num-display{font-size:22px;color:#00ff00;font-weight:bold;text-shadow:0 0 8px #00ff00}
@@ -77,7 +77,7 @@ body::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;backgrou
 </div>
 <div class="terminal-body">
 <div class="logo">⚡ WINGO HACKER SYSTEM ⚡</div>
-<div class="subtitle">// Advanced Pattern Analyzer v2.0</div>
+<div class="subtitle">// Advanced Pattern Analyzer v2.0 - 300 Periods Edition</div>
 </div>
 </div>
 
@@ -193,7 +193,7 @@ return;
 allData=gameList.map(item=>({
 period:String(item.issue||item.period||item.issueNo||''),
 num:String(item.result||item.number||item.num||'0')
-})).slice(0,100);
+})).slice(0,300);
 
 log(`Loaded ${allData.length} rounds successfully`);
 document.getElementById('totalData').textContent=allData.length;
@@ -234,7 +234,7 @@ function updateTable(){
 const tbody=document.getElementById('tableBody');
 tbody.innerHTML='';
 
-allData.slice(0,30).forEach(item=>{
+allData.slice(0,300).forEach(item=>{
 const row=document.createElement('div');
 row.className='table-row';
 const num=parseInt(item.num);
@@ -273,6 +273,7 @@ updateTime();
 
 log('System boot complete');
 log('Pattern analyzer online');
+log('300 periods mode activated');
 </script>
 </body>
 </html>
