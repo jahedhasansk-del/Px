@@ -6,298 +6,169 @@
 <title>WinGo Pro Signal</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;padding:20px}
-.container{max-width:1200px;margin:0 auto}
-.header{text-align:center;background:rgba(255,255,255,.95);padding:30px;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin-bottom:20px}
-.logo{font-size:42px;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;margin-bottom:10px}
-.subtitle{color:#666;font-size:14px;text-transform:uppercase;letter-spacing:2px}
-.data-count{text-align:center;color:#764ba2;font-size:14px;margin-top:10px;font-weight:600}
-.pred-box{background:rgba(255,255,255,.95);border-radius:20px;padding:40px;margin-bottom:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
-.pred-title{color:#764ba2;font-size:18px;font-weight:700;margin-bottom:20px;text-transform:uppercase}
-.pred-result{font-size:72px;font-weight:900;margin:20px 0;text-transform:uppercase;letter-spacing:8px}
-.pred-big{background:linear-gradient(135deg,#f093fb,#f5576c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.pred-small{background:linear-gradient(135deg,#4facfe,#00f2fe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.conf-badge{display:inline-block;background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 30px;border-radius:50px;font-weight:700;margin:10px}
-.pattern-info{background:rgba(255,215,0,.2);border:2px solid #ffd700;border-radius:15px;padding:20px;margin:10px 0}
-.pattern-name{font-size:16px;font-weight:700;color:#764ba2;margin-bottom:10px}
-.pattern-seq{font-size:20px;font-weight:800;color:#333;margin:15px 0;letter-spacing:3px}
-.rating-badge{display:inline-block;background:linear-gradient(135deg,#ffd700,#ffed4e);color:#333;padding:8px 20px;border-radius:20px;font-weight:700;margin:5px}
-.history-box{background:rgba(255,255,255,.95);border-radius:20px;padding:30px;margin-bottom:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.section-title{font-size:20px;font-weight:800;color:#764ba2;margin-bottom:20px;text-align:center;text-transform:uppercase}
-.history-items{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:20px 0}
-.history-item{width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:16px;border:3px solid transparent;transition:all .3s}
-.item-big{background:linear-gradient(135deg,#f093fb,#f5576c)}
-.item-small{background:linear-gradient(135deg,#4facfe,#00f2fe)}
-.item-active{border-color:#ffd700;box-shadow:0 0 20px rgba(255,215,0,.6);transform:scale(1.15)}
-.trap-section{background:rgba(255,255,255,.95);border-radius:20px;padding:30px;margin-bottom:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.trap-active{background:rgba(245,87,108,.1);border:3px solid #f5576c}
-.trap-title{font-size:18px;font-weight:700;color:#f5576c;margin-bottom:15px;text-align:center}
-.trap-info{background:rgba(255,255,255,.5);padding:15px;border-radius:10px;margin:10px 0;text-align:center}
-.trap-rule{font-size:16px;font-weight:700;color:#333;margin:10px 0}
-.bet-signal{font-size:24px;font-weight:900;color:#f5576c;margin:15px 0;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-.table-wrapper{background:rgba(255,255,255,.95);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);margin-bottom:20px}
+body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;padding:15px;overflow-x:hidden}
+.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.03;pointer-events:none}
+.container{max-width:700px;margin:0 auto;position:relative;z-index:1}
+.header{text-align:center;margin-bottom:20px;position:relative}
+.logo{font-size:28px;color:#00ff41;text-shadow:0 0 20px #00ff41;animation:glow 2s ease-in-out infinite;margin-bottom:8px}
+@keyframes glow{0%,100%{text-shadow:0 0 20px #00ff41}50%{text-shadow:0 0 30px #00ff41,0 0 60px #00ff41}}
+.title{color:#00ff41;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+.scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00ff41,transparent);animation:scan 3s linear infinite}
+@keyframes scan{0%{top:0}100%{top:100%}}
+.prediction-container{background:linear-gradient(135deg,rgba(0,255,65,.1) 0%,rgba(0,100,255,.1) 100%);border:2px solid #00ff41;border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(0,255,65,.3);margin-bottom:20px;animation:borderPulse 2s ease-in-out infinite}
+@keyframes borderPulse{0%,100%{box-shadow:0 0 30px rgba(0,255,65,.3)}50%{box-shadow:0 0 50px rgba(0,255,65,.5)}}
+.prediction-header{padding:12px;text-align:center;background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%);border-bottom:1px solid #00ff41}
+.prediction-header h3{color:#00ff41;font-size:15px;letter-spacing:2px;text-transform:uppercase}
+.ai-mode{font-size:10px;opacity:.7;display:block;margin-top:5px;color:#ffaa00}
+.prediction-content{padding:30px 20px;text-align:center}
+.prediction-result{font-size:56px;font-weight:bold;margin-bottom:15px;text-transform:uppercase;letter-spacing:4px;animation:fadeInScale 1s ease-out}
+@keyframes fadeInScale{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
+.prediction-big{color:#ff0055;text-shadow:0 0 20px #ff0055}
+.prediction-small{color:#00ff41;text-shadow:0 0 20px #00ff41}
+.confidence-bar{width:180px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;margin:15px auto;overflow:hidden}
+.confidence-fill{height:100%;background:linear-gradient(90deg,#ff0055,#ffaa00,#00ff41);border-radius:4px;animation:fillBar 2s ease-out;position:relative}
+@keyframes fillBar{0%{width:0%}}
+.confidence-fill::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2s infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.confidence-label{color:#00ff41;font-size:12px;margin-top:8px;letter-spacing:1px;text-transform:uppercase}
+.confidence-high{color:#00ff41;text-shadow:0 0 10px #00ff41}
+.confidence-low{color:#ff0055;text-shadow:0 0 10px #ff0055}
+.stats-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,255,65,.2)}
+.stats-info{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.stat-item{text-align:center;padding:12px 8px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:8px;transition:all .3s ease}
+.stat-item:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,255,65,.3)}
+.stat-label{font-size:9px;color:#00ff41;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}
+.stat-value{font-size:24px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}
+.stat-win{color:#00ff41;text-shadow:0 0 15px #00ff41}
+.stat-loss{color:#ff0055;text-shadow:0 0 15px #ff0055}
+.stat-streak{color:#ffaa00;text-shadow:0 0 15px #ffaa00}
+.table-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(0,255,65,.2)}
 table{width:100%;border-collapse:collapse}
-thead{background:linear-gradient(135deg,#667eea,#764ba2)}
-th{padding:15px;text-align:center;font-weight:700;color:white;font-size:13px;text-transform:uppercase}
-tbody tr{border-bottom:1px solid #f0f0f0;transition:all .3s}
-tbody tr:hover{background:rgba(102,126,234,.1)}
-td{padding:15px;text-align:center;font-size:14px;font-weight:600}
-.num-cell{font-size:28px;font-weight:900}
-.size-badge{padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;color:white}
-.badge-big{background:linear-gradient(135deg,#f093fb,#f5576c)}
-.badge-small{background:linear-gradient(135deg,#4facfe,#00f2fe)}
-.refresh-btn{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:18px 35px;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(102,126,234,.5);z-index:1000;transition:all .3s}
-.refresh-btn:hover{transform:translateY(-3px)}
-.loading{text-align:center;padding:40px;font-size:18px;color:#764ba2}
-.no-bet{color:#999;font-size:20px;font-weight:700}
-@media (max-width:768px){
-.logo{font-size:32px}
-.pred-result{font-size:48px;letter-spacing:4px}
-.history-item{width:40px;height:40px;font-size:14px}
+thead{background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%)}
+th{padding:12px 6px;text-align:center;font-weight:600;color:#00ff41;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #00ff41}
+tbody tr{background:rgba(0,0,0,.3);transition:all .3s ease;border-bottom:1px solid rgba(0,255,65,.1)}
+tbody tr:hover{background:rgba(0,255,65,.1);transform:scale(1.01);box-shadow:0 0 15px rgba(0,255,65,.3)}
+td{padding:10px 6px;text-align:center;color:#00ff41;font-size:11px}
+.period-cell{font-family:'Courier New',monospace;font-size:10px;opacity:.7}
+.number-cell{font-size:22px;font-weight:bold}
+.color-cell{display:flex;justify-content:center;align-items:center;gap:4px}
+.color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(0,255,65,.3);animation:dotPulse 2s infinite}
+@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.red{background:#ff0055;box-shadow:0 0 8px #ff0055}
+.green{background:#00ff41;box-shadow:0 0 8px #00ff41}
+.violet{background:#aa00ff;box-shadow:0 0 8px #aa00ff}
+.result-cell{font-weight:bold;font-size:11px;padding:5px 8px;border-radius:4px}
+.result-win{color:#00ff41;background:rgba(0,255,65,.2);border:1px solid #00ff41;text-shadow:0 0 5px #00ff41}
+.result-loss{color:#ff0055;background:rgba(255,0,85,.2);border:1px solid #ff0055;text-shadow:0 0 5px #ff0055}
+.time-display{background:rgba(0,255,65,.1);padding:15px 30px;border-radius:12px;display:inline-block;margin-top:15px;border:1px solid rgba(0,255,65,.3);box-shadow:0 0 20px rgba(0,255,65,.2)}
+.current-time{font-size:28px;font-weight:bold;color:#00ff41;font-family:'Courier New',monospace;letter-spacing:2px;text-shadow:0 0 20px #00ff41}
+.seconds-highlight{color:#ff0055;font-size:32px;animation:pulse 1s infinite;text-shadow:0 0 20px #ff0055}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.refresh-btn{position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;padding:14px 24px;border-radius:40px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,255,65,.5);display:flex;align-items:center;gap:8px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1.5px}
+.refresh-btn:hover{transform:scale(1.08);box-shadow:0 0 50px rgba(0,255,65,.8)}
+.refresh-btn:active{transform:scale(.95)}
+.refresh-icon{font-size:18px}
+.refresh-icon.spinning{animation:spin .5s linear}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.loading{text-align:center;padding:15px;color:#00ff41;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.update-time{text-align:center;margin-top:15px}
+@media (max-width:600px){
+.logo{font-size:22px}
+.title{font-size:10px;letter-spacing:1px}
+.stats-info{grid-template-columns:repeat(2,1fr);gap:10px}
+.prediction-result{font-size:40px;letter-spacing:2px}
+th,td{padding:8px 4px;font-size:10px}
+.number-cell{font-size:18px}
+.refresh-btn{bottom:15px;right:15px;padding:12px 20px;font-size:12px}
+.current-time{font-size:22px}
+.stat-value{font-size:20px}
 }
 </style>
 </head>
 <body>
+<canvas class="matrix-bg" id="matrix"></canvas>
 <div class="container">
 <div class="header">
-<div class="logo">⚡ WINGO PRO SIGNAL</div>
-<div class="subtitle">New Pattern System</div>
-<div class="data-count" id="dataCount">Loading...</div>
+<div class="scan-line"></div>
+<div class="logo">⚡ WINGO PRO</div>
+<div class="title">AI SIGNAL ANALYZER v5.0</div>
 </div>
 
-<div class="pred-box">
-<div class="pred-title">🎯 Master Prediction</div>
-<div class="pred-result" id="predResult"><div class="loading">Analyzing...</div></div>
-<div class="conf-badge" id="confBadge">Calculating...</div>
-<div class="pattern-info" id="patternInfo" style="display:none">
-<div class="pattern-name" id="patternName"></div>
-<div class="pattern-seq" id="patternSeq"></div>
-<div class="rating-badge" id="ratingBadge"></div>
+<div class="prediction-container">
+<div class="prediction-header">
+<h3>🤖 AI PREDICTION</h3>
+<span class="ai-mode" id="aiMode">[ Initializing... ]</span>
 </div>
+<div class="prediction-content">
+<div class="prediction-result" id="currPred">
+<div class="loading" style="font-size:16px">[ SCANNING... ]</div>
 </div>
-
-<div class="history-box">
-<div class="section-title">📊 Last 30 Results</div>
-<div class="history-items" id="historyItems"></div>
+<div class="confidence-bar">
+<div class="confidence-fill" id="confBar" style="width:0%"></div>
 </div>
-
-<div class="trap-section" id="trapSection" style="display:none">
-<div class="trap-title">⚠️ ZIG-ZAG TRAP DETECTED</div>
-<div class="trap-info">
-<div class="trap-rule" id="trapRule"></div>
-<div class="bet-signal" id="betSignal"></div>
+<div class="confidence-label" id="confLabel">ANALYZING</div>
 </div>
 </div>
 
-<div class="table-wrapper">
+<div class="stats-container">
+<div class="stats-info">
+<div class="stat-item">
+<div class="stat-label">Win</div>
+<div class="stat-value stat-win" id="wc">0</div>
+</div>
+<div class="stat-item">
+<div class="stat-label">Loss</div>
+<div class="stat-value stat-loss" id="lc">0</div>
+</div>
+<div class="stat-item">
+<div class="stat-label">Total</div>
+<div class="stat-value" id="tc">0</div>
+</div>
+<div class="stat-item">
+<div class="stat-label">Accuracy</div>
+<div class="stat-value" id="wr">0%</div>
+</div>
+<div class="stat-item">
+<div class="stat-label">Max Win</div>
+<div class="stat-value stat-streak" id="mw">0</div>
+</div>
+<div class="stat-item">
+<div class="stat-label">Max Loss</div>
+<div class="stat-value stat-streak" id="ml">0</div>
+</div>
+</div>
+</div>
+
+<div class="table-container">
 <table>
-<thead><tr><th>Period</th><th>Number</th><th>Size</th></tr></thead>
-<tbody id="tableBody"><tr><td colspan="3" class="loading">Loading...</td></tr></tbody>
+<thead>
+<tr>
+<th>Period</th>
+<th>Number</th>
+<th>Size</th>
+<th>Color</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody id="tb">
+<tr><td colspan="5" class="loading">[ LOADING DATA... ]</td></tr>
+</tbody>
 </table>
 </div>
+
+<p class="update-time">
+<span class="time-display">
+<div class="current-time" id="rt">00:00:00</div>
+</span>
+</p>
 </div>
 
-<button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
+<button class="refresh-btn" onclick="refreshData()">
+<span class="refresh-icon" id="ri">⟳</span>
+<span>Refresh</span>
+</button>
 
-<script>
-const API='https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json';
-let allData=[];
-
-function getSize(n){return parseInt(n)>=5?'Big':'Small'}
-function getSizeShort(n){return getSize(n)==='Big'?'B':'S'}
-
-// Pattern Group A (35% Rating)
-function checkPatternA(last3){
-if(last3.length<3)return null;
-const seq=last3.map(p=>getSizeShort(p.num)).join('');
-if(seq==='BSB')return{name:'Pattern A1: BIG-SMALL-BIG',prediction:'Small',rating:35,sequence:'B-S-B → S'};
-if(seq==='SBS')return{name:'Pattern A2: SMALL-BIG-SMALL',prediction:'Big',rating:35,sequence:'S-B-S → B'};
-return null;
-}
-
-// Pattern Group B (70% Rating)
-function checkPatternB(last5){
-if(last5.length<5)return null;
-const seq=last5.map(p=>getSizeShort(p.num)).join('');
-if(seq==='BSBBS')return{name:'Pattern B1: BIG-SMALL-BIG-BIG-SMALL',prediction:'Small',rating:70,sequence:'B-S-B-B-S → S'};
-if(seq==='SBSSB')return{name:'Pattern B2: SMALL-BIG-SMALL-SMALL-BIG',prediction:'Big',rating:70,sequence:'S-B-S-S-B → B'};
-return null;
-}
-
-// Zig-Zag Trap Pattern
-function checkZigZagTrap(last10){
-if(last10.length<10)return null;
-const seq=last10.map(p=>getSizeShort(p.num)).join('');
-
-// BIG Long Trap: BSBBBBBBBBB
-const bigCount=seq.split('B').length-1;
-const smallCount=seq.split('S').length-1;
-const lastChar=seq[0];
-
-// Check for BIG trap (many Bs after initial BS pattern)
-if(bigCount>=6&&smallCount>=1&&seq.includes('BS')){
-const zigzag='BSBSBSBSBS';
-let betPosition=-1;
-for(let i=0;i<Math.min(seq.length,zigzag.length);i++){
-if(zigzag[i]==='S'&&seq[i]==='B')betPosition=i;
-}
-if(betPosition>=0){
-return{
-type:'BIG_TRAP',
-message:'BIG Long Trap Detected',
-rule:'শুধু S পজিশনে BET → BIG | B পজিশনে NO BET',
-betSignal:'BET: BIG',
-shouldBet:zigzag[0]==='S',
-sequence:seq
-};
-}
-}
-
-// Check for SMALL trap (many Ss after initial SB pattern)
-if(smallCount>=6&&bigCount>=1&&seq.includes('SB')){
-const zigzag='SBSBSBSBSB';
-let betPosition=-1;
-for(let i=0;i<Math.min(seq.length,zigzag.length);i++){
-if(zigzag[i]==='B'&&seq[i]==='S')betPosition=i;
-}
-if(betPosition>=0){
-return{
-type:'SMALL_TRAP',
-message:'SMALL Long Trap Detected',
-rule:'শুধু B পজিশনে BET → SMALL | S পজিশনে NO BET',
-betSignal:'BET: SMALL',
-shouldBet:zigzag[0]==='B',
-sequence:seq
-};
-}
-}
-
-return null;
-}
-
-function analyzePrediction(data){
-if(data.length<5)return null;
-
-const last3=data.slice(0,3);
-const last5=data.slice(0,5);
-const last10=data.slice(0,10);
-
-// Check Pattern B first (higher rating)
-const patternB=checkPatternB(last5);
-if(patternB)return{type:'PATTERN_B',data:patternB,trap:null};
-
-// Check Pattern A
-const patternA=checkPatternA(last3);
-if(patternA)return{type:'PATTERN_A',data:patternA,trap:null};
-
-// Check Zig-Zag Trap
-const trap=checkZigZagTrap(last10);
-if(trap)return{type:'TRAP',data:null,trap:trap};
-
-return null;
-}
-
-async function loadData(){
-try{
-const res=await fetch(`${API}?ts=${Date.now()}`);
-const json=await res.json();
-let gameList=[];
-if(json?.data?.list)gameList=json.data.list;
-else if(json?.list)gameList=json.list;
-else if(Array.isArray(json))gameList=json;
-
-if(gameList.length===0){
-document.getElementById('tableBody').innerHTML='<tr><td colspan="3">No data</td></tr>';
-return;
-}
-
-allData=gameList.map(item=>({
-period:String(item.issue||item.period||''),
-num:String(item.result||item.number||item.num||'0')
-})).slice(0,300);
-
-// Update data count
-document.getElementById('dataCount').textContent=`Total Results: ${allData.length}/300`;
-
-// Display history
-const histCont=document.getElementById('historyItems');
-histCont.innerHTML='';
-allData.slice(0,30).forEach((item,idx)=>{
-const div=document.createElement('div');
-const size=getSize(item.num);
-div.className=`history-item item-${size.toLowerCase()}${idx===0?' item-active':''}`;
-div.textContent=getSizeShort(item.num);
-histCont.appendChild(div);
-});
-
-// Analyze prediction
-const analysis=analyzePrediction(allData);
-const predResult=document.getElementById('predResult');
-const confBadge=document.getElementById('confBadge');
-const patternInfo=document.getElementById('patternInfo');
-const trapSection=document.getElementById('trapSection');
-
-if(analysis){
-if(analysis.type==='PATTERN_A'||analysis.type==='PATTERN_B'){
-const p=analysis.data;
-const predClass=p.prediction.toLowerCase();
-predResult.innerHTML=`<span class="pred-${predClass}">${p.prediction.toUpperCase()}</span>`;
-confBadge.textContent=`Confidence: ${p.rating}%`;
-patternInfo.style.display='block';
-document.getElementById('patternName').textContent=p.name;
-document.getElementById('patternSeq').textContent=p.sequence;
-document.getElementById('ratingBadge').textContent=`Rating: ${p.rating}%`;
-trapSection.style.display='none';
-}else if(analysis.type==='TRAP'){
-const t=analysis.trap;
-if(t.shouldBet){
-const betText=t.type==='BIG_TRAP'?'BIG':'SMALL';
-predResult.innerHTML=`<span class="pred-${betText.toLowerCase()}">${betText}</span>`;
-confBadge.textContent='Zig-Zag Trap Active';
-}else{
-predResult.innerHTML='<span class="no-bet">NO BET</span>';
-confBadge.textContent='Wait for Position';
-}
-patternInfo.style.display='none';
-trapSection.style.display='block';
-trapSection.classList.add('trap-active');
-document.getElementById('trapRule').textContent=t.rule;
-document.getElementById('betSignal').textContent=t.shouldBet?t.betSignal:'⛔ NO BET';
-}
-}else{
-predResult.innerHTML='<span style="color:#999">No Pattern</span>';
-confBadge.textContent='Wait for Pattern';
-patternInfo.style.display='none';
-trapSection.style.display='none';
-}
-
-// Display table
-const tbody=document.getElementById('tableBody');
-tbody.innerHTML='';
-allData.slice(0,100).forEach(item=>{
-const tr=document.createElement('tr');
-const size=getSize(item.num);
-tr.innerHTML=`
-<td>${item.period.slice(-6)}</td>
-<td class="num-cell">${item.num}</td>
-<td><span class="size-badge badge-${size.toLowerCase()}">${size}</span></td>
-`;
-tbody.appendChild(tr);
-});
-
-}catch(err){
-console.error('Error:',err);
-document.getElementById('tableBody').innerHTML='<tr><td colspan="3">Error loading data</td></tr>';
-}
-}
-
-function refreshData(){
-loadData();
-}
-
-loadData();
-setInterval(loadData,30000); // Auto refresh every 30 seconds
-</script>
+<script src="wingo-ai.js"></script>
 </body>
 </html>
