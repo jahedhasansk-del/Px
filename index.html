@@ -10,8 +10,8 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea,#764
 .container{max-width:900px;margin:0 auto}
 .box{background:#fff;border-radius:15px;padding:20px;margin-bottom:15px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .header{text-align:center;font-size:28px;font-weight:800;color:#764ba2;margin-bottom:10px}
-.subtitle{text-align:center;color:#666;font-size:12px;letter-spacing:2px}
-.group-badge{display:inline-block;padding:8px 20px;border-radius:25px;font-weight:700;color:#fff;margin-top:10px}
+.subtitle{text-align:center;color:#666;font-size:12px;letter-spacing:2px;margin-bottom:10px}
+.group-badge{display:inline-block;padding:8px 20px;border-radius:25px;font-weight:700;color:#fff;margin-top:10px;font-size:14px}
 .group-a{background:linear-gradient(135deg,#f093fb,#f5576c)}
 .group-b{background:linear-gradient(135deg,#4facfe,#00f2fe)}
 .pred-box{text-align:center}
@@ -20,23 +20,24 @@ body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea,#764
 .pred-big{color:#f5576c}
 .pred-small{color:#00f2fe}
 .conf-badge{display:inline-block;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:10px 25px;border-radius:25px;font-weight:700;font-size:13px;margin:5px}
-.info{background:rgba(102,126,234,.1);border-radius:10px;padding:15px;margin-top:10px;font-size:13px;color:#764ba2;font-weight:600}
+.info{background:rgba(102,126,234,.1);border-radius:10px;padding:15px;margin-top:10px;font-size:13px;color:#764ba2;font-weight:600;line-height:1.6}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px}
 .stat{background:#fff;border-radius:10px;padding:15px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,.2)}
-.stat-label{font-size:11px;color:#888;margin-bottom:5px}
+.stat-label{font-size:11px;color:#888;margin-bottom:5px;text-transform:uppercase}
 .stat-value{font-size:24px;font-weight:900;color:#764ba2}
-table{width:100%;border-collapse:collapse;background:#fff}
+table{width:100%;border-collapse:collapse}
 thead{background:linear-gradient(135deg,#667eea,#764ba2)}
-th{padding:12px 8px;color:#fff;font-size:12px;font-weight:700}
+th{padding:12px 8px;color:#fff;font-size:12px;font-weight:700;text-align:center}
 td{padding:12px 8px;text-align:center;font-size:12px;border-bottom:1px solid #f0f0f0}
 .num-cell{font-size:24px;font-weight:900}
-.size-big{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;padding:4px 12px;border-radius:15px;font-size:10px;font-weight:700}
-.size-small{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff;padding:4px 12px;border-radius:15px;font-size:10px;font-weight:700}
+.size-big{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;padding:4px 12px;border-radius:15px;font-size:10px;font-weight:700;display:inline-block}
+.size-small{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#fff;padding:4px 12px;border-radius:15px;font-size:10px;font-weight:700;display:inline-block}
 .current{background:rgba(255,215,0,.2);border-left:4px solid #ffd700}
-.btn{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:15px 30px;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 5px 20px rgba(102,126,234,.5)}
+.btn{position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:15px 30px;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 5px 20px rgba(102,126,234,.5);z-index:999}
 .btn:active{transform:scale(.95)}
 .time{text-align:center;padding:15px;background:rgba(255,255,255,.2);border-radius:10px;color:#fff;font-size:28px;font-weight:900;letter-spacing:2px}
-.loading{text-align:center;padding:20px;color:#764ba2}
+.loading{text-align:center;padding:20px;color:#764ba2;font-weight:600}
+.error{background:#ff4757;color:#fff;padding:10px;border-radius:5px;text-align:center;margin:10px 0}
 @media(max-width:768px){.header{font-size:24px}.pred-result{font-size:45px}.stats{grid-template-columns:repeat(2,1fr)}th,td{padding:10px 5px;font-size:11px}.num-cell{font-size:20px}}
 </style>
 </head>
@@ -45,22 +46,22 @@ td{padding:12px 8px;text-align:center;font-size:12px;border-bottom:1px solid #f0
 
 <div class="box">
 <div class="header">⚡ WINGO SIGNAL</div>
-<div class="subtitle">A/B PATTERN SYSTEM</div>
+<div class="subtitle">A/B PATTERN PREDICTION</div>
 <div style="text-align:center"><span id="groupBadge"></span></div>
 </div>
 
 <div class="box pred-box">
-<div class="pred-title">🎯 পরবর্তী প্রেডিকশন</div>
-<div class="pred-result" id="predResult">...</div>
-<div><span class="conf-badge" id="confBadge">...</span></div>
-<div class="info" id="info">লোড হচ্ছে...</div>
+<div class="pred-title">🎯 পরবর্তী পিরিয়ড প্রেডিকশন</div>
+<div class="pred-result" id="predResult">লোড হচ্ছে...</div>
+<div><span class="conf-badge" id="confBadge">অপেক্ষা করুন...</span></div>
+<div class="info" id="info">ডেটা লোড করা হচ্ছে...</div>
 </div>
 
 <div class="stats">
-<div class="stat"><div class="stat-label">পিরিয়ড</div><div class="stat-value" id="period">-</div></div>
-<div class="stat"><div class="stat-label">গ্রুপ</div><div class="stat-value" id="group">-</div></div>
-<div class="stat"><div class="stat-label">স্লট</div><div class="stat-value" id="slot">-</div></div>
-<div class="stat"><div class="stat-label">লস</div><div class="stat-value" id="loss" style="color:#ff4757">0</div></div>
+<div class="stat"><div class="stat-label">বর্তমান পিরিয়ড</div><div class="stat-value" id="period">-</div></div>
+<div class="stat"><div class="stat-label">বর্তমান গ্রুপ</div><div class="stat-value" id="group">-</div></div>
+<div class="stat"><div class="stat-label">পিরিয়ড স্লট</div><div class="stat-value" id="slot">-</div></div>
+<div class="stat"><div class="stat-label">ধারাবাহিক লস</div><div class="stat-value" id="loss" style="color:#ff4757">0</div></div>
 </div>
 
 <div class="box">
@@ -77,124 +78,226 @@ td{padding:12px 8px;text-align:center;font-size:12px;border-bottom:1px solid #f0
 <button class="btn" onclick="load()">🔄 রিফ্রেশ</button>
 
 <script>
-const API='https://draw.ar-lottery01.com/WinGo/WinGo_30S.json';
+const API = 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json';
 
-const PA={0:5,1:8,2:6,3:8,4:8,5:0,6:7,7:6,8:0,9:2};
-const SA=['BIG','SMALL','BIG','BIG','SMALL','BIG','BIG','SMALL','BIG','BIG'];
-const PB={0:3,1:2,2:7,3:0,4:7,5:1,6:3,7:8,8:7,9:7};
-const SB=['BIG','SMALL','BIG','BIG-SMALL','BIG','SMALL','BIG','BIG','BIG','BIG'];
+// A গ্রুপ - সংখ্যা প্যাটার্ন (লাস্ট রেজাল্ট → পরবর্তী রেজাল্ট)
+const PATTERN_A = {
+    0: 5, // SMALL → BIG
+    1: 8, // SMALL → BIG
+    2: 6, // SMALL → BIG
+    3: 8, // SMALL → BIG
+    4: 8, // SMALL → BIG
+    5: 0, // BIG → SMALL
+    6: 7, // BIG → BIG
+    7: 6, // BIG → BIG
+    8: 0, // BIG → SMALL
+    9: 2  // BIG → SMALL
+};
 
-let loss=0;
+// A গ্রুপ - স্লট প্যাটার্ন
+const SLOT_A = ['BIG', 'SMALL', 'BIG', 'BIG', 'SMALL', 'BIG', 'BIG', 'SMALL', 'BIG', 'BIG'];
 
-function getSize(n){return parseInt(n)>=5?'BIG':'SMALL'}
-function getGroup(p){return Math.floor((p-1)/10)%2===0?'A':'B'}
-function getSlot(p){const s=p%10;return s===0?10:s}
+// B গ্রুপ - সংখ্যা প্যাটার্ন
+const PATTERN_B = {
+    0: 3, // SMALL → SMALL
+    1: 2, // SMALL → SMALL
+    2: 7, // SMALL → BIG
+    3: 0, // SMALL → SMALL
+    4: 7, // SMALL → BIG
+    5: 1, // BIG → SMALL
+    6: 3, // BIG → SMALL
+    7: 8, // BIG → BIG
+    8: 7, // BIG → BIG
+    9: 7  // BIG → BIG
+};
 
-function predict(data){
-    if(!data||data.length<1)return{pred:'WAIT',conf:0,info:'ডেটা নেই'};
-    
-    const last=data[0];
-    const lastNum=parseInt(last.num);
-    const currPer=parseInt(last.per);
-    const nextPer=currPer+1;
-    const nextGrp=getGroup(nextPer);
-    const nextSlt=getSlot(nextPer);
-    
-    const numPat=nextGrp==='A'?PA:PB;
-    const sltPat=nextGrp==='A'?SA:SB;
-    
-    const numPred=getSize(numPat[lastNum]);
-    const sltPred=sltPat[nextSlt-1];
-    
-    let pred,conf,info;
-    
-    if(numPred===sltPred||(sltPred==='BIG-SMALL'&&(numPred==='BIG'||numPred==='SMALL'))){
-        pred=numPred;
-        conf=80+(loss*4);
-        info=`✅ দুটি প্যাটার্ন একই: ${pred}`;
-    }else{
-        pred=sltPred==='BIG-SMALL'?'BIG':sltPred;
-        conf=70+(loss*4);
-        info=`📊 স্লট: ${sltPred} | নাম্বার: ${numPred}`;
-    }
-    
-    if(loss>0)info+=` | 🔥 ${loss} লস`;
-    
-    return{pred,conf:Math.min(conf,93),info,grp:nextGrp,slt:nextSlt,per:nextPer};
+// B গ্রুপ - স্লট প্যাটার্ন
+const SLOT_B = ['BIG', 'SMALL', 'BIG', 'BIG-SMALL', 'BIG', 'SMALL', 'BIG', 'BIG', 'BIG', 'BIG'];
+
+let consecutiveLoss = 0;
+let lastPrediction = null;
+
+function getSize(num) {
+    return parseInt(num) >= 5 ? 'BIG' : 'SMALL';
 }
 
-async function load(){
-    try{
-        const res=await fetch(`${API}?t=${Date.now()}`);
-        const json=await res.json();
+function getGroup(periodNum) {
+    const groupIndex = Math.floor((periodNum - 1) / 10) % 2;
+    return groupIndex === 0 ? 'A' : 'B';
+}
+
+function getPeriodSlot(periodNum) {
+    const slot = periodNum % 10;
+    return slot === 0 ? 10 : slot;
+}
+
+function makePrediction(data) {
+    if (!data || data.length < 1) {
+        return {
+            prediction: 'WAIT',
+            confidence: 0,
+            details: 'পর্যাপ্ত ডেটা নেই',
+            group: '-',
+            slot: '-',
+            nextPeriod: '-'
+        };
+    }
+
+    const lastItem = data[0];
+    const lastNumber = parseInt(lastItem.number);
+    const currentPeriod = parseInt(lastItem.period);
+    const nextPeriod = currentPeriod + 1;
+    const nextGroup = getGroup(nextPeriod);
+    const nextSlot = getPeriodSlot(nextPeriod);
+
+    // সংখ্যা প্যাটার্ন দেখে prediction
+    const numberPattern = nextGroup === 'A' ? PATTERN_A : PATTERN_B;
+    const predictedNumber = numberPattern[lastNumber];
+    const numberPrediction = getSize(predictedNumber);
+
+    // স্লট প্যাটার্ন দেখে prediction
+    const slotPattern = nextGroup === 'A' ? SLOT_A : SLOT_B;
+    const slotPrediction = slotPattern[nextSlot - 1];
+
+    let finalPrediction, confidence, details;
+
+    // উভয় প্যাটার্ন একই হলে
+    if (numberPrediction === slotPrediction || 
+        (slotPrediction === 'BIG-SMALL' && (numberPrediction === 'BIG' || numberPrediction === 'SMALL'))) {
+        finalPrediction = numberPrediction;
+        confidence = 80 + (consecutiveLoss * 4);
+        details = `✅ দুটি প্যাটার্ন একই নির্দেশ করছে: <strong>${finalPrediction}</strong><br>সংখ্যা প্যাটার্ন: ${lastNumber} → ${predictedNumber} (${numberPrediction})<br>স্লট প্যাটার্ন: পজিশন ${nextSlot} = ${slotPrediction}`;
+    } else {
+        // স্লট প্যাটার্ন প্রাধান্য পাবে
+        finalPrediction = slotPrediction === 'BIG-SMALL' ? 'BIG' : slotPrediction;
+        confidence = 70 + (consecutiveLoss * 4);
+        details = `📊 স্লট প্যাটার্ন: পজিশন ${nextSlot} = <strong>${slotPrediction}</strong><br>সংখ্যা প্যাটার্ন: ${lastNumber} → ${predictedNumber} (${numberPrediction})<br>প্রেডিকশন: <strong>${finalPrediction}</strong>`;
+    }
+
+    // লস ট্র্যাকিং
+    if (consecutiveLoss > 0) {
+        details += `<br>🔥 <strong>${consecutiveLoss} টি ধারাবাহিক লস পর কনফিডেন্স বৃদ্ধি</strong>`;
+    }
+
+    return {
+        prediction: finalPrediction,
+        confidence: Math.min(confidence, 93),
+        details: details,
+        group: nextGroup,
+        slot: nextSlot,
+        nextPeriod: nextPeriod,
+        numberPrediction: numberPrediction,
+        slotPrediction: slotPrediction
+    };
+}
+
+async function load() {
+    try {
+        const response = await fetch(`${API}?t=${Date.now()}`);
+        const json = await response.json();
+
+        let gameList = [];
         
-        let list=[];
-        if(json&&json.data&&json.data.list)list=json.data.list;
-        else if(json&&json.list)list=json.list;
-        else if(Array.isArray(json))list=json;
-        
-        if(list.length===0){
-            document.getElementById('tbody').innerHTML='<tr><td colspan="5" class="loading">ডেটা নেই</td></tr>';
+        // বিভিন্ন JSON স্ট্রাকচার হ্যান্ডল করা
+        if (json && json.data && json.data.list) {
+            gameList = json.data.list;
+        } else if (json && json.list) {
+            gameList = json.list;
+        } else if (Array.isArray(json)) {
+            gameList = json;
+        }
+
+        if (gameList.length === 0) {
+            document.getElementById('tbody').innerHTML = '<tr><td colspan="5" class="error">কোনো ডেটা পাওয়া যায়নি</td></tr>';
+            document.getElementById('predResult').textContent = 'ডেটা নেই';
             return;
         }
-        
-        const data=list.map(i=>({
-            per:String(i.issueNo||i.issue||i.period||''),
-            num:String(i.openResult||i.result||i.number||'0')
+
+        // ডেটা প্রসেস করা
+        const processedData = gameList.map(item => ({
+            period: String(item.issueNo || item.issue || item.period || item.issueNumber || ''),
+            number: String(item.openResult || item.result || item.number || item.num || '0')
         }));
+
+        // প্রেডিকশন করা
+        const pred = makePrediction(processedData);
+
+        // হেডার আপডেট
+        document.getElementById('groupBadge').innerHTML = 
+            `<span class="group-badge group-${pred.group.toLowerCase()}">পরবর্তী গ্রুপ: ${pred.group}</span>`;
+
+        // প্রেডিকশন রেজাল্ট
+        const predClass = pred.prediction === 'BIG' ? 'pred-big' : 'pred-small';
+        document.getElementById('predResult').innerHTML = 
+            `<span class="${predClass}">${pred.prediction}</span>`;
         
-        const p=predict(data);
+        document.getElementById('confBadge').textContent = 
+            `কনফিডেন্স: ${pred.confidence}%`;
         
-        document.getElementById('groupBadge').innerHTML=`<span class="group-badge group-${p.grp.toLowerCase()}">গ্রুপ ${p.grp}</span>`;
-        document.getElementById('predResult').innerHTML=`<span class="pred-${p.pred.toLowerCase()}">${p.pred}</span>`;
-        document.getElementById('confBadge').textContent=`${p.conf}% নিশ্চিত`;
-        document.getElementById('info').innerHTML=p.info;
-        
-        document.getElementById('period').textContent=data[0].per;
-        document.getElementById('group').textContent=getGroup(parseInt(data[0].per));
-        document.getElementById('slot').textContent=getSlot(parseInt(data[0].per));
-        document.getElementById('loss').textContent=loss;
-        
-        const tbody=document.getElementById('tbody');
-        tbody.innerHTML='';
-        
-        data.slice(0,20).forEach((d,i)=>{
-            const pn=parseInt(d.per);
-            const num=parseInt(d.num);
-            const size=getSize(num);
-            const grp=getGroup(pn);
-            const slt=getSlot(pn);
-            
-            const tr=document.createElement('tr');
-            if(i===0)tr.classList.add('current');
-            
-            tr.innerHTML=`
-                <td style="font-family:monospace;color:#666">${d.per}</td>
-                <td><span class="group-badge group-${grp.toLowerCase()}" style="font-size:10px;padding:3px 10px">${grp}</span></td>
-                <td style="font-weight:700">${slt}</td>
-                <td class="num-cell">${num}</td>
+        document.getElementById('info').innerHTML = pred.details;
+
+        // স্ট্যাটস আপডেট
+        document.getElementById('period').textContent = processedData[0].period;
+        document.getElementById('group').textContent = getGroup(parseInt(processedData[0].period));
+        document.getElementById('slot').textContent = getPeriodSlot(parseInt(processedData[0].period));
+        document.getElementById('loss').textContent = consecutiveLoss;
+
+        // টেবিল আপডেট
+        const tbody = document.getElementById('tbody');
+        tbody.innerHTML = '';
+
+        processedData.slice(0, 20).forEach((item, index) => {
+            const periodNum = parseInt(item.period);
+            const number = parseInt(item.number);
+            const size = getSize(number);
+            const group = getGroup(periodNum);
+            const slot = getPeriodSlot(periodNum);
+
+            const tr = document.createElement('tr');
+            if (index === 0) tr.classList.add('current');
+
+            tr.innerHTML = `
+                <td style="font-family:monospace;color:#666;font-weight:600">${item.period}</td>
+                <td><span class="group-badge group-${group.toLowerCase()}" style="font-size:10px;padding:3px 10px">${group}</span></td>
+                <td style="font-weight:700;font-size:14px">${slot}</td>
+                <td class="num-cell">${number}</td>
                 <td><span class="size-${size.toLowerCase()}">${size}</span></td>
             `;
+            
             tbody.appendChild(tr);
         });
-        
-    }catch(e){
-        console.error(e);
-        document.getElementById('tbody').innerHTML='<tr><td colspan="5" class="loading">এরর</td></tr>';
+
+        // প্রেডিকশন সেভ করা (পরবর্তী লোডে লস চেক করার জন্য)
+        lastPrediction = {
+            period: pred.nextPeriod,
+            prediction: pred.prediction
+        };
+
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('tbody').innerHTML = 
+            `<tr><td colspan="5" class="error">এরর: ${error.message}</td></tr>`;
+        document.getElementById('predResult').textContent = 'এরর';
+        document.getElementById('info').textContent = 'ডেটা লোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।';
     }
 }
 
-function updateTime(){
-    const d=new Date();
-    const h=String(d.getHours()).padStart(2,'0');
-    const m=String(d.getMinutes()).padStart(2,'0');
-    const s=String(d.getSeconds()).padStart(2,'0');
-    document.getElementById('time').textContent=`${h}:${m}:${s}`;
-    if(s==='00'||s==='30')setTimeout(load,1000);
+function updateTime() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('time').textContent = `${h}:${m}:${s}`;
+    
+    // প্রতি 30 সেকেন্ডে অটো রিফ্রেশ
+    if (s === '00' || s === '30') {
+        setTimeout(load, 1000);
+    }
 }
 
+// ইনিশিয়ালাইজ
 load();
-setInterval(updateTime,1000);
+setInterval(updateTime, 1000);
 updateTime();
 </script>
 </body>
