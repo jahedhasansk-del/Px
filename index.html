@@ -190,7 +190,14 @@ const tp=String(ls[0][_f1[0]]||ls[0][_f1[1]]||ls[0][_f1[2]]||ls[0][_f1[3]]||ls[0
 tn=String(ls[0][_f2[0]]||ls[0][_f2[1]]||ls[0][_f2[2]]||ls[0][_f2[3]]||''),
 ts=_x(tn);
 
-const pd=_pred(tp,parseInt(tn));
+// Get NEXT period number (current period + 1)
+const nextPeriodNum = parseInt(String(tp).slice(-2)) + 1;
+let nextPeriod = String(tp).slice(0, -2) + String(nextPeriodNum).padStart(2, '0');
+
+// Use second last result for prediction (if exists)
+const prevNum = ls.length > 1 ? String(ls[1][_f2[0]]||ls[1][_f2[1]]||ls[1][_f2[2]]||ls[1][_f2[3]]||'0') : '0';
+
+const pd=_pred(nextPeriod, parseInt(prevNum));
 _c=pd;
 
 // Update pattern display
@@ -198,7 +205,7 @@ const pbox=document.getElementById('patternBox');
 const prng=document.getElementById('patternRange');
 pbox.textContent=`PATTERN ${pd.pt}`;
 pbox.className=`pattern-box pattern-${pd.pt.toLowerCase()}`;
-prng.textContent=`Period Range: ${_getRng(tp)}`;
+prng.textContent=`Period Range: ${_getRng(nextPeriod)}`;
 
 if(_lp!==tp){
 if(_p){
@@ -207,7 +214,7 @@ re={per:tp,pred:_p.p,act:ts,res:im?_0x4a[2]:_0x4a[3],num:tn};
 _h.unshift(re);
 if(_h.length>50)_h=_h.slice(0,50);
 }
-_p={..._c};
+_p={..._c,nextPer:nextPeriod};
 _lp=tp;
 }
 
