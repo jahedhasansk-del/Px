@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>WinGo Pro Signal - 30 Seconds</title>
+<title>WinGo Pro Signal - 1 Minute</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:linear-gradient(135deg,#0a0e27 0%,#1a1f3a 100%);min-height:100vh;padding:15px;overflow-x:hidden}
@@ -111,7 +111,7 @@ th,td{padding:10px 5px;font-size:11px}
 <div class="header">
 <div class="logo">⚡ WINGO PRO SIGNAL</div>
 <div class="title">Advanced Pattern Analyzer v5.0</div>
-<div class="game-type">🎮 30 SECONDS GAME</div>
+<div class="game-type">🎮 1 MINUTE GAME</div>
 </div>
 
 <div class="timer-section">
@@ -230,8 +230,8 @@ function drawMatrix() {
 setInterval(drawMatrix, 50);
 
 // Game Configuration
-const GAME_INTERVAL = 30; // 30 seconds game
-const UPDATE_SECONDS = [29, 59]; // Update at 29 and 59 seconds
+const GAME_INTERVAL = 60; // 60 seconds (1 minute) game
+const UPDATE_SECONDS = [58]; // Update at 58 seconds
 
 // Pattern A Configuration (Periods 01-10, 21-30, 41-50, 61-70, 81-90)
 const PATTERN_A = {
@@ -378,13 +378,10 @@ function updateCountdown() {
     const now = new Date();
     const seconds = now.getSeconds();
     
-    let nextUpdate;
-    if (seconds < 29) {
-        nextUpdate = 29 - seconds;
-    } else if (seconds < 59) {
-        nextUpdate = 59 - seconds;
-    } else {
-        nextUpdate = 29;
+    // Calculate seconds until next minute (58 seconds is the target)
+    let nextUpdate = 58 - seconds;
+    if (nextUpdate <= 0) {
+        nextUpdate = 60 + (58 - seconds);
     }
     
     document.getElementById('countdown').textContent = String(nextUpdate).padStart(2, '0');
@@ -451,7 +448,7 @@ function getColorDots(num, color) {
 async function loadData() {
     try {
         const timestamp = new Date().getTime();
-        const apiUrl = `https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json?ts=${timestamp}`;
+        const apiUrl = `https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${timestamp}`;
         
         const response = await fetch(apiUrl);
         const data = await response.json();
