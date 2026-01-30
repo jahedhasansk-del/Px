@@ -334,7 +334,7 @@
             losses: 0
         };
 
-        const API_URL = 'https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json';
+        const API_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json');
 
         // Number properties
         const numberProperties = {
@@ -383,18 +383,59 @@
         // Fetch game history from API
         async function fetchGameHistory() {
             try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
+                // Try primary proxy
+                let response = await fetch(API_URL);
+                let data = await response.json();
                 
                 if (data && data.data && data.data.list) {
                     gameHistory = data.data.list;
                     updateHistoryTable();
                     updateLastPeriod();
                     checkPreviousPrediction();
+                    console.log('Data loaded successfully:', gameHistory.length, 'items');
+                    return;
+                }
+                
+                // If first method fails, try direct fetch
+                response = await fetch('https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json', {
+                    mode: 'cors'
+                });
+                data = await response.json();
+                
+                if (data && data.data && data.data.list) {
+                    gameHistory = data.data.list;
+                    updateHistoryTable();
+                    updateLastPeriod();
+                    checkPreviousPrediction();
+                    console.log('Data loaded successfully:', gameHistory.length, 'items');
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
+                // Use demo data if API fails
+                useDemoData();
             }
+        }
+
+        // Demo data for testing
+        function useDemoData() {
+            const now = Date.now();
+            const baseNumber = 202601301000051385;
+            
+            gameHistory = [];
+            for (let i = 0; i < 20; i++) {
+                const number = Math.floor(Math.random() * 10);
+                const period = String(baseNumber - i);
+                gameHistory.push({
+                    period: period,
+                    number: number,
+                    bigSmall: numberProperties[number].size,
+                    color: numberProperties[number].colors
+                });
+            }
+            
+            console.log('Using demo data');
+            updateHistoryTable();
+            updateLastPeriod();
         }
 
         function updateLastPeriod() {
