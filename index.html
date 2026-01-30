@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinGo 30S - Prediction System</title>
+    <title>WinGo 1M Prediction System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,595 +12,812 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #00ff88;
+            --secondary: #0099ff;
+            --danger: #ff0055;
+            --warning: #ffaa00;
+            --dark: #0a0e27;
+            --darker: #050814;
+            --card-bg: #1a1f3a;
+            --text: #e0e6ff;
+            --text-dim: #8892b8;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, #1a1035 50%, var(--darker) 100%);
+            color: var(--text);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 153, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
-        .header {
+        header {
             text-align: center;
-            color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease;
         }
 
-        .header h1 {
-            font-size: 2.5em;
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+            letter-spacing: 3px;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
         }
 
-        .prediction-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-        }
-
-        .countdown {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .countdown-timer {
-            font-size: 4em;
-            font-weight: bold;
-            color: #667eea;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .countdown-label {
+        .subtitle {
             font-size: 1.2em;
-            color: #666;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .game-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--warning), var(--danger));
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9em;
             margin-top: 10px;
+            box-shadow: 0 5px 20px rgba(255, 170, 0, 0.4);
         }
 
-        .prediction-section {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-
-        .prediction-label {
-            color: white;
-            font-size: 1.3em;
-            margin-bottom: 15px;
-        }
-
-        .prediction-value {
-            font-size: 5em;
-            font-weight: bold;
-            color: white;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-        }
-
-        .prediction-details {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 15px;
-        }
-
-        .detail-item {
-            background: rgba(255,255,255,0.2);
-            padding: 10px 20px;
+        .status-bar {
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid var(--primary);
             border-radius: 10px;
-            color: white;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeInUp 0.6s ease;
         }
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            color: white;
-        }
-
-        .stat-card.win {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
-
-        .stat-card.loss {
-            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
-        }
-
-        .stat-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
-        .history-table {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        .history-title {
-            font-size: 1.5em;
-            color: #667eea;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        th {
-            padding: 15px;
-            text-align: center;
-            color: white;
+        .status-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-weight: 600;
         }
 
-        td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        .number-display {
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-
-        .color-indicator {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
+        .status-dot {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            margin: 0 3px;
-            vertical-align: middle;
+            animation: pulse-dot 1.5s ease-in-out infinite;
         }
 
-        .color-red {
-            background: #ff4757;
+        .status-dot.active {
+            background: var(--primary);
         }
 
-        .color-green {
-            background: #2ed573;
+        .status-dot.error {
+            background: var(--danger);
         }
 
-        .color-purple {
-            background: #a55eea;
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
-        .result-badge {
-            padding: 5px 15px;
+        .refresh-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .prediction-card {
+            background: var(--card-bg);
             border-radius: 20px;
-            font-weight: bold;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+            transition: all 0.3s ease;
+        }
+
+        .prediction-card.active {
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 50px rgba(0, 255, 136, 0.4);
+        }
+
+        .prediction-card.inactive {
+            opacity: 0.6;
+        }
+
+        .prediction-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -1;
+        }
+
+        .prediction-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pattern-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .pattern-a {
+            background: linear-gradient(135deg, #ff0055, #ff6600);
+            box-shadow: 0 5px 20px rgba(255, 0, 85, 0.4);
+        }
+
+        .pattern-b {
+            background: linear-gradient(135deg, #0099ff, #00ff88);
+            box-shadow: 0 5px 20px rgba(0, 153, 255, 0.4);
+        }
+
+        .current-period {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1em;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .prediction-box {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 153, 255, 0.1));
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 2px solid var(--primary);
+            position: relative;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.6); }
+        }
+
+        .prediction-label {
+            font-size: 0.9em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .prediction-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3em;
+            font-weight: 900;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+
+        .confidence-meter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .confidence-bar {
+            flex: 1;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--warning), var(--primary));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .confidence-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 60px;
+        }
+
+        .reason-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .reason-title {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .reason-text {
+            color: var(--text-dim);
+            line-height: 1.6;
+            font-size: 1em;
+        }
+
+        .history-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(0, 153, 255, 0.2);
+            animation: fadeInUp 1s ease;
+        }
+
+        .history-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timer {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1em;
+            color: var(--warning);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timer-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--warning);
+            border-radius: 50%;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .history-table thead {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 153, 255, 0.2));
+        }
+
+        .history-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+
+        .history-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-table tbody tr {
+            transition: background 0.3s;
+        }
+
+        .history-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .number-badge {
+            display: inline-block;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3em;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .size-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 1px;
+        }
+
+        .big {
+            background: linear-gradient(135deg, #ff0055, #ff6600);
             color: white;
         }
 
-        .result-win {
-            background: #2ed573;
+        .small {
+            background: linear-gradient(135deg, #00ff88, #0099ff);
+            color: white;
         }
 
-        .result-loss {
-            background: #ff4757;
-        }
-
-        .result-pending {
-            background: #ffa502;
+        .color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .loading {
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 40px;
+            font-size: 1.2em;
+            color: var(--text-dim);
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(0, 255, 136, 0.2);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
             }
-            50% {
-                transform: scale(1.05);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        .pulse {
-            animation: pulse 1s infinite;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .last-period {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .last-period-label {
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .last-period-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🎮 WinGo 30S</h1>
-            <p>Prediction System with Live Results</p>
+        <header>
+            <h1>🎮 WinGo Prediction System</h1>
+            <div class="subtitle">Advanced Pattern Recognition</div>
+            <div class="game-badge">1 MINUTE GAME</div>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-text">
+                <div class="status-dot active" id="statusDot"></div>
+                <span id="statusText">Ready to connect...</span>
+            </div>
+            <button class="refresh-btn" onclick="manualFetch()">🔄 Refresh Now</button>
         </div>
 
-        <div class="prediction-card">
-            <div class="countdown">
-                <div class="countdown-timer" id="countdown">30</div>
-                <div class="countdown-label">সেকেন্ড বাকি</div>
+        <div class="main-grid">
+            <!-- Pattern A Prediction -->
+            <div class="prediction-card" id="patternACard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="pattern-badge pattern-a">PATTERN A</span>
+                    </div>
+                    <div class="current-period" id="periodA">Period: --/10</div>
+                </div>
+                
+                <div class="prediction-box">
+                    <div class="prediction-label">Next Prediction</div>
+                    <div class="prediction-value" id="predictionA">--</div>
+                    <div class="confidence-meter">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceBarA" style="width: 0%"></div>
+                        </div>
+                        <div class="confidence-text" id="confidenceA">--%</div>
+                    </div>
+                </div>
+
+                <div class="reason-box">
+                    <div class="reason-title">📊 Analysis</div>
+                    <div class="reason-text" id="reasonA">Waiting for data...</div>
+                </div>
             </div>
 
-            <div class="last-period">
-                <div class="last-period-label">শেষ পিরিয়ড</div>
-                <div class="last-period-value" id="lastPeriod">Loading...</div>
-            </div>
+            <!-- Pattern B Prediction -->
+            <div class="prediction-card" id="patternBCard">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="pattern-badge pattern-b">PATTERN B</span>
+                    </div>
+                    <div class="current-period" id="periodB">Period: --/10</div>
+                </div>
+                
+                <div class="prediction-box">
+                    <div class="prediction-label">Next Prediction</div>
+                    <div class="prediction-value" id="predictionB">--</div>
+                    <div class="confidence-meter">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceBarB" style="width: 0%"></div>
+                        </div>
+                        <div class="confidence-text" id="confidenceB">--%</div>
+                    </div>
+                </div>
 
-            <div class="prediction-section">
-                <div class="prediction-label">📊 আমাদের প্রেডিকশন</div>
-                <div class="prediction-value pulse" id="predictionNumber">-</div>
-                <div class="prediction-details">
-                    <div class="detail-item" id="predictionSize">-</div>
-                    <div class="detail-item" id="predictionColors">-</div>
-                </div>
-            </div>
-
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="totalPredictions">0</div>
-                    <div class="stat-label">মোট প্রেডিকশন</div>
-                </div>
-                <div class="stat-card win">
-                    <div class="stat-value" id="totalWins">0</div>
-                    <div class="stat-label">জয়</div>
-                </div>
-                <div class="stat-card loss">
-                    <div class="stat-value" id="totalLosses">0</div>
-                    <div class="stat-label">হার</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="winRate">0%</div>
-                    <div class="stat-label">সাফল্যের হার</div>
+                <div class="reason-box">
+                    <div class="reason-title">📊 Analysis</div>
+                    <div class="reason-text" id="reasonB">Waiting for data...</div>
                 </div>
             </div>
         </div>
 
-        <div class="history-table">
-            <h2 class="history-title">📜 হিস্ট্রি এবং রেজাল্ট</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>পিরিয়ড</th>
-                        <th>নাম্বার</th>
-                        <th>সাইজ</th>
-                        <th>কালার</th>
-                        <th>প্রেডিকশন</th>
-                        <th>রেজাল্ট</th>
-                    </tr>
-                </thead>
-                <tbody id="historyBody">
-                    <tr>
-                        <td colspan="6" class="loading">Loading...</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- History Section -->
+        <div class="history-section">
+            <div class="history-header">
+                <span>📜 Recent History</span>
+                <div class="timer">
+                    <div class="timer-dot"></div>
+                    <span id="countdown">Next Update: --s</span>
+                </div>
+            </div>
+            <div id="historyContent">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    Loading data...
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        let countdown = 30;
-        let currentPrediction = null;
-        let predictions = [];
-        let gameHistory = [];
-        let stats = {
-            total: 0,
-            wins: 0,
-            losses: 0
+        // Pattern A Configuration
+        const PATTERN_A = {
+            periods: {
+                1: 'BIG', 2: 'SMALL', 3: 'BIG', 4: 'BIG', 5: 'SMALL',
+                6: 'BIG', 7: 'BIG', 8: 'SMALL', 9: 'BIG', 10: 'BIG'
+            },
+            numberMap: {
+                0: 5, 1: 8, 2: 6, 3: 8, 4: 8,
+                5: 0, 6: 7, 7: 6, 8: 0, 9: 2
+            }
         };
 
-        const API_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json');
-
-        // Number properties
-        const numberProperties = {
-            0: { size: 'Small', colors: ['red', 'purple'] },
-            1: { size: 'Small', colors: ['green'] },
-            2: { size: 'Small', colors: ['red'] },
-            3: { size: 'Small', colors: ['green'] },
-            4: { size: 'Small', colors: ['red'] },
-            5: { size: 'Big', colors: ['green', 'purple'] },
-            6: { size: 'Big', colors: ['red'] },
-            7: { size: 'Big', colors: ['green'] },
-            8: { size: 'Big', colors: ['red'] },
-            9: { size: 'Big', colors: ['green'] }
+        // Pattern B Configuration
+        const PATTERN_B = {
+            periods: {
+                1: 'BIG', 2: 'SMALL', 3: 'BIG', 4: 'BIG-SMALL', 5: 'BIG',
+                6: 'SMALL', 7: 'BIG', 8: 'BIG', 9: 'BIG', 10: 'BIG'
+            },
+            numberMap: {
+                0: 3, 1: 2, 2: 7, 3: 0, 4: 7,
+                5: 1, 6: 3, 7: 8, 8: 7, 9: 7
+            }
         };
 
-        // Generate random prediction
-        function generatePrediction() {
-            const number = Math.floor(Math.random() * 10);
-            const properties = numberProperties[number];
+        let lastFetchTime = 0;
+        let fetchAttempts = 0;
+
+        // Helper Functions
+        function getPatternType(period) {
+            const lastTwo = parseInt(period.slice(-2));
             
-            currentPrediction = {
-                number: number,
-                size: properties.size,
-                colors: properties.colors,
-                timestamp: Date.now()
+            if (lastTwo >= 1 && lastTwo <= 10) return { pattern: 'A', position: lastTwo };
+            if (lastTwo >= 11 && lastTwo <= 20) return { pattern: 'B', position: lastTwo - 10 };
+            if (lastTwo >= 21 && lastTwo <= 30) return { pattern: 'A', position: lastTwo - 20 };
+            if (lastTwo >= 31 && lastTwo <= 40) return { pattern: 'B', position: lastTwo - 30 };
+            if (lastTwo >= 41 && lastTwo <= 50) return { pattern: 'A', position: lastTwo - 40 };
+            if (lastTwo >= 51 && lastTwo <= 60) return { pattern: 'B', position: lastTwo - 50 };
+            if (lastTwo >= 61 && lastTwo <= 70) return { pattern: 'A', position: lastTwo - 60 };
+            if (lastTwo >= 71 && lastTwo <= 80) return { pattern: 'B', position: lastTwo - 70 };
+            if (lastTwo >= 81 && lastTwo <= 90) return { pattern: 'A', position: lastTwo - 80 };
+            if (lastTwo >= 91 && lastTwo <= 100) return { pattern: 'B', position: lastTwo - 90 };
+            
+            return { pattern: 'A', position: 1 };
+        }
+
+        function isBig(number) {
+            return number >= 5;
+        }
+
+        function getPrediction(patternConfig, position, lastNumber) {
+            const periodPrediction = patternConfig.periods[position];
+            const nextNumber = patternConfig.numberMap[lastNumber];
+            const numberPrediction = isBig(nextNumber) ? 'BIG' : 'SMALL';
+            
+            let finalPrediction = periodPrediction;
+            let confidence = 65;
+            let reason = `Period ${position}/10 → ${periodPrediction}`;
+            
+            // Handle BIG-SMALL case
+            if (periodPrediction === 'BIG-SMALL') {
+                finalPrediction = numberPrediction;
+                confidence = 85;
+                reason = `Period ${position}/10 flexible, Last ${lastNumber} → ${nextNumber} (${numberPrediction})`;
+            } else if (periodPrediction === numberPrediction) {
+                confidence = 85;
+                reason = `Period ${position}/10 → ${periodPrediction} + Last ${lastNumber} → ${nextNumber} (${numberPrediction}) ✓ Match!`;
+            } else {
+                reason = `Period ${position}/10 → ${periodPrediction}, Last ${lastNumber} → ${nextNumber} (${numberPrediction})`;
+            }
+            
+            return {
+                prediction: finalPrediction,
+                confidence: confidence,
+                reason: reason
             };
-
-            updatePredictionDisplay();
         }
 
-        function updatePredictionDisplay() {
-            if (!currentPrediction) return;
-
-            document.getElementById('predictionNumber').textContent = currentPrediction.number;
-            document.getElementById('predictionSize').textContent = currentPrediction.size;
+        function updatePredictions(data) {
+            if (!data || data.length === 0) return;
             
-            const colorsText = currentPrediction.colors.map(c => {
-                if (c === 'red') return '🔴 লাল';
-                if (c === 'green') return '🟢 সবুজ';
-                if (c === 'purple') return '🟣 বেগুনি';
-            }).join(' ');
+            const latest = data[0];
+            const currentPeriod = latest.period;
+            const lastNumber = parseInt(latest.number);
             
-            document.getElementById('predictionColors').textContent = colorsText;
+            const patternInfo = getPatternType(currentPeriod);
+            
+            // Update Pattern A
+            const predA = getPrediction(PATTERN_A, patternInfo.position, lastNumber);
+            document.getElementById('periodA').textContent = `Period: ${patternInfo.position}/10`;
+            document.getElementById('predictionA').textContent = predA.prediction;
+            document.getElementById('confidenceA').textContent = `${predA.confidence}%`;
+            document.getElementById('confidenceBarA').style.width = `${predA.confidence}%`;
+            document.getElementById('reasonA').textContent = predA.reason;
+            
+            // Update Pattern B
+            const predB = getPrediction(PATTERN_B, patternInfo.position, lastNumber);
+            document.getElementById('periodB').textContent = `Period: ${patternInfo.position}/10`;
+            document.getElementById('predictionB').textContent = predB.prediction;
+            document.getElementById('confidenceB').textContent = `${predB.confidence}%`;
+            document.getElementById('confidenceBarB').style.width = `${predB.confidence}%`;
+            document.getElementById('reasonB').textContent = predB.reason;
+            
+            // Highlight active pattern
+            const cardA = document.getElementById('patternACard');
+            const cardB = document.getElementById('patternBCard');
+            
+            if (patternInfo.pattern === 'A') {
+                cardA.classList.add('active');
+                cardA.classList.remove('inactive');
+                cardB.classList.add('inactive');
+                cardB.classList.remove('active');
+            } else {
+                cardB.classList.add('active');
+                cardB.classList.remove('inactive');
+                cardA.classList.add('inactive');
+                cardA.classList.remove('active');
+            }
         }
 
-        // Fetch game history from API
-        async function fetchGameHistory() {
-            try {
-                // Try primary proxy
-                let response = await fetch(API_URL);
-                let data = await response.json();
+        function updateHistory(data) {
+            const historyContent = document.getElementById('historyContent');
+            
+            let html = '<table class="history-table"><thead><tr>';
+            html += '<th>Period</th><th>Number</th><th>Size</th><th>Color</th>';
+            html += '</tr></thead><tbody>';
+            
+            data.slice(0, 10).forEach(item => {
+                const number = parseInt(item.number);
+                const size = isBig(number) ? 'Big' : 'Small';
+                const sizeClass = isBig(number) ? 'big' : 'small';
                 
-                if (data && data.data && data.data.list) {
-                    gameHistory = data.data.list;
-                    updateHistoryTable();
-                    updateLastPeriod();
-                    checkPreviousPrediction();
-                    console.log('Data loaded successfully:', gameHistory.length, 'items');
-                    return;
+                html += '<tr>';
+                html += `<td style="font-family: 'Orbitron', monospace; font-size: 0.9em;">${item.period}</td>`;
+                html += `<td><span class="number-badge ${sizeClass}">${item.number}</span></td>`;
+                html += `<td><span class="size-badge ${sizeClass}">${size}</span></td>`;
+                html += `<td><span class="color-dot" style="background: ${item.color};"></span></td>`;
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            historyContent.innerHTML = html;
+        }
+
+        function updateStatus(type, message) {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            
+            dot.className = `status-dot ${type}`;
+            text.textContent = message;
+        }
+
+        async function fetchData() {
+            try {
+                updateStatus('active', 'Fetching data...');
+                
+                const response = await fetch('https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json', {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
                 }
                 
-                // If first method fails, try direct fetch
-                response = await fetch('https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json', {
-                    mode: 'cors'
-                });
-                data = await response.json();
+                const result = await response.json();
                 
-                if (data && data.data && data.data.list) {
-                    gameHistory = data.data.list;
-                    updateHistoryTable();
-                    updateLastPeriod();
-                    checkPreviousPrediction();
-                    console.log('Data loaded successfully:', gameHistory.length, 'items');
+                if (result && result.data && result.data.gameslist) {
+                    updatePredictions(result.data.gameslist);
+                    updateHistory(result.data.gameslist);
+                    updateStatus('active', `✓ Connected | Last: ${new Date().toLocaleTimeString()}`);
+                    fetchAttempts = 0;
+                    lastFetchTime = Date.now();
+                } else {
+                    throw new Error('Invalid data format');
                 }
             } catch (error) {
-                console.error('Error fetching data:', error);
-                // Use demo data if API fails
-                useDemoData();
+                console.error('Fetch error:', error);
+                fetchAttempts++;
+                
+                if (fetchAttempts >= 3) {
+                    updateStatus('error', '⚠️ API Connection Failed');
+                } else {
+                    updateStatus('error', `Retrying... (${fetchAttempts}/3)`);
+                }
             }
         }
 
-        // Demo data for testing
-        function useDemoData() {
-            const now = Date.now();
-            const baseNumber = 202601301000051385;
+        function manualFetch() {
+            fetchAttempts = 0;
+            fetchData();
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const seconds = now.getSeconds();
             
-            gameHistory = [];
-            for (let i = 0; i < 20; i++) {
-                const number = Math.floor(Math.random() * 10);
-                const period = String(baseNumber - i);
-                gameHistory.push({
-                    period: period,
-                    number: number,
-                    bigSmall: numberProperties[number].size,
-                    color: numberProperties[number].colors
-                });
-            }
-            
-            console.log('Using demo data');
-            updateHistoryTable();
-            updateLastPeriod();
-        }
-
-        function updateLastPeriod() {
-            if (gameHistory.length > 0) {
-                const lastGame = gameHistory[0];
-                document.getElementById('lastPeriod').textContent = lastGame.period;
-            }
-        }
-
-        function checkPreviousPrediction() {
-            if (predictions.length === 0 || !gameHistory.length) return;
-
-            const lastPrediction = predictions[predictions.length - 1];
-            if (lastPrediction.result !== 'pending') return;
-
-            const lastGame = gameHistory[0];
-            const actualNumber = lastGame.number;
-
-            if (lastPrediction.number === actualNumber) {
-                lastPrediction.result = 'win';
-                stats.wins++;
+            // Calculate time until 58 seconds
+            let nextUpdate;
+            if (seconds < 58) {
+                nextUpdate = 58 - seconds;
             } else {
-                lastPrediction.result = 'loss';
-                stats.losses++;
+                nextUpdate = 60 - seconds;
             }
-
-            stats.total++;
-            updateStats();
-            updateHistoryTable();
-        }
-
-        function updateHistoryTable() {
-            const tbody = document.getElementById('historyBody');
-            tbody.innerHTML = '';
-
-            const displayHistory = gameHistory.slice(0, 10);
-
-            displayHistory.forEach((game, index) => {
-                const prediction = predictions.find(p => p.period === game.period);
-                
-                const tr = document.createElement('tr');
-                
-                // Period
-                const tdPeriod = document.createElement('td');
-                tdPeriod.textContent = game.period.slice(-6);
-                tr.appendChild(tdPeriod);
-
-                // Number
-                const tdNumber = document.createElement('td');
-                tdNumber.innerHTML = `<span class="number-display">${game.number}</span>`;
-                tdNumber.style.color = getNumberColor(game.number);
-                tr.appendChild(tdNumber);
-
-                // Size
-                const tdSize = document.createElement('td');
-                tdSize.textContent = game.bigSmall === 'Big' ? 'বড়' : 'ছোট';
-                tr.appendChild(tdSize);
-
-                // Colors
-                const tdColor = document.createElement('td');
-                const colors = getColorsForNumber(game.number);
-                colors.forEach(color => {
-                    const span = document.createElement('span');
-                    span.className = `color-indicator color-${color}`;
-                    tdColor.appendChild(span);
-                });
-                tr.appendChild(tdColor);
-
-                // Prediction
-                const tdPrediction = document.createElement('td');
-                if (prediction) {
-                    tdPrediction.innerHTML = `<span class="number-display">${prediction.number}</span>`;
-                    tdPrediction.style.color = getNumberColor(prediction.number);
-                } else {
-                    tdPrediction.textContent = '-';
-                }
-                tr.appendChild(tdPrediction);
-
-                // Result
-                const tdResult = document.createElement('td');
-                if (prediction) {
-                    const badge = document.createElement('span');
-                    badge.className = `result-badge result-${prediction.result}`;
-                    if (prediction.result === 'win') {
-                        badge.textContent = '✓ জয়';
-                    } else if (prediction.result === 'loss') {
-                        badge.textContent = '✗ হার';
-                    } else {
-                        badge.textContent = '⏳ অপেক্ষারত';
-                    }
-                    tdResult.appendChild(badge);
-                } else {
-                    tdResult.textContent = '-';
-                }
-                tr.appendChild(tdResult);
-
-                tbody.appendChild(tr);
-            });
-        }
-
-        function getNumberColor(number) {
-            const colors = numberProperties[number].colors;
-            if (colors.includes('red')) return '#ff4757';
-            if (colors.includes('green')) return '#2ed573';
-            return '#667eea';
-        }
-
-        function getColorsForNumber(number) {
-            return numberProperties[number].colors;
-        }
-
-        function updateStats() {
-            document.getElementById('totalPredictions').textContent = stats.total;
-            document.getElementById('totalWins').textContent = stats.wins;
-            document.getElementById('totalLosses').textContent = stats.losses;
             
-            const winRate = stats.total > 0 ? ((stats.wins / stats.total) * 100).toFixed(1) : 0;
-            document.getElementById('winRate').textContent = winRate + '%';
-        }
-
-        // Countdown timer
-        function startCountdown() {
-            const countdownElement = document.getElementById('countdown');
+            document.getElementById('countdown').textContent = `Next Update: ${nextUpdate}s`;
             
-            const timer = setInterval(() => {
-                countdown--;
-                countdownElement.textContent = countdown;
-
-                // Update at 29 seconds
-                if (countdown === 29) {
-                    generatePrediction();
-                    
-                    // Save prediction
-                    if (gameHistory.length > 0) {
-                        const nextPeriod = String(Number(gameHistory[0].period) + 1);
-                        predictions.push({
-                            period: nextPeriod,
-                            number: currentPrediction.number,
-                            size: currentPrediction.size,
-                            colors: currentPrediction.colors,
-                            result: 'pending'
-                        });
-                    }
-                }
-
-                // Reset at 0
-                if (countdown <= 0) {
-                    countdown = 30;
-                    fetchGameHistory();
-                }
-            }, 1000);
+            // Fetch data at 58 seconds
+            if (seconds === 58) {
+                fetchData();
+            }
         }
 
         // Initialize
-        async function init() {
-            await fetchGameHistory();
-            generatePrediction();
-            startCountdown();
-            
-            // Fetch history every 30 seconds
-            setInterval(fetchGameHistory, 30000);
-        }
-
-        init();
+        console.log('WinGo 1M Prediction System Initialized');
+        console.log('Updates every minute at 58 seconds');
+        
+        fetchData();
+        setInterval(updateCountdown, 1000);
+        
+        // Backup refresh every 60 seconds
+        setInterval(() => {
+            const timeSinceLastFetch = Date.now() - lastFetchTime;
+            if (timeSinceLastFetch > 65000) {
+                console.log('Backup auto-refresh triggered');
+                fetchData();
+            }
+        }, 60000);
     </script>
 </body>
 </html>
