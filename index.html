@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>WinGo Pro Signal - 1 Minute</title>
+<title>WinGo Pro - Manual Entry</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;padding:15px;overflow-x:hidden}.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.03;pointer-events:none}.container{max-width:700px;margin:0 auto;position:relative;z-index:1}.header{text-align:center;margin-bottom:20px;position:relative}.logo{font-size:28px;color:#00ff41;text-shadow:0 0 20px #00ff41;animation:glow 2s ease-in-out infinite;margin-bottom:8px}@keyframes glow{0%,100%{text-shadow:0 0 20px #00ff41}50%{text-shadow:0 0 30px #00ff41,0 0 60px #00ff41}}.title{color:#00ff41;font-size:13px;letter-spacing:2px;text-transform:uppercase}.subtitle{color:#ffaa00;font-size:11px;margin-top:5px;letter-spacing:1px}.scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00ff41,transparent);animation:scan 3s linear infinite}@keyframes scan{0%{top:0}100%{top:100%}}.pattern-indicator{background:linear-gradient(135deg,rgba(0,255,65,.15),rgba(0,100,255,.15));border:2px solid #00ff41;border-radius:12px;padding:12px;margin-bottom:15px;text-align:center;box-shadow:0 0 25px rgba(0,255,65,.3)}.pattern-title{color:#00ff41;font-size:11px;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase}.pattern-box{display:inline-block;background:rgba(0,255,65,.2);border:2px solid #00ff41;border-radius:8px;padding:8px 18px;font-size:24px;font-weight:bold;color:#00ff41;text-shadow:0 0 15px #00ff41;min-width:90px}.pattern-a{background:rgba(0,255,65,.2);border-color:#00ff41;color:#00ff41}.pattern-b{background:rgba(255,170,0,.2);border-color:#ffaa00;color:#ffaa00;text-shadow:0 0 15px #ffaa00}.pattern-range{margin-top:6px;font-size:10px;color:#00ff41;opacity:.7}.prediction-container{background:linear-gradient(135deg,rgba(0,255,65,.1) 0%,rgba(0,100,255,.1) 100%);border:2px solid #00ff41;border-radius:12px;overflow:hidden;box-shadow:0 0 30px rgba(0,255,65,.3);margin-bottom:20px;animation:borderPulse 2s ease-in-out infinite}@keyframes borderPulse{0%,100%{box-shadow:0 0 30px rgba(0,255,65,.3)}50%{box-shadow:0 0 50px rgba(0,255,65,.5)}}.prediction-header{padding:12px;text-align:center;background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%);border-bottom:1px solid #00ff41}.prediction-header h3{color:#00ff41;font-size:15px;letter-spacing:2px;text-transform:uppercase}.prediction-content{padding:30px 20px;text-align:center}.prediction-result{font-size:56px;font-weight:bold;margin-bottom:15px;text-transform:uppercase;letter-spacing:4px;animation:fadeInScale 1s ease-out}@keyframes fadeInScale{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}.prediction-big{color:#ff0055;text-shadow:0 0 20px #ff0055}.prediction-small{color:#00ff41;text-shadow:0 0 20px #00ff41}.prediction-details{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:15px;padding-top:15px;border-top:1px solid rgba(0,255,65,.2)}.detail-box{background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:6px;padding:10px}.detail-label{font-size:9px;color:#00ff41;margin-bottom:4px;opacity:.7;text-transform:uppercase}.detail-value{font-size:18px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}.confidence-bar{width:180px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;margin:15px auto;overflow:hidden}.confidence-fill{height:100%;background:linear-gradient(90deg,#ff0055,#ffaa00,#00ff41);border-radius:4px;animation:fillBar 2s ease-out;position:relative}@keyframes fillBar{0%{width:0%}}.confidence-fill::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2s infinite}@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}.confidence-label{color:#00ff41;font-size:12px;margin-top:8px;letter-spacing:1px;text-transform:uppercase}.confidence-high{color:#00ff41;text-shadow:0 0 10px #00ff41}.confidence-medium{color:#ffaa00;text-shadow:0 0 10px #ffaa00}.confidence-low{color:#ff0055;text-shadow:0 0 10px #ff0055}.stats-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,255,65,.2)}.stats-info{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.stat-item{text-align:center;padding:12px 8px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:8px;transition:all .3s ease}.stat-item:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,255,65,.3)}.stat-label{font-size:9px;color:#00ff41;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}.stat-value{font-size:24px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}.stat-win{color:#00ff41;text-shadow:0 0 15px #00ff41}.stat-loss{color:#ff0055;text-shadow:0 0 15px #ff0055}.stat-streak{color:#ffaa00;text-shadow:0 0 15px #ffaa00}.table-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(0,255,65,.2)}table{width:100%;border-collapse:collapse}thead{background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%)}th{padding:12px 6px;text-align:center;font-weight:600;color:#00ff41;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #00ff41}tbody tr{background:rgba(0,0,0,.3);transition:all .3s ease;border-bottom:1px solid rgba(0,255,65,.1)}tbody tr:hover{background:rgba(0,255,65,.1);transform:scale(1.01);box-shadow:0 0 15px rgba(0,255,65,.3)}td{padding:10px 6px;text-align:center;color:#00ff41;font-size:11px}.period-cell{font-family:'Courier New',monospace;font-size:10px;opacity:.7}.number-cell{font-size:22px;font-weight:bold}.color-cell{display:flex;justify-content:center;align-items:center;gap:4px}.color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(0,255,65,.3);animation:dotPulse 2s infinite}@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}.red{background:#ff0055;box-shadow:0 0 8px #ff0055}.green{background:#00ff41;box-shadow:0 0 8px #00ff41}.violet{background:#aa00ff;box-shadow:0 0 8px #aa00ff}.result-cell{font-weight:bold;font-size:11px;padding:5px 8px;border-radius:4px}.result-win{color:#00ff41;background:rgba(0,255,65,.2);border:1px solid #00ff41;text-shadow:0 0 5px #00ff41}.result-loss{color:#ff0055;background:rgba(255,0,85,.2);border:1px solid #ff0055;text-shadow:0 0 5px #ff0055}.time-display{background:rgba(0,255,65,.1);padding:15px 30px;border-radius:12px;display:inline-block;margin-top:15px;border:1px solid rgba(0,255,65,.3);box-shadow:0 0 20px rgba(0,255,65,.2)}.current-time{font-size:28px;font-weight:bold;color:#00ff41;font-family:'Courier New',monospace;letter-spacing:2px;text-shadow:0 0 20px #00ff41}.seconds-highlight{color:#ff0055;font-size:32px;animation:pulse 1s infinite;text-shadow:0 0 20px #ff0055}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.refresh-btn{position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;padding:14px 24px;border-radius:40px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,255,65,.5);display:flex;align-items:center;gap:8px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1.5px}.refresh-btn:hover{transform:scale(1.08);box-shadow:0 0 50px rgba(0,255,65,.8)}.refresh-btn:active{transform:scale(.95)}.refresh-icon{font-size:18px}.refresh-icon.spinning{animation:spin .5s linear}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.loading{text-align:center;padding:15px;color:#00ff41;animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}.update-time{text-align:center;margin-top:15px}@media (max-width:600px){.logo{font-size:22px}.title{font-size:10px;letter-spacing:1px}.stats-info{grid-template-columns:repeat(2,1fr);gap:10px}.prediction-result{font-size:40px;letter-spacing:2px}th,td{padding:8px 4px;font-size:10px}.number-cell{font-size:18px}.refresh-btn{bottom:15px;right:15px;padding:12px 20px;font-size:12px}.current-time{font-size:22px}.stat-value{font-size:20px}}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;padding:15px;overflow-x:hidden}.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.03;pointer-events:none}.container{max-width:700px;margin:0 auto;position:relative;z-index:1}.header{text-align:center;margin-bottom:20px;position:relative}.logo{font-size:28px;color:#00ff41;text-shadow:0 0 20px #00ff41;animation:glow 2s ease-in-out infinite;margin-bottom:8px}@keyframes glow{0%,100%{text-shadow:0 0 20px #00ff41}50%{text-shadow:0 0 30px #00ff41,0 0 60px #00ff41}}.title{color:#00ff41;font-size:13px;letter-spacing:2px;text-transform:uppercase}.subtitle{color:#ffaa00;font-size:11px;margin-top:5px;letter-spacing:1px}.scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00ff41,transparent);animation:scan 3s linear infinite}@keyframes scan{0%{top:0}100%{top:100%}}.stats-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,255,65,.2)}.stats-info{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.stat-item{text-align:center;padding:12px 8px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:8px;transition:all .3s ease}.stat-item:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,255,65,.3)}.stat-label{font-size:9px;color:#00ff41;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}.stat-value{font-size:24px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}.table-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(0,255,65,.2)}table{width:100%;border-collapse:collapse}thead{background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%)}th{padding:12px 6px;text-align:center;font-weight:600;color:#00ff41;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #00ff41}tbody tr{background:rgba(0,0,0,.3);transition:all .3s ease;border-bottom:1px solid rgba(0,255,65,.1)}tbody tr:hover{background:rgba(0,255,65,.1);transform:scale(1.01);box-shadow:0 0 15px rgba(0,255,65,.3)}td{padding:10px 6px;text-align:center;color:#00ff41;font-size:11px}.period-cell{font-family:'Courier New',monospace;font-size:10px;opacity:.7}.number-cell{font-size:22px;font-weight:bold}.color-cell{display:flex;justify-content:center;align-items:center;gap:4px}.color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(0,255,65,.3);animation:dotPulse 2s infinite}@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}.red{background:#ff0055;box-shadow:0 0 8px #ff0055}.green{background:#00ff41;box-shadow:0 0 8px #00ff41}.violet{background:#aa00ff;box-shadow:0 0 8px #aa00ff}.input-cell input{width:60px;padding:6px;background:rgba(0,255,65,.1);border:1px solid #00ff41;border-radius:4px;color:#00ff41;text-align:center;font-size:14px;font-family:'Courier New',monospace;font-weight:bold}.input-cell input:focus{outline:none;box-shadow:0 0 10px rgba(0,255,65,.5);background:rgba(0,255,65,.2)}.input-cell input::placeholder{color:rgba(0,255,65,.3)}.time-display{background:rgba(0,255,65,.1);padding:15px 30px;border-radius:12px;display:inline-block;margin-top:15px;border:1px solid rgba(0,255,65,.3);box-shadow:0 0 20px rgba(0,255,65,.2)}.current-time{font-size:28px;font-weight:bold;color:#00ff41;font-family:'Courier New',monospace;letter-spacing:2px;text-shadow:0 0 20px #00ff41}.seconds-highlight{color:#ff0055;font-size:32px;animation:pulse 1s infinite;text-shadow:0 0 20px #ff0055}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.refresh-btn{position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;padding:14px 24px;border-radius:40px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,255,65,.5);display:flex;align-items:center;gap:8px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1.5px}.refresh-btn:hover{transform:scale(1.08);box-shadow:0 0 50px rgba(0,255,65,.8)}.refresh-btn:active{transform:scale(.95)}.refresh-icon{font-size:18px}.refresh-icon.spinning{animation:spin .5s linear}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.loading{text-align:center;padding:15px;color:#00ff41;animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}.update-time{text-align:center;margin-top:15px}@media (max-width:600px){.logo{font-size:22px}.title{font-size:10px;letter-spacing:1px}.stats-info{grid-template-columns:repeat(2,1fr);gap:10px}th,td{padding:8px 4px;font-size:10px}.number-cell{font-size:18px}.refresh-btn{bottom:15px;right:15px;padding:12px 20px;font-size:12px}.current-time{font-size:22px}.stat-value{font-size:20px}}
 </style>
 </head>
 <body>
@@ -14,49 +14,21 @@
 <div class="header">
 <div class="scan-line"></div>
 <div class="logo">⚡ WINGO PRO</div>
-<div class="title">SIGNAL ANALYZER v5.0 - 1 MINUTE</div>
-<div class="subtitle">A/B PATTERN SYSTEM</div>
-</div>
-
-<div class="pattern-indicator">
-<div class="pattern-title">📊 CURRENT PATTERN</div>
-<div class="pattern-box" id="patternBox">-</div>
-<div class="pattern-range" id="patternRange">Period Range: -</div>
-</div>
-
-<div class="prediction-container">
-<div class="prediction-header"><h3>🔮 NEXT PREDICTION</h3></div>
-<div class="prediction-content">
-<div class="prediction-result" id="currPred"><div class="loading" style="font-size:16px">[ SCANNING... ]</div></div>
-<div class="confidence-bar"><div class="confidence-fill" id="confBar" style="width:0%"></div></div>
-<div class="confidence-label" id="confLabel">ANALYZING</div>
-<div class="prediction-details">
-<div class="detail-box">
-<div class="detail-label">Pattern Based</div>
-<div class="detail-value" id="patternPred">-</div>
-</div>
-<div class="detail-box">
-<div class="detail-label">Number Based</div>
-<div class="detail-value" id="numberPred">-</div>
-</div>
-</div>
-</div>
+<div class="title">MANUAL ENTRY SYSTEM v1.0</div>
+<div class="subtitle">STORAGE: 50 PERIODS</div>
 </div>
 
 <div class="stats-container">
 <div class="stats-info">
-<div class="stat-item"><div class="stat-label">Win</div><div class="stat-value stat-win" id="wc">0</div></div>
-<div class="stat-item"><div class="stat-label">Loss</div><div class="stat-value stat-loss" id="lc">0</div></div>
-<div class="stat-item"><div class="stat-label">Total</div><div class="stat-value" id="tc">0</div></div>
-<div class="stat-item"><div class="stat-label">Accuracy</div><div class="stat-value" id="wr">0%</div></div>
-<div class="stat-item"><div class="stat-label">Max Win</div><div class="stat-value stat-streak" id="mw">0</div></div>
-<div class="stat-item"><div class="stat-label">Max Loss</div><div class="stat-value stat-streak" id="ml">0</div></div>
+<div class="stat-item"><div class="stat-label">Total Entries</div><div class="stat-value" id="tc">0</div></div>
+<div class="stat-item"><div class="stat-label">Latest Period</div><div class="stat-value" id="lp">-</div></div>
+<div class="stat-item"><div class="stat-label">Storage Used</div><div class="stat-value" id="su">0/50</div></div>
 </div>
 </div>
 
 <div class="table-container">
 <table>
-<thead><tr><th>Period</th><th>Number</th><th>Size</th><th>Color</th><th>Result</th></tr></thead>
+<thead><tr><th>Period</th><th>Number</th><th>Size</th><th>Color</th><th>Your Entry</th></tr></thead>
 <tbody id="tb"><tr><td colspan="5" class="loading">[ LOADING DATA... ]</td></tr></tbody>
 </table>
 </div>
@@ -70,17 +42,9 @@
 const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(10,14,39,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
 
 (function(){
-const _0x4a=['Big','Small','win','loss'];
-let _p=null,_c=null,_h=[],_lp=null,_ct;
-
-// Pattern A (01-10, 21-30, 41-50, 61-70, 81-90)
-const _patA={1:'Big',2:'Small',3:'Big',4:'Big',5:'Small',6:'Big',7:'Big',8:'Small',9:'Big',10:'Big'};
-// Pattern B (11-20, 31-40, 51-60, 71-80, 91-100)
-const _patB={1:'Big',2:'Small',3:'Big',4:'Big',5:'Big',6:'Small',7:'Big',8:'Big',9:'Big',10:'Big'};
-// Number prediction A
-const _numA={0:5,1:8,2:6,3:8,4:8,5:0,6:7,7:6,8:0,9:2};
-// Number prediction B
-const _numB={0:3,1:2,2:7,3:0,4:7,5:1,6:3,7:8,8:7,9:7};
+let _ct;
+const STORAGE_KEY = 'wingo_entries';
+const MAX_STORAGE = 50;
 
 const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
 
@@ -93,45 +57,7 @@ i:1000,
 m:58
 };
 
-const _x=n=>parseInt(n)>=5?_0x4a[0]:_0x4a[1];
-
-const _getPat=per=>{
-const l2=parseInt(String(per).slice(-2));
-if((l2>=1&&l2<=10)||(l2>=21&&l2<=30)||(l2>=41&&l2<=50)||(l2>=61&&l2<=70)||(l2>=81&&l2<=90))return 'A';
-return 'B';
-};
-
-const _getPos=per=>{
-const l2=parseInt(String(per).slice(-2));
-const p=l2%10;
-return p===0?10:p;
-};
-
-const _getRng=per=>{
-const l2=parseInt(String(per).slice(-2));
-if(l2>=1&&l2<=10)return '01-10';
-if(l2>=11&&l2<=20)return '11-20';
-if(l2>=21&&l2<=30)return '21-30';
-if(l2>=31&&l2<=40)return '31-40';
-if(l2>=41&&l2<=50)return '41-50';
-if(l2>=51&&l2<=60)return '51-60';
-if(l2>=61&&l2<=70)return '61-70';
-if(l2>=71&&l2<=80)return '71-80';
-if(l2>=81&&l2<=90)return '81-90';
-if(l2>=91&&l2<=100)return '91-100';
-return '-';
-};
-
-const _pred=(per,ln)=>{
-const pt=_getPat(per);
-const pos=_getPos(per);
-const ppred=pt==='A'?_patA[pos]:_patB[pos];
-const nnum=pt==='A'?_numA[ln]:_numB[ln];
-const npred=_x(nnum);
-let conf=65;
-if(ppred===npred)conf=85;
-return{p:ppred,c:conf,pp:ppred,np:npred,pt:pt,nn:nnum};
-};
+const _x=n=>parseInt(n)>=5?'Big':'Small';
 
 const _g=(n,c)=>{
 let a=[];
@@ -143,15 +69,34 @@ else if(n===5){a.push('violet');a.push('green')}
 return a;
 };
 
-const _calcStreak=arr=>{
-let mw=0,ml=0,cw=0,cl=0;
-arr.forEach(e=>{
-if(e.res===_0x4a[2]){cw++;if(cl>ml)ml=cl;cl=0}
-else if(e.res===_0x4a[3]){cl++;if(cw>mw)mw=cw;cw=0}
-});
-if(cw>mw)mw=cw;
-if(cl>ml)ml=cl;
-return{mw,ml};
+// Load entries from localStorage
+const loadEntries = () => {
+try {
+const stored = localStorage.getItem(STORAGE_KEY);
+return stored ? JSON.parse(stored) : {};
+} catch(e) {
+return {};
+}
+};
+
+// Save entries to localStorage
+const saveEntries = (entries) => {
+try {
+// Keep only last 50 entries
+const periods = Object.keys(entries).sort((a,b) => b.localeCompare(a)).slice(0, MAX_STORAGE);
+const trimmed = {};
+periods.forEach(p => trimmed[p] = entries[p]);
+localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
+} catch(e) {
+console.error('Storage error:', e);
+}
+};
+
+// Save entry for a period
+const saveEntry = (period, value) => {
+const entries = loadEntries();
+entries[period] = value;
+saveEntries(entries);
 };
 
 const _u=()=>{
@@ -186,60 +131,8 @@ _f2=['result','number','num','openResult'],
 _f3=['color','colour'],
 _f4=['gameNo','drawNo','id'];
 
-const tp=String(ls[0][_f1[0]]||ls[0][_f1[1]]||ls[0][_f1[2]]||ls[0][_f1[3]]||ls[0][_f1[4]]||''),
-tn=String(ls[0][_f2[0]]||ls[0][_f2[1]]||ls[0][_f2[2]]||ls[0][_f2[3]]||''),
-ts=_x(tn);
-
-// Get NEXT period number (current period + 1)
-const nextPeriodNum = parseInt(String(tp).slice(-2)) + 1;
-let nextPeriod = String(tp).slice(0, -2) + String(nextPeriodNum).padStart(2, '0');
-
-// Use second last result for prediction (if exists)
-const prevNum = ls.length > 1 ? String(ls[1][_f2[0]]||ls[1][_f2[1]]||ls[1][_f2[2]]||ls[1][_f2[3]]||'0') : '0';
-
-const pd=_pred(nextPeriod, parseInt(prevNum));
-_c=pd;
-
-// Update pattern display
-const pbox=document.getElementById('patternBox');
-const prng=document.getElementById('patternRange');
-pbox.textContent=`PATTERN ${pd.pt}`;
-pbox.className=`pattern-box pattern-${pd.pt.toLowerCase()}`;
-prng.textContent=`Period Range: ${_getRng(nextPeriod)}`;
-
-if(_lp!==tp){
-if(_p){
-const im=_p.p===ts,
-re={per:tp,pred:_p.p,act:ts,res:im?_0x4a[2]:_0x4a[3],num:tn};
-_h.unshift(re);
-if(_h.length>50)_h=_h.slice(0,50);
-}
-_p={..._c,nextPer:nextPeriod};
-_lp=tp;
-}
-
-const cr=document.getElementById("currPred"),
-cb=document.getElementById("confBar"),
-cl=document.getElementById("confLabel");
-
-cr.innerHTML=`<span class="prediction-${_c.p.toLowerCase()}">${_c.p}</span>`;
-cb.style.width=_c.c+'%';
-
-if(_c.c>=80)cl.innerHTML=`<span class="confidence-high">HIGH CONFIDENCE (${_c.c}%)</span>`;
-else if(_c.c>=70)cl.innerHTML=`<span class="confidence-medium">MEDIUM CONFIDENCE (${_c.c}%)</span>`;
-else cl.innerHTML=`<span class="confidence-low">LOW CONFIDENCE (${_c.c}%)</span>`;
-
-// Update prediction details
-document.getElementById('patternPred').textContent=_c.pp;
-document.getElementById('numberPred').textContent=_c.np;
-
-let wc=0,lc=0;
-_h.forEach(e=>{
-if(e.res===_0x4a[2])wc++;
-if(e.res===_0x4a[3])lc++;
-});
-
-const st=_calcStreak(_h);
+const entries = loadEntries();
+let latestPeriod = '';
 
 ls.forEach((it,ix)=>{
 const tr=document.createElement("tr"),
@@ -247,6 +140,7 @@ tdp=document.createElement("td");
 tdp.className="period-cell";
 const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');
 tdp.textContent=pv||"N/A";
+if(ix===0) latestPeriod = pv;
 
 const rn=it[_f2[0]]||it[_f2[1]]||it[_f2[2]]||it[_f2[3]]||"?",
 tdn=document.createElement("td");
@@ -273,25 +167,30 @@ dt.className=`color-dot ${c}`;
 tdc.appendChild(dt);
 });
 
-const tdr=document.createElement("td"),
-mr=_h.find(q=>String(q.per)===String(pv));
-if(mr){
-if(mr.res===_0x4a[2]){tdr.className="result-cell result-win";tdr.textContent="✓ WIN"}
-else{tdr.className="result-cell result-loss";tdr.textContent="✗ LOSS"}
-}else tdr.textContent="-";
+// Input cell
+const tdi=document.createElement("td");
+tdi.className="input-cell";
+const inp=document.createElement("input");
+inp.type="text";
+inp.maxLength="1";
+inp.placeholder="-";
+inp.value=entries[pv]||"";
+inp.addEventListener('input', (e) => {
+const val = e.target.value.replace(/[^0-9]/g, '');
+e.target.value = val;
+if(val) saveEntry(pv, val);
+});
+tdi.appendChild(inp);
 
-tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);tr.appendChild(tdr);
+tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);tr.appendChild(tdi);
 tb.appendChild(tr);
 });
 
-const to=wc+lc,
-wrt=to>0?Math.round((wc/to)*100):0;
-document.getElementById('wc').textContent=wc;
-document.getElementById('lc').textContent=lc;
-document.getElementById('tc').textContent=to;
-document.getElementById('wr').textContent=wrt+'%';
-document.getElementById('mw').textContent=st.mw;
-document.getElementById('ml').textContent=st.ml;
+// Update stats
+const totalEntries = Object.keys(entries).length;
+document.getElementById('tc').textContent = totalEntries;
+document.getElementById('lp').textContent = latestPeriod || '-';
+document.getElementById('su').textContent = `${totalEntries}/${MAX_STORAGE}`;
 
 }catch(e){
 const _em=_d('5b204552524f52205d');
