@@ -3,203 +3,461 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>WinGo Pro - Manual Entry</title>
+<title>WinGo Pro - Prediction System</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;padding:15px;overflow-x:hidden}.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.03;pointer-events:none}.container{max-width:700px;margin:0 auto;position:relative;z-index:1}.header{text-align:center;margin-bottom:20px;position:relative}.logo{font-size:28px;color:#00ff41;text-shadow:0 0 20px #00ff41;animation:glow 2s ease-in-out infinite;margin-bottom:8px}@keyframes glow{0%,100%{text-shadow:0 0 20px #00ff41}50%{text-shadow:0 0 30px #00ff41,0 0 60px #00ff41}}.title{color:#00ff41;font-size:13px;letter-spacing:2px;text-transform:uppercase}.subtitle{color:#ffaa00;font-size:11px;margin-top:5px;letter-spacing:1px}.scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00ff41,transparent);animation:scan 3s linear infinite}@keyframes scan{0%{top:0}100%{top:100%}}.stats-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,255,65,.2)}.stats-info{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.stat-item{text-align:center;padding:12px 8px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:8px;transition:all .3s ease}.stat-item:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,255,65,.3)}.stat-label{font-size:9px;color:#00ff41;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}.stat-value{font-size:24px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}.table-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(0,255,65,.2)}table{width:100%;border-collapse:collapse}thead{background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%)}th{padding:12px 6px;text-align:center;font-weight:600;color:#00ff41;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #00ff41}tbody tr{background:rgba(0,0,0,.3);transition:all .3s ease;border-bottom:1px solid rgba(0,255,65,.1)}tbody tr:hover{background:rgba(0,255,65,.1);transform:scale(1.01);box-shadow:0 0 15px rgba(0,255,65,.3)}td{padding:10px 6px;text-align:center;color:#00ff41;font-size:11px}.period-cell{font-family:'Courier New',monospace;font-size:10px;opacity:.7}.number-cell{font-size:22px;font-weight:bold}.color-cell{display:flex;justify-content:center;align-items:center;gap:4px}.color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(0,255,65,.3);animation:dotPulse 2s infinite}@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}.red{background:#ff0055;box-shadow:0 0 8px #ff0055}.green{background:#00ff41;box-shadow:0 0 8px #00ff41}.violet{background:#aa00ff;box-shadow:0 0 8px #aa00ff}.input-cell input{width:60px;padding:6px;background:rgba(0,255,65,.1);border:1px solid #00ff41;border-radius:4px;color:#00ff41;text-align:center;font-size:14px;font-family:'Courier New',monospace;font-weight:bold}.input-cell input:focus{outline:none;box-shadow:0 0 10px rgba(0,255,65,.5);background:rgba(0,255,65,.2)}.input-cell input::placeholder{color:rgba(0,255,65,.3)}.time-display{background:rgba(0,255,65,.1);padding:15px 30px;border-radius:12px;display:inline-block;margin-top:15px;border:1px solid rgba(0,255,65,.3);box-shadow:0 0 20px rgba(0,255,65,.2)}.current-time{font-size:28px;font-weight:bold;color:#00ff41;font-family:'Courier New',monospace;letter-spacing:2px;text-shadow:0 0 20px #00ff41}.seconds-highlight{color:#ff0055;font-size:32px;animation:pulse 1s infinite;text-shadow:0 0 20px #ff0055}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.refresh-btn{position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;padding:14px 24px;border-radius:40px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,255,65,.5);display:flex;align-items:center;gap:8px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1.5px}.refresh-btn:hover{transform:scale(1.08);box-shadow:0 0 50px rgba(0,255,65,.8)}.refresh-btn:active{transform:scale(.95)}.refresh-icon{font-size:18px}.refresh-icon.spinning{animation:spin .5s linear}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.loading{text-align:center;padding:15px;color:#00ff41;animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}.update-time{text-align:center;margin-top:15px}@media (max-width:600px){.logo{font-size:22px}.title{font-size:10px;letter-spacing:1px}.stats-info{grid-template-columns:repeat(2,1fr);gap:10px}th,td{padding:8px 4px;font-size:10px}.number-cell{font-size:18px}.refresh-btn{bottom:15px;right:15px;padding:12px 20px;font-size:12px}.current-time{font-size:22px}.stat-value{font-size:20px}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;overflow-x:hidden}
+
+/* Matrix Background */
+.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.03;pointer-events:none}
+
+/* Login Page Styles */
+.login-container{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;z-index:9999;background:#0a0e27;padding:20px}
+.login-box{background:linear-gradient(135deg,rgba(0,255,65,.1) 0%,rgba(0,100,255,.1) 100%);border:2px solid rgba(0,255,65,.5);border-radius:20px;padding:40px;max-width:400px;width:100%;box-shadow:0 0 50px rgba(0,255,65,.3);position:relative;overflow:hidden}
+.login-box::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent,rgba(0,255,65,.1),transparent);animation:shine 3s infinite}
+@keyframes shine{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.login-logo{font-size:48px;color:#00ff41;text-align:center;margin-bottom:10px;text-shadow:0 0 30px #00ff41;animation:glow 2s ease-in-out infinite}
+@keyframes glow{0%,100%{text-shadow:0 0 20px #00ff41}50%{text-shadow:0 0 40px #00ff41,0 0 80px #00ff41}}
+.login-title{color:#00ff41;font-size:24px;text-align:center;letter-spacing:3px;margin-bottom:30px;text-transform:uppercase}
+.login-input{width:100%;padding:15px;background:rgba(0,255,65,.05);border:2px solid rgba(0,255,65,.3);border-radius:10px;color:#00ff41;font-size:18px;font-family:'Courier New',monospace;text-align:center;letter-spacing:8px;margin-bottom:20px;transition:all .3s}
+.login-input:focus{outline:none;border-color:#00ff41;box-shadow:0 0 20px rgba(0,255,65,.5);background:rgba(0,255,65,.1)}
+.login-btn{width:100%;padding:15px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);border:none;border-radius:10px;color:#0a0e27;font-size:18px;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:2px;transition:all .3s;box-shadow:0 0 30px rgba(0,255,65,.5)}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(0,255,65,.8)}
+.login-btn:active{transform:translateY(0)}
+.error-msg{color:#ff0055;text-align:center;margin-top:15px;font-size:14px;display:none;animation:shake .5s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+
+/* Main App Styles */
+.main-app{display:none;padding:15px;position:relative;z-index:1}
+.container{max-width:1200px;margin:0 auto}
+
+.header{text-align:center;margin-bottom:25px;position:relative}
+.logo{font-size:36px;color:#00ff41;text-shadow:0 0 20px #00ff41;animation:glow 2s ease-in-out infinite;margin-bottom:10px}
+.title{color:#00ff41;font-size:16px;letter-spacing:3px;text-transform:uppercase}
+.subtitle{color:#ffaa00;font-size:12px;margin-top:8px;letter-spacing:1.5px}
+
+/* Prediction Section */
+.prediction-container{background:linear-gradient(135deg,rgba(255,0,85,.1) 0%,rgba(170,0,255,.1) 100%);border:2px solid rgba(255,0,85,.5);border-radius:15px;padding:25px;margin-bottom:25px;box-shadow:0 0 30px rgba(255,0,85,.3);position:relative}
+.prediction-title{color:#ff0055;font-size:18px;text-align:center;margin-bottom:20px;text-transform:uppercase;letter-spacing:2px;text-shadow:0 0 15px #ff0055}
+.prediction-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.prediction-card{background:rgba(0,0,0,.4);border:2px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;text-align:center;transition:all .3s}
+.prediction-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,255,65,.4)}
+.prediction-label{color:#00ff41;font-size:12px;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;opacity:.8}
+.prediction-value{font-size:42px;font-weight:bold;margin:10px 0;text-shadow:0 0 20px}
+.prediction-value.big{color:#00ff41;text-shadow:0 0 20px #00ff41}
+.prediction-value.small{color:#ff0055;text-shadow:0 0 20px #ff0055}
+.prediction-detail{color:#ffaa00;font-size:14px;margin-top:10px;opacity:.9}
+.last-results{display:flex;justify-content:center;gap:10px;margin-top:15px;flex-wrap:wrap}
+.result-bubble{width:45px;height:45px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold;border:2px solid rgba(0,255,65,.5);color:#fff;box-shadow:0 0 15px}
+
+/* Stats Container */
+.stats-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,255,65,.2)}
+.stats-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:15px}
+.stat-item{text-align:center;padding:15px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:8px;transition:all .3s}
+.stat-item:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,255,65,.3)}
+.stat-label{font-size:11px;color:#00ff41;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}
+.stat-value{font-size:28px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}
+
+/* Table Styles */
+.table-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(0,255,65,.2);margin-bottom:80px}
+table{width:100%;border-collapse:collapse}
+thead{background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%)}
+th{padding:15px 8px;text-align:center;font-weight:600;color:#00ff41;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #00ff41}
+tbody tr{background:rgba(0,0,0,.3);transition:all .3s;border-bottom:1px solid rgba(0,255,65,.1)}
+tbody tr:hover{background:rgba(0,255,65,.1);transform:scale(1.01);box-shadow:0 0 15px rgba(0,255,65,.3)}
+td{padding:12px 8px;text-align:center;color:#00ff41;font-size:12px}
+.period-cell{font-family:'Courier New',monospace;font-size:11px;opacity:.7}
+.number-cell{font-size:26px;font-weight:bold}
+.color-cell{display:flex;justify-content:center;align-items:center;gap:5px}
+.color-dot{width:16px;height:16px;border-radius:50%;display:inline-block;border:2px solid rgba(0,255,65,.3);animation:dotPulse 2s infinite}
+@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.red{background:#ff0055;box-shadow:0 0 10px #ff0055}
+.green{background:#00ff41;box-shadow:0 0 10px #00ff41}
+.violet{background:#aa00ff;box-shadow:0 0 10px #aa00ff}
+
+/* Time Display */
+.time-display{background:rgba(0,255,65,.1);padding:20px;border-radius:12px;display:inline-block;margin-top:20px;border:1px solid rgba(0,255,65,.3);box-shadow:0 0 20px rgba(0,255,65,.2)}
+.current-time{font-size:32px;font-weight:bold;color:#00ff41;font-family:'Courier New',monospace;letter-spacing:3px;text-shadow:0 0 20px #00ff41}
+.seconds-highlight{color:#ff0055;font-size:36px;animation:pulse 1s infinite;text-shadow:0 0 20px #ff0055}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.update-time{text-align:center;margin-top:20px}
+
+/* Buttons */
+.refresh-btn{position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;padding:16px 28px;border-radius:40px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,255,65,.5);display:flex;align-items:center;gap:10px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1.5px}
+.refresh-btn:hover{transform:scale(1.1);box-shadow:0 0 50px rgba(0,255,65,.8)}
+.refresh-btn:active{transform:scale(.95)}
+.refresh-icon{font-size:20px}
+.refresh-icon.spinning{animation:spin .5s linear}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.logout-btn{position:fixed;top:25px;right:25px;background:linear-gradient(135deg,#ff0055 0%,#aa00ff 100%);color:#fff;border:none;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 20px rgba(255,0,85,.5);transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1px}
+.logout-btn:hover{transform:scale(1.05);box-shadow:0 0 40px rgba(255,0,85,.8)}
+
+.loading{text-align:center;padding:20px;color:#00ff41;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Responsive */
+@media (max-width:768px){
+.logo{font-size:28px}
+.title{font-size:13px}
+.prediction-grid{grid-template-columns:1fr}
+.prediction-value{font-size:36px}
+.stats-info{grid-template-columns:repeat(2,1fr)}
+.stat-value{font-size:24px}
+th,td{padding:10px 5px;font-size:11px}
+.number-cell{font-size:22px}
+.refresh-btn{bottom:15px;right:15px;padding:12px 20px;font-size:14px}
+.logout-btn{top:15px;right:15px;padding:10px 18px;font-size:12px}
+.current-time{font-size:26px}
+}
 </style>
 </head>
 <body>
 <canvas class="matrix-bg" id="matrix"></canvas>
+
+<!-- Login Page -->
+<div class="login-container" id="loginPage">
+<div class="login-box">
+<div class="login-logo">🔐</div>
+<div class="login-title">WINGO PRO</div>
+<input type="password" class="login-input" id="passwordInput" placeholder="••••••" maxlength="6" autocomplete="off">
+<button class="login-btn" onclick="checkPassword()">🚀 ENTER SYSTEM</button>
+<div class="error-msg" id="errorMsg">❌ Access Denied!</div>
+</div>
+</div>
+
+<!-- Main App -->
+<div class="main-app" id="mainApp">
 <div class="container">
 <div class="header">
-<div class="scan-line"></div>
 <div class="logo">⚡ WINGO PRO</div>
-<div class="title">MANUAL ENTRY SYSTEM v1.0</div>
-<div class="subtitle">STORAGE: 50 PERIODS</div>
+<div class="title">AI PREDICTION SYSTEM v2.0</div>
+<div class="subtitle">ADVANCED PATTERN ANALYSIS</div>
 </div>
 
+<!-- Prediction Display -->
+<div class="prediction-container">
+<div class="prediction-title">🎯 NEXT PERIOD PREDICTION</div>
+<div class="prediction-grid">
+<div class="prediction-card">
+<div class="prediction-label">📊 Single Pattern</div>
+<div class="prediction-value" id="singlePred">-</div>
+<div class="prediction-detail" id="singleDetail">Analyzing...</div>
+<div class="last-results" id="singleResults"></div>
+</div>
+<div class="prediction-card">
+<div class="prediction-label">🔮 Double Pattern</div>
+<div class="prediction-value" id="doublePred">-</div>
+<div class="prediction-detail" id="doubleDetail">Analyzing...</div>
+<div class="last-results" id="doubleResults"></div>
+</div>
+</div>
+</div>
+
+<!-- Stats -->
 <div class="stats-container">
 <div class="stats-info">
-<div class="stat-item"><div class="stat-label">Total Entries</div><div class="stat-value" id="tc">0</div></div>
-<div class="stat-item"><div class="stat-label">Latest Period</div><div class="stat-value" id="lp">-</div></div>
-<div class="stat-item"><div class="stat-label">Storage Used</div><div class="stat-value" id="su">0/50</div></div>
+<div class="stat-item">
+<div class="stat-label">Latest Period</div>
+<div class="stat-value" id="lp">-</div>
+</div>
+<div class="stat-item">
+<div class="stat-label">Last Result</div>
+<div class="stat-value" id="lr">-</div>
+</div>
+<div class="stat-item">
+<div class="stat-label">Pattern Match</div>
+<div class="stat-value" id="pm">-</div>
+</div>
 </div>
 </div>
 
+<!-- History Table -->
 <div class="table-container">
 <table>
-<thead><tr><th>Period</th><th>Number</th><th>Size</th><th>Color</th><th>Your Entry</th></tr></thead>
-<tbody id="tb"><tr><td colspan="5" class="loading">[ LOADING DATA... ]</td></tr></tbody>
+<thead>
+<tr>
+<th>Period</th>
+<th>Number</th>
+<th>Size</th>
+<th>Color</th>
+</tr>
+</thead>
+<tbody id="tb">
+<tr><td colspan="4" class="loading">[ LOADING DATA... ]</td></tr>
+</tbody>
 </table>
 </div>
 
-<p class="update-time"><span class="time-display"><div class="current-time" id="rt">00:00:00</div></span></p>
+<p class="update-time">
+<span class="time-display">
+<div class="current-time" id="rt">00:00:00</div>
+</span>
+</p>
 </div>
 
-<button class="refresh-btn" onclick="_r()"><span class="refresh-icon" id="ri">⟳</span><span>Refresh</span></button>
+<button class="logout-btn" onclick="logout()">🔒 LOGOUT</button>
+<button class="refresh-btn" onclick="_r()">
+<span class="refresh-icon" id="ri">⟳</span>
+<span>Refresh</span>
+</button>
+</div>
 
 <script>
-const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(10,14,39,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
+// Matrix Animation
+const c=document.getElementById('matrix'),ctx=c.getContext('2d');
+c.width=window.innerWidth;c.height=window.innerHeight;
+const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];
+for(let i=0;i<cols;i++)drops[i]=1;
+function drawMatrix(){
+ctx.fillStyle='rgba(10,14,39,0.05)';
+ctx.fillRect(0,0,c.width,c.height);
+ctx.fillStyle='#00ff41';
+ctx.font=fontSize+'px monospace';
+for(let i=0;i<drops.length;i++){
+const t=chars[Math.floor(Math.random()*chars.length)];
+ctx.fillText(t,i*fontSize,drops[i]*fontSize);
+if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;
+drops[i]++;
+}
+}
+setInterval(drawMatrix,50);
 
-(function(){
-let _ct;
-const STORAGE_KEY = 'wingo_entries';
-const MAX_STORAGE = 50;
+// Login System
+const CORRECT_PASSWORD = '002026';
 
-const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
+function checkPassword() {
+const input = document.getElementById('passwordInput');
+const errorMsg = document.getElementById('errorMsg');
+if(input.value === CORRECT_PASSWORD) {
+document.getElementById('loginPage').style.display = 'none';
+document.getElementById('mainApp').style.display = 'block';
+sessionStorage.setItem('wingoAuth', 'true');
+_l();_s();
+} else {
+errorMsg.style.display = 'block';
+input.value = '';
+input.style.borderColor = '#ff0055';
+setTimeout(() => {
+errorMsg.style.display = 'none';
+input.style.borderColor = 'rgba(0,255,65,.3)';
+}, 2000);
+}
+}
 
-const _k={
-u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),
-u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),
-u3:_d('476574486973746f7279497373756550616765'),
-u4:_d('2e6a736f6e'),
-i:1000,
-m:58
+function logout() {
+sessionStorage.removeItem('wingoAuth');
+document.getElementById('mainApp').style.display = 'none';
+document.getElementById('loginPage').style.display = 'flex';
+document.getElementById('passwordInput').value = '';
+}
+
+// Check auth on load
+window.addEventListener('load', () => {
+if(sessionStorage.getItem('wingoAuth') === 'true') {
+document.getElementById('loginPage').style.display = 'none';
+document.getElementById('mainApp').style.display = 'block';
+_l();_s();
+}
+});
+
+// Enter key for password
+document.getElementById('passwordInput')?.addEventListener('keypress', (e) => {
+if(e.key === 'Enter') checkPassword();
+});
+
+// Prediction Logic
+const singlePatternMap = {
+0:5, 1:3, 2:5, 3:8, 4:7, 5:1, 6:6, 7:8, 8:0, 9:9
 };
 
-const _x=n=>parseInt(n)>=5?'Big':'Small';
+const doublePatternMap = {
+'0-0':2,'0-1':3,'0-2':1,'0-3':3,'0-4':4,'0-5':4,'0-6':3,'0-7':2,'0-8':1,'0-9':1,
+'1-0':2,'1-1':3,'1-2':0,'1-3':4,'1-4':2,'1-5':4,'1-6':2,'1-7':0,'1-8':4,'1-9':3,
+'2-0':0,'2-1':3,'2-2':1,'2-3':3,'2-4':0,'2-5':4,'2-6':1,'2-7':2,'2-8':0,'2-9':3,
+'3-0':4,'3-1':3,'3-2':4,'3-3':4,'3-4':2,'3-5':4,'3-6':1,'3-7':0,'3-8':5,'3-9':2,
+'4-0':1,'4-1':1,'4-2':2,'4-3':1,'4-4':3,'4-5':1,'4-6':1,'4-7':5,'4-8':4,'4-9':0,
+'5-0':3,'5-1':5,'5-2':0,'5-3':3,'5-4':2,'5-5':5,'5-6':4,'5-7':3,'5-8':1,'5-9':1,
+'6-0':1,'6-1':1,'6-2':3,'6-3':1,'6-4':1,'6-5':2,'6-6':5,'6-7':2,'6-8':2,'6-9':5,
+'7-0':2,'7-1':3,'7-2':2,'7-3':4,'7-4':2,'7-5':0,'7-6':2,'7-7':2,'7-8':6,'7-9':2,
+'8-0':6,'8-1':2,'8-2':3,'8-3':5,'8-4':1,'8-5':1,'8-6':1,'8-7':6,'8-8':5,'8-9':0,
+'9-0':3,'9-1':0,'9-2':1,'9-3':1,'9-4':2,'9-5':2,'9-6':3,'9-7':3,'9-8':2,'9-9':4
+};
 
-const _g=(n,c)=>{
-let a=[];
-if(c==='red')a.push('red');
-else if(c==='green')a.push('green');
-else if(c==='violet')a.push('violet');
-if(n===0){a.push('violet');a.push('red')}
-else if(n===5){a.push('violet');a.push('green')}
+const getSize = n => parseInt(n) >= 5 ? 'BIG' : 'SMALL';
+
+const getColors = (n, c) => {
+let a = [];
+if(c === 'red') a.push('red');
+else if(c === 'green') a.push('green');
+else if(c === 'violet') a.push('violet');
+if(n === 0) { a.push('violet'); a.push('red'); }
+else if(n === 5) { a.push('violet'); a.push('green'); }
 return a;
 };
 
-// Load entries from localStorage
-const loadEntries = () => {
-try {
-const stored = localStorage.getItem(STORAGE_KEY);
-return stored ? JSON.parse(stored) : {};
-} catch(e) {
-return {};
+const getBubbleColor = (n) => {
+if([1,3,7,9].includes(n)) return '#00ff41';
+if([2,4,6,8].includes(n)) return '#ff0055';
+if([0,5].includes(n)) return '#aa00ff';
+return '#00ff41';
+};
+
+// Main App Logic
+let _ct;
+const _k = {
+u1: 'https://draw.ar-lottery01',
+u2: '.com/WinGo/WinGo_1M/',
+u3: 'GetHistoryIssuePage',
+u4: '.json',
+i: 1000,
+m: 58
+};
+
+const _u = () => {
+const n = new Date();
+const h = String(n.getHours()).padStart(2,'0');
+const m = String(n.getMinutes()).padStart(2,'0');
+const s = String(n.getSeconds()).padStart(2,'0');
+const e = document.getElementById('rt');
+if(e) e.innerHTML = `${h}:${m}:<span class="seconds-highlight">${s}</span>`;
+if(n.getSeconds() === _k.m) _l();
+};
+
+const _s = () => {
+_u();
+clearInterval(_ct);
+_ct = setInterval(_u, _k.i);
+};
+
+window._r = () => {
+const ic = document.getElementById('ri');
+if(ic) {
+ic.classList.add('spinning');
+setTimeout(() => ic.classList.remove('spinning'), 500);
 }
-};
-
-// Save entries to localStorage
-const saveEntries = (entries) => {
-try {
-// Keep only last 50 entries
-const periods = Object.keys(entries).sort((a,b) => b.localeCompare(a)).slice(0, MAX_STORAGE);
-const trimmed = {};
-periods.forEach(p => trimmed[p] = entries[p]);
-localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
-} catch(e) {
-console.error('Storage error:', e);
-}
-};
-
-// Save entry for a period
-const saveEntry = (period, value) => {
-const entries = loadEntries();
-entries[period] = value;
-saveEntries(entries);
-};
-
-const _u=()=>{
-const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0'),e=document.getElementById('rt');
-if(e)e.innerHTML=`${h}:${m}:<span class="seconds-highlight">${s}</span>`;
-if(n.getSeconds()===_k.m)_l();
-};
-
-const _s=()=>{_u();clearInterval(_ct);_ct=setInterval(_u,_k.i)};
-
-window._r=()=>{
-const ic=document.getElementById('ri');
-if(ic){ic.classList.add('spinning');setTimeout(()=>ic.classList.remove('spinning'),500)}
 _l();
 };
 
-const _l=async()=>{
-try{
-const t=new Date().getTime(),_u=_k.u1+_k.u2+_k.u3+_k.u4,_q=`?${_d('7473')}=${t}`,_f=_u+_q,r=await fetch(_f),d=await r.json();
-let ls=[];
-const _pk=['data','list'],_sk=['list'];
-if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,10);
-else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,10);
-else if(Array.isArray(d))ls=d.slice(0,10);
+const _l = async() => {
+try {
+const t = new Date().getTime();
+const _u = _k.u1 + _k.u2 + _k.u3 + _k.u4;
+const _q = `?ts=${t}`;
+const _f = _u + _q;
+const r = await fetch(_f);
+const d = await r.json();
+let ls = [];
 
-const tb=document.getElementById("tb");
-tb.innerHTML="";
-if(ls.length===0){tb.innerHTML='<tr><td colspan="5" class="loading">[ NO DATA ]</td></tr>';return}
+if(d?.data?.list) ls = d.data.list.slice(0, 10);
+else if(d?.list) ls = d.list.slice(0, 10);
+else if(Array.isArray(d)) ls = d.slice(0, 10);
 
-const _f1=['issue','period','issueNo','periodId','issueNumber'],
-_f2=['result','number','num','openResult'],
-_f3=['color','colour'],
-_f4=['gameNo','drawNo','id'];
+const tb = document.getElementById("tb");
+tb.innerHTML = "";
+if(ls.length === 0) {
+tb.innerHTML = '<tr><td colspan="4" class="loading">[ NO DATA ]</td></tr>';
+return;
+}
 
-const entries = loadEntries();
-let latestPeriod = '';
+// Update predictions
+if(ls.length >= 2) {
+const last1 = String(ls[0].result || ls[0].number || '?');
+const last2 = String(ls[1].result || ls[1].number || '?');
 
-ls.forEach((it,ix)=>{
-const tr=document.createElement("tr"),
-tdp=document.createElement("td");
-tdp.className="period-cell";
-const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');
-tdp.textContent=pv||"N/A";
-if(ix===0) latestPeriod = pv;
+// Single Pattern Prediction
+if(last1 !== '?') {
+const lastNum = parseInt(last1);
+const predNum = singlePatternMap[lastNum];
+const predSize = getSize(predNum);
+document.getElementById('singlePred').textContent = predSize;
+document.getElementById('singlePred').className = `prediction-value ${predSize.toLowerCase()}`;
+document.getElementById('singleDetail').textContent = `Last: ${last1} → Predict: ${predNum} (${predSize})`;
+const sr = document.getElementById('singleResults');
+sr.innerHTML = `<div class="result-bubble" style="background:${getBubbleColor(lastNum)}">${last1}</div>`;
+}
 
-const rn=it[_f2[0]]||it[_f2[1]]||it[_f2[2]]||it[_f2[3]]||"?",
-tdn=document.createElement("td");
-tdn.className="number-cell";
-const ns=document.createElement("span"),
-co=(it[_f3[0]]||it[_f3[1]]||"").toLowerCase();
+// Double Pattern Prediction
+if(last1 !== '?' && last2 !== '?') {
+const key = `${last2}-${last1}`;
+const predNum = doublePatternMap[key];
+if(predNum !== undefined) {
+const predSize = getSize(predNum);
+document.getElementById('doublePred').textContent = predSize;
+document.getElementById('doublePred').className = `prediction-value ${predSize.toLowerCase()}`;
+document.getElementById('doubleDetail').textContent = `Pattern: ${last2}-${last1} → ${predNum} (${predSize})`;
+const dr = document.getElementById('doubleResults');
+dr.innerHTML = `
+<div class="result-bubble" style="background:${getBubbleColor(parseInt(last2))}">${last2}</div>
+<div class="result-bubble" style="background:${getBubbleColor(parseInt(last1))}">${last1}</div>
+`;
+}
+}
+}
 
-if(co==='red'){ns.style.color='#ff0055';ns.style.textShadow='0 0 10px #ff0055'}
-else if(co==='green'){ns.style.color='#00ff41';ns.style.textShadow='0 0 10px #00ff41'}
-else if(co==='violet'||co==='purple'){ns.style.color='#aa00ff';ns.style.textShadow='0 0 10px #aa00ff'}
-ns.textContent=rn;
+// Update stats
+const latestPeriod = String(ls[0].issue || ls[0].period || ls[0].issueNo || '-');
+const lastResult = String(ls[0].result || ls[0].number || '-');
+document.getElementById('lp').textContent = latestPeriod;
+document.getElementById('lr').textContent = lastResult;
+document.getElementById('pm').textContent = '✓';
+
+// Render table
+ls.forEach((it) => {
+const tr = document.createElement("tr");
+const period = String(it.issue || it.period || it.issueNo || it.periodId || it.gameNo || 'N/A');
+const result = it.result || it.number || it.num || it.openResult || "?";
+const color = (it.color || it.colour || "").toLowerCase();
+
+// Period
+const tdp = document.createElement("td");
+tdp.className = "period-cell";
+tdp.textContent = period;
+
+// Number
+const tdn = document.createElement("td");
+tdn.className = "number-cell";
+const ns = document.createElement("span");
+if(color === 'red') {
+ns.style.color = '#ff0055';
+ns.style.textShadow = '0 0 10px #ff0055';
+} else if(color === 'green') {
+ns.style.color = '#00ff41';
+ns.style.textShadow = '0 0 10px #00ff41';
+} else if(color === 'violet' || color === 'purple') {
+ns.style.color = '#aa00ff';
+ns.style.textShadow = '0 0 10px #aa00ff';
+}
+ns.textContent = result;
 tdn.appendChild(ns);
 
-const tds=document.createElement("td");
-tds.textContent=_x(rn);
+// Size
+const tds = document.createElement("td");
+tds.textContent = getSize(result);
 
-const tdc=document.createElement("td");
-tdc.className="color-cell";
-const nv=parseInt(rn),
-cls=_g(nv,co);
-cls.forEach(c=>{
-const dt=document.createElement("span");
-dt.className=`color-dot ${c}`;
+// Color dots
+const tdc = document.createElement("td");
+tdc.className = "color-cell";
+const nv = parseInt(result);
+const cls = getColors(nv, color);
+cls.forEach(c => {
+const dt = document.createElement("span");
+dt.className = `color-dot ${c}`;
 tdc.appendChild(dt);
 });
 
-// Input cell
-const tdi=document.createElement("td");
-tdi.className="input-cell";
-const inp=document.createElement("input");
-inp.type="text";
-inp.maxLength="1";
-inp.placeholder="-";
-inp.value=entries[pv]||"";
-inp.addEventListener('input', (e) => {
-const val = e.target.value.replace(/[^0-9]/g, '');
-e.target.value = val;
-if(val) saveEntry(pv, val);
-});
-tdi.appendChild(inp);
-
-tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);tr.appendChild(tdi);
+tr.appendChild(tdp);
+tr.appendChild(tdn);
+tr.appendChild(tds);
+tr.appendChild(tdc);
 tb.appendChild(tr);
 });
 
-// Update stats
-const totalEntries = Object.keys(entries).length;
-document.getElementById('tc').textContent = totalEntries;
-document.getElementById('lp').textContent = latestPeriod || '-';
-document.getElementById('su').textContent = `${totalEntries}/${MAX_STORAGE}`;
-
-}catch(e){
-const _em=_d('5b204552524f52205d');
-document.getElementById("tb").innerHTML=`<tr><td colspan="5" class="loading">${_em}</td></tr>`;
+} catch(e) {
+document.getElementById("tb").innerHTML = '<tr><td colspan="4" class="loading">[ ERROR ]</td></tr>';
+console.error(e);
 }
 };
-
-_l();_s();
-})();
 </script>
 </body>
 </html>
