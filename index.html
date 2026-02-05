@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>WinGo Pro - Manual Entry</title>
+<title>WinGo Pro - Prediction System</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;padding:15px;overflow-x:hidden}.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.03;pointer-events:none}.container{max-width:700px;margin:0 auto;position:relative;z-index:1}.header{text-align:center;margin-bottom:20px;position:relative}.logo{font-size:28px;color:#00ff41;text-shadow:0 0 20px #00ff41;animation:glow 2s ease-in-out infinite;margin-bottom:8px}@keyframes glow{0%,100%{text-shadow:0 0 20px #00ff41}50%{text-shadow:0 0 30px #00ff41,0 0 60px #00ff41}}.title{color:#00ff41;font-size:13px;letter-spacing:2px;text-transform:uppercase}.subtitle{color:#ffaa00;font-size:11px;margin-top:5px;letter-spacing:1px}.scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00ff41,transparent);animation:scan 3s linear infinite}@keyframes scan{0%{top:0}100%{top:100%}}.stats-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,255,65,.2)}.stats-info{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.stat-item{text-align:center;padding:12px 8px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:8px;transition:all .3s ease}.stat-item:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,255,65,.3)}.stat-label{font-size:9px;color:#00ff41;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}.stat-value{font-size:24px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}.table-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;overflow:hidden;box-shadow:0 0 20px rgba(0,255,65,.2)}table{width:100%;border-collapse:collapse}thead{background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%)}th{padding:12px 6px;text-align:center;font-weight:600;color:#00ff41;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #00ff41}tbody tr{background:rgba(0,0,0,.3);transition:all .3s ease;border-bottom:1px solid rgba(0,255,65,.1)}tbody tr:hover{background:rgba(0,255,65,.1);transform:scale(1.01);box-shadow:0 0 15px rgba(0,255,65,.3)}td{padding:10px 6px;text-align:center;color:#00ff41;font-size:11px}.period-cell{font-family:'Courier New',monospace;font-size:10px;opacity:.7}.number-cell{font-size:22px;font-weight:bold}.color-cell{display:flex;justify-content:center;align-items:center;gap:4px}.color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(0,255,65,.3);animation:dotPulse 2s infinite}@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}.red{background:#ff0055;box-shadow:0 0 8px #ff0055}.green{background:#00ff41;box-shadow:0 0 8px #00ff41}.violet{background:#aa00ff;box-shadow:0 0 8px #aa00ff}.input-cell input{width:60px;padding:6px;background:rgba(0,255,65,.1);border:1px solid #00ff41;border-radius:4px;color:#00ff41;text-align:center;font-size:14px;font-family:'Courier New',monospace;font-weight:bold}.input-cell input:focus{outline:none;box-shadow:0 0 10px rgba(0,255,65,.5);background:rgba(0,255,65,.2)}.input-cell input::placeholder{color:rgba(0,255,65,.3)}.time-display{background:rgba(0,255,65,.1);padding:15px 30px;border-radius:12px;display:inline-block;margin-top:15px;border:1px solid rgba(0,255,65,.3);box-shadow:0 0 20px rgba(0,255,65,.2)}.current-time{font-size:28px;font-weight:bold;color:#00ff41;font-family:'Courier New',monospace;letter-spacing:2px;text-shadow:0 0 20px #00ff41}.seconds-highlight{color:#ff0055;font-size:32px;animation:pulse 1s infinite;text-shadow:0 0 20px #ff0055}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.refresh-btn{position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;padding:14px 24px;border-radius:40px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,255,65,.5);display:flex;align-items:center;gap:8px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1.5px}.refresh-btn:hover{transform:scale(1.08);box-shadow:0 0 50px rgba(0,255,65,.8)}.refresh-btn:active{transform:scale(.95)}.refresh-icon{font-size:18px}.refresh-icon.spinning{animation:spin .5s linear}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.loading{text-align:center;padding:15px;color:#00ff41;animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}.update-time{text-align:center;margin-top:15px}.auth-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0e27;z-index:9999;display:flex;align-items:center;justify-content:center}.auth-box{background:linear-gradient(135deg,rgba(0,255,65,.1) 0%,rgba(0,100,255,.1) 100%);border:2px solid #00ff41;border-radius:12px;padding:40px;max-width:400px;box-shadow:0 0 50px rgba(0,255,65,.5)}.auth-title{text-align:center;margin-bottom:30px}.auth-icon{font-size:36px;color:#00ff41;text-shadow:0 0 20px #00ff41;margin-bottom:10px}.auth-text{color:#00ff41;font-size:20px;font-weight:bold;letter-spacing:2px;text-shadow:0 0 15px #00ff41}.auth-subtitle{color:#ffaa00;font-size:12px;margin-top:8px}.auth-input{width:100%;padding:15px;background:rgba(0,255,65,.1);border:2px solid #00ff41;border-radius:8px;color:#00ff41;text-align:center;font-size:16px;font-family:'Courier New',monospace;font-weight:bold;margin-bottom:20px}.auth-input:focus{outline:none;box-shadow:0 0 20px rgba(0,255,65,.5)}.auth-btn{width:100%;padding:15px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:2px}.auth-btn:hover{transform:scale(1.02)}.auth-error{color:#ff0055;text-align:center;margin-top:15px;font-size:12px;display:none;text-shadow:0 0 10px #ff0055}@media (max-width:600px){.logo{font-size:22px}.title{font-size:10px;letter-spacing:1px}.stats-info{grid-template-columns:repeat(2,1fr);gap:10px}th,td{padding:8px 4px;font-size:10px}.number-cell{font-size:18px}.refresh-btn{bottom:15px;right:15px;padding:12px 20px;font-size:12px}.current-time{font-size:22px}.stat-value{font-size:20px}}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Courier New',monospace;background:#0a0e27;min-height:100vh;padding:15px;overflow-x:hidden}.matrix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:.03;pointer-events:none}.container{max-width:900px;margin:0 auto;position:relative;z-index:1}.header{text-align:center;margin-bottom:20px;position:relative}.logo{font-size:28px;color:#00ff41;text-shadow:0 0 20px #00ff41;animation:glow 2s ease-in-out infinite;margin-bottom:8px}@keyframes glow{0%,100%{text-shadow:0 0 20px #00ff41}50%{text-shadow:0 0 30px #00ff41,0 0 60px #00ff41}}.title{color:#00ff41;font-size:13px;letter-spacing:2px;text-transform:uppercase}.subtitle{color:#ffaa00;font-size:11px;margin-top:5px;letter-spacing:1px}.scan-line{position:absolute;width:100%;height:2px;background:linear-gradient(90deg,transparent,#00ff41,transparent);animation:scan 3s linear infinite}@keyframes scan{0%{top:0}100%{top:100%}}.stats-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,255,65,.2)}.stats-info{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.stat-item{text-align:center;padding:12px 8px;background:rgba(0,255,65,.05);border:1px solid rgba(0,255,65,.2);border-radius:8px;transition:all .3s ease}.stat-item:hover{transform:translateY(-3px);box-shadow:0 5px 20px rgba(0,255,65,.3)}.stat-label{font-size:9px;color:#00ff41;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;opacity:.7}.stat-value{font-size:24px;font-weight:bold;color:#00ff41;text-shadow:0 0 10px #00ff41}.table-container{background:linear-gradient(135deg,rgba(0,255,65,.05) 0%,rgba(0,100,255,.05) 100%);border:1px solid rgba(0,255,65,.3);border-radius:12px;overflow-x:auto;box-shadow:0 0 20px rgba(0,255,65,.2)}table{width:100%;border-collapse:collapse;min-width:700px}thead{background:linear-gradient(135deg,rgba(0,255,65,.2) 0%,rgba(0,100,255,.2) 100%)}th{padding:12px 6px;text-align:center;font-weight:600;color:#00ff41;font-size:10px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #00ff41}tbody tr{background:rgba(0,0,0,.3);transition:all .3s ease;border-bottom:1px solid rgba(0,255,65,.1)}tbody tr:hover{background:rgba(0,255,65,.1);transform:scale(1.01);box-shadow:0 0 15px rgba(0,255,65,.3)}td{padding:10px 5px;text-align:center;color:#00ff41;font-size:11px}.period-cell{font-family:'Courier New',monospace;font-size:10px;opacity:.7}.number-cell{font-size:22px;font-weight:bold}.color-cell{display:flex;justify-content:center;align-items:center;gap:4px}.color-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:2px solid rgba(0,255,65,.3);animation:dotPulse 2s infinite}@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}.red{background:#ff0055;box-shadow:0 0 8px #ff0055}.green{background:#00ff41;box-shadow:0 0 8px #00ff41}.violet{background:#aa00ff;box-shadow:0 0 8px #aa00ff}.pred-cell{font-weight:bold;font-size:12px;padding:8px 5px}.pred-single{color:#ffaa00;text-shadow:0 0 8px #ffaa00}.pred-double{color:#00aaff;text-shadow:0 0 8px #00aaff}.status-cell{font-weight:bold;font-size:13px;padding:8px 5px}.win{color:#00ff41;text-shadow:0 0 10px #00ff41}.miss{color:#ff0055;text-shadow:0 0 10px #ff0055}.waiting{color:#ffaa00;opacity:.5}.time-display{background:rgba(0,255,65,.1);padding:15px 30px;border-radius:12px;display:inline-block;margin-top:15px;border:1px solid rgba(0,255,65,.3);box-shadow:0 0 20px rgba(0,255,65,.2)}.current-time{font-size:28px;font-weight:bold;color:#00ff41;font-family:'Courier New',monospace;letter-spacing:2px;text-shadow:0 0 20px #00ff41}.seconds-highlight{color:#ff0055;font-size:32px;animation:pulse 1s infinite;text-shadow:0 0 20px #ff0055}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.refresh-btn{position:fixed;bottom:25px;right:25px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;padding:14px 24px;border-radius:40px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 0 30px rgba(0,255,65,.5);display:flex;align-items:center;gap:8px;transition:all .3s;z-index:1000;text-transform:uppercase;letter-spacing:1.5px}.refresh-btn:hover{transform:scale(1.08);box-shadow:0 0 50px rgba(0,255,65,.8)}.refresh-btn:active{transform:scale(.95)}.refresh-icon{font-size:18px}.refresh-icon.spinning{animation:spin .5s linear}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.loading{text-align:center;padding:15px;color:#00ff41;animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}.update-time{text-align:center;margin-top:15px}.auth-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a0e27;z-index:9999;display:flex;align-items:center;justify-content:center}.auth-box{background:linear-gradient(135deg,rgba(0,255,65,.1) 0%,rgba(0,100,255,.1) 100%);border:2px solid #00ff41;border-radius:12px;padding:40px;max-width:400px;box-shadow:0 0 50px rgba(0,255,65,.5)}.auth-title{text-align:center;margin-bottom:30px}.auth-icon{font-size:36px;color:#00ff41;text-shadow:0 0 20px #00ff41;margin-bottom:10px}.auth-text{color:#00ff41;font-size:20px;font-weight:bold;letter-spacing:2px;text-shadow:0 0 15px #00ff41}.auth-subtitle{color:#ffaa00;font-size:12px;margin-top:8px}.auth-input{width:100%;padding:15px;background:rgba(0,255,65,.1);border:2px solid #00ff41;border-radius:8px;color:#00ff41;text-align:center;font-size:16px;font-family:'Courier New',monospace;font-weight:bold;margin-bottom:20px}.auth-input:focus{outline:none;box-shadow:0 0 20px rgba(0,255,65,.5)}.auth-btn{width:100%;padding:15px;background:linear-gradient(135deg,#00ff41 0%,#00aaff 100%);color:#0a0e27;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;text-transform:uppercase;letter-spacing:2px}.auth-btn:hover{transform:scale(1.02)}.auth-error{color:#ff0055;text-align:center;margin-top:15px;font-size:12px;display:none;text-shadow:0 0 10px #ff0055}@media (max-width:600px){.logo{font-size:22px}.title{font-size:10px;letter-spacing:1px}.stats-info{grid-template-columns:repeat(2,1fr);gap:10px}th,td{padding:8px 4px;font-size:10px}.number-cell{font-size:18px}.refresh-btn{bottom:15px;right:15px;padding:12px 20px;font-size:12px}.current-time{font-size:22px}.stat-value{font-size:20px}}
 </style>
 </head>
 <body>
@@ -28,22 +28,23 @@
 <div class="header">
 <div class="scan-line"></div>
 <div class="logo">⚡ WINGO PRO</div>
-<div class="title">MANUAL ENTRY SYSTEM v1.0</div>
-<div class="subtitle">STORAGE: 50 PERIODS</div>
+<div class="title">AI PREDICTION SYSTEM v2.0</div>
+<div class="subtitle">DUAL LOGIC ENGINE</div>
 </div>
 
 <div class="stats-container">
 <div class="stats-info">
-<div class="stat-item"><div class="stat-label">Total Entries</div><div class="stat-value" id="tc">0</div></div>
+<div class="stat-item"><div class="stat-label">Single Win%</div><div class="stat-value" id="singleWinRate">0%</div></div>
+<div class="stat-item"><div class="stat-label">Double Win%</div><div class="stat-value" id="doubleWinRate">0%</div></div>
 <div class="stat-item"><div class="stat-label">Latest Period</div><div class="stat-value" id="lp">-</div></div>
-<div class="stat-item"><div class="stat-label">Storage Used</div><div class="stat-value" id="su">0/50</div></div>
+<div class="stat-item"><div class="stat-label">Total Analyzed</div><div class="stat-value" id="tc">0</div></div>
 </div>
 </div>
 
 <div class="table-container">
 <table>
-<thead><tr><th>Period</th><th>Number</th><th>Size</th><th>Color</th><th>Your Entry</th></tr></thead>
-<tbody id="tb"><tr><td colspan="5" class="loading">[ LOADING DATA... ]</td></tr></tbody>
+<thead><tr><th>Period</th><th>Number</th><th>Size</th><th>Color</th><th>Single<br>(35%)</th><th>Status</th><th>Double<br>(40%)</th><th>Status</th></tr></thead>
+<tbody id="tb"><tr><td colspan="8" class="loading">[ LOADING DATA... ]</td></tr></tbody>
 </table>
 </div>
 
@@ -54,8 +55,7 @@
 </div>
 
 <script>
-// Password System - CORRECT PASSWORD: Admin@2026
-const CORRECT_PASS = 'QWRtaW5AMjAyNg=='; // Base64 encoded
+const CORRECT_PASS = 'QWRtaW5AMjAyNg==';
 
 function verifyPass() {
     const input = document.getElementById('passInput');
@@ -97,154 +97,208 @@ document.addEventListener('DOMContentLoaded', () => {
 function initApp() {
     const c=document.getElementById('matrix'),ctx=c.getContext('2d');c.width=window.innerWidth;c.height=window.innerHeight;const chars='01',fontSize=14,cols=c.width/fontSize,drops=[];for(let i=0;i<cols;i++)drops[i]=1;function drawMatrix(){ctx.fillStyle='rgba(10,14,39,0.05)';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#00ff41';ctx.font=fontSize+'px monospace';for(let i=0;i<drops.length;i++){const t=chars[Math.floor(Math.random()*chars.length)];ctx.fillText(t,i*fontSize,drops[i]*fontSize);if(drops[i]*fontSize>c.height&&Math.random()>0.975)drops[i]=0;drops[i]++}}setInterval(drawMatrix,50);
 
+    // Prediction Logic Maps
+    const singleLogic = {
+        0: 'BIG',    // 0→5 (BIG)
+        1: 'BIG',    // 1→3 (BIG)
+        2: 'BIG',    // 2→5 (BIG)
+        3: 'BIG',    // 3→8 (BIG)
+        4: 'BIG',    // 4→7 (BIG)
+        5: 'SMALL',  // 5→1 (SMALL)
+        6: 'BIG',    // 6→6 (BIG)
+        7: 'BIG',    // 7→8 (BIG)
+        8: 'SMALL',  // 8→0 (SMALL)
+        9: 'BIG'     // 9→9 (BIG)
+    };
+
+    const doubleLogic = {
+        '0-0': 'SMALL', '0-1': 'BIG', '0-2': 'SMALL', '0-3': 'BIG', '0-4': 'BIG',
+        '0-5': 'BIG', '0-6': 'BIG', '0-7': 'SMALL', '0-8': 'SMALL', '0-9': 'SMALL',
+        '1-0': 'SMALL', '1-1': 'BIG', '1-2': 'SMALL', '1-3': 'BIG', '1-4': 'SMALL',
+        '1-5': 'BIG', '1-6': 'SMALL', '1-7': 'SMALL', '1-8': 'BIG', '1-9': 'BIG',
+        '2-0': 'SMALL', '2-1': 'BIG', '2-2': 'SMALL', '2-3': 'BIG', '2-4': 'SMALL',
+        '2-5': 'BIG', '2-6': 'SMALL', '2-7': 'SMALL', '2-8': 'SMALL', '2-9': 'BIG',
+        '3-0': 'BIG', '3-1': 'BIG', '3-2': 'BIG', '3-3': 'BIG', '3-4': 'SMALL',
+        '3-5': 'BIG', '3-6': 'SMALL', '3-7': 'SMALL', '3-8': 'BIG', '3-9': 'SMALL',
+        '4-0': 'SMALL', '4-1': 'SMALL', '4-2': 'SMALL', '4-3': 'SMALL', '4-4': 'BIG',
+        '4-5': 'SMALL', '4-6': 'SMALL', '4-7': 'BIG', '4-8': 'BIG', '4-9': 'SMALL',
+        '5-0': 'BIG', '5-1': 'BIG', '5-2': 'SMALL', '5-3': 'BIG', '5-4': 'SMALL',
+        '5-5': 'BIG', '5-6': 'BIG', '5-7': 'BIG', '5-8': 'SMALL', '5-9': 'SMALL',
+        '6-0': 'SMALL', '6-1': 'SMALL', '6-2': 'BIG', '6-3': 'SMALL', '6-4': 'SMALL',
+        '6-5': 'SMALL', '6-6': 'BIG', '6-7': 'SMALL', '6-8': 'SMALL', '6-9': 'BIG',
+        '7-0': 'SMALL', '7-1': 'BIG', '7-2': 'SMALL', '7-3': 'BIG', '7-4': 'SMALL',
+        '7-5': 'SMALL', '7-6': 'SMALL', '7-7': 'SMALL', '7-8': 'BIG', '7-9': 'SMALL',
+        '8-0': 'BIG', '8-1': 'SMALL', '8-2': 'BIG', '8-3': 'BIG', '8-4': 'SMALL',
+        '8-5': 'SMALL', '8-6': 'SMALL', '8-7': 'BIG', '8-8': 'BIG', '8-9': 'SMALL',
+        '9-0': 'BIG', '9-1': 'SMALL', '9-2': 'SMALL', '9-3': 'SMALL', '9-4': 'SMALL',
+        '9-5': 'SMALL', '9-6': 'BIG', '9-7': 'BIG', '9-8': 'SMALL', '9-9': 'BIG'
+    };
+
     (function(){
     let _ct;
-    const STORAGE_KEY = 'wingo_entries';
-    const MAX_STORAGE = 50;
-
     const _d=h=>{let s='';for(let i=0;i<h.length;i+=2)s+=String.fromCharCode(parseInt(h.substr(i,2),16));return s};
-
-    const _k={
-    u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),
-    u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),
-    u3:_d('476574486973746f7279497373756550616765'),
-    u4:_d('2e6a736f6e'),
-    i:1000,
-    m:58
-    };
-
+    const _k={u1:_d('68747470733a2f2f647261772e61722d6c6f74746572793031'),u2:_d('2e636f6d2f57696e476f2f57696e476f5f314d2f'),u3:_d('476574486973746f7279497373756550616765'),u4:_d('2e6a736f6e'),i:1000,m:58};
     const _x=n=>parseInt(n)>=5?'Big':'Small';
+    const _g=(n,c)=>{let a=[];if(c==='red')a.push('red');else if(c==='green')a.push('green');else if(c==='violet')a.push('violet');if(n===0){a.push('violet');a.push('red')}else if(n===5){a.push('violet');a.push('green')}return a};
 
-    const _g=(n,c)=>{
-    let a=[];
-    if(c==='red')a.push('red');
-    else if(c==='green')a.push('green');
-    else if(c==='violet')a.push('violet');
-    if(n===0){a.push('violet');a.push('red')}
-    else if(n===5){a.push('violet');a.push('green')}
-    return a;
-    };
-
-    const loadEntries = () => {
-    try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : {};
-    } catch(e) {
-    return {};
-    }
-    };
-
-    const saveEntries = (entries) => {
-    try {
-    const periods = Object.keys(entries).sort((a,b) => b.localeCompare(a)).slice(0, MAX_STORAGE);
-    const trimmed = {};
-    periods.forEach(p => trimmed[p] = entries[p]);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
-    } catch(e) {
-    console.error('Storage error:', e);
-    }
-    };
-
-    const saveEntry = (period, value) => {
-    const entries = loadEntries();
-    entries[period] = value;
-    saveEntries(entries);
+    const getActualSize = (num) => {
+        const n = parseInt(num);
+        return (n >= 0 && n <= 4) ? 'SMALL' : 'BIG';
     };
 
     const _u=()=>{
-    const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0'),e=document.getElementById('rt');
-    if(e)e.innerHTML=`${h}:${m}:<span class="seconds-highlight">${s}</span>`;
-    if(n.getSeconds()===_k.m)_l();
+        const n=new Date(),h=String(n.getHours()).padStart(2,'0'),m=String(n.getMinutes()).padStart(2,'0'),s=String(n.getSeconds()).padStart(2,'0'),e=document.getElementById('rt');
+        if(e)e.innerHTML=`${h}:${m}:<span class="seconds-highlight">${s}</span>`;
+        if(n.getSeconds()===_k.m)_l();
     };
 
     const _s=()=>{_u();clearInterval(_ct);_ct=setInterval(_u,_k.i)};
 
     window._r=()=>{
-    const ic=document.getElementById('ri');
-    if(ic){ic.classList.add('spinning');setTimeout(()=>ic.classList.remove('spinning'),500)}
-    _l();
+        const ic=document.getElementById('ri');
+        if(ic){ic.classList.add('spinning');setTimeout(()=>ic.classList.remove('spinning'),500)}
+        _l();
     };
 
     const _l=async()=>{
     try{
-    const t=new Date().getTime(),_u=_k.u1+_k.u2+_k.u3+_k.u4,_q=`?${_d('7473')}=${t}`,_f=_u+_q,r=await fetch(_f),d=await r.json();
-    let ls=[];
-    const _pk=['data','list'],_sk=['list'];
-    if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,10);
-    else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,10);
-    else if(Array.isArray(d))ls=d.slice(0,10);
+        const t=new Date().getTime(),_u=_k.u1+_k.u2+_k.u3+_k.u4,_q=`?${_d('7473')}=${t}`,_f=_u+_q,r=await fetch(_f),d=await r.json();
+        let ls=[];
+        const _pk=['data','list'],_sk=['list'];
+        if(d&&d[_pk[0]]&&d[_pk[0]][_pk[1]])ls=d[_pk[0]][_pk[1]].slice(0,10);
+        else if(d&&d[_sk[0]])ls=d[_sk[0]].slice(0,10);
+        else if(Array.isArray(d))ls=d.slice(0,10);
 
-    const tb=document.getElementById("tb");
-    tb.innerHTML="";
-    if(ls.length===0){tb.innerHTML='<tr><td colspan="5" class="loading">[ NO DATA ]</td></tr>';return}
+        const tb=document.getElementById("tb");
+        tb.innerHTML="";
+        if(ls.length===0){tb.innerHTML='<tr><td colspan="8" class="loading">[ NO DATA ]</td></tr>';return}
 
-    const _f1=['issue','period','issueNo','periodId','issueNumber'],
-    _f2=['result','number','num','openResult'],
-    _f3=['color','colour'],
-    _f4=['gameNo','drawNo','id'];
+        const _f1=['issue','period','issueNo','periodId','issueNumber'],
+        _f2=['result','number','num','openResult'],
+        _f3=['color','colour'],
+        _f4=['gameNo','drawNo','id'];
 
-    const entries = loadEntries();
-    let latestPeriod = '';
+        let latestPeriod = '';
+        let singleWin = 0, singleTotal = 0;
+        let doubleWin = 0, doubleTotal = 0;
 
-    ls.forEach((it,ix)=>{
-    const tr=document.createElement("tr"),
-    tdp=document.createElement("td");
-    tdp.className="period-cell";
-    const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');
-    tdp.textContent=pv||"N/A";
-    if(ix===0) latestPeriod = pv;
+        ls.forEach((it,ix)=>{
+            const tr=document.createElement("tr");
+            
+            // Period
+            const tdp=document.createElement("td");
+            tdp.className="period-cell";
+            const pv=String(it[_f1[0]]||it[_f1[1]]||it[_f1[2]]||it[_f1[3]]||it[_f1[4]]||it[_f4[0]]||it[_f4[1]]||it[_f4[2]]||'');
+            tdp.textContent=pv||"N/A";
+            if(ix===0) latestPeriod = pv;
 
-    const rn=it[_f2[0]]||it[_f2[1]]||it[_f2[2]]||it[_f2[3]]||"?",
-    tdn=document.createElement("td");
-    tdn.className="number-cell";
-    const ns=document.createElement("span"),
-    co=(it[_f3[0]]||it[_f3[1]]||"").toLowerCase();
+            // Number
+            const rn=String(it[_f2[0]]||it[_f2[1]]||it[_f2[2]]||it[_f2[3]]||"?");
+            const tdn=document.createElement("td");
+            tdn.className="number-cell";
+            const ns=document.createElement("span"),
+            co=(it[_f3[0]]||it[_f3[1]]||"").toLowerCase();
+            if(co==='red'){ns.style.color='#ff0055';ns.style.textShadow='0 0 10px #ff0055'}
+            else if(co==='green'){ns.style.color='#00ff41';ns.style.textShadow='0 0 10px #00ff41'}
+            else if(co==='violet'||co==='purple'){ns.style.color='#aa00ff';ns.style.textShadow='0 0 10px #aa00ff'}
+            ns.textContent=rn;
+            tdn.appendChild(ns);
 
-    if(co==='red'){ns.style.color='#ff0055';ns.style.textShadow='0 0 10px #ff0055'}
-    else if(co==='green'){ns.style.color='#00ff41';ns.style.textShadow='0 0 10px #00ff41'}
-    else if(co==='violet'||co==='purple'){ns.style.color='#aa00ff';ns.style.textShadow='0 0 10px #aa00ff'}
-    ns.textContent=rn;
-    tdn.appendChild(ns);
+            // Size
+            const tds=document.createElement("td");
+            tds.textContent=_x(rn);
 
-    const tds=document.createElement("td");
-    tds.textContent=_x(rn);
+            // Color
+            const tdc=document.createElement("td");
+            tdc.className="color-cell";
+            const nv=parseInt(rn),cls=_g(nv,co);
+            cls.forEach(c=>{const dt=document.createElement("span");dt.className=`color-dot ${c}`;tdc.appendChild(dt);});
 
-    const tdc=document.createElement("td");
-    tdc.className="color-cell";
-    const nv=parseInt(rn),
-    cls=_g(nv,co);
-    cls.forEach(c=>{
-    const dt=document.createElement("span");
-    dt.className=`color-dot ${c}`;
-    tdc.appendChild(dt);
-    });
+            // Predictions & Status
+            let singlePred = '-', singleStatus = '-', singleClass = 'waiting';
+            let doublePred = '-', doubleStatus = '-', doubleClass = 'waiting';
 
-    const tdi=document.createElement("td");
-    tdi.className="input-cell";
-    const inp=document.createElement("input");
-    inp.type="text";
-    inp.maxLength="1";
-    inp.placeholder="-";
-    inp.value=entries[pv]||"";
-    inp.addEventListener('input', (e) => {
-    const val = e.target.value.replace(/[^0-9]/g, '');
-    e.target.value = val;
-    if(val) saveEntry(pv, val);
-    });
-    tdi.appendChild(inp);
+            if (ix < ls.length - 1) {
+                const prevNum = String(ls[ix+1][_f2[0]]||ls[ix+1][_f2[1]]||ls[ix+1][_f2[2]]||ls[ix+1][_f2[3]]||"?");
+                const actualSize = getActualSize(rn);
 
-    tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);tr.appendChild(tdi);
-    tb.appendChild(tr);
-    });
+                // Single Logic
+                if (prevNum !== '?') {
+                    const lastDigit = parseInt(prevNum.slice(-1));
+                    singlePred = singleLogic[lastDigit] || '-';
+                    if (singlePred !== '-') {
+                        singleTotal++;
+                        if (singlePred === actualSize) {
+                            singleStatus = 'WIN ✓';
+                            singleClass = 'win';
+                            singleWin++;
+                        } else {
+                            singleStatus = 'MISS ✗';
+                            singleClass = 'miss';
+                        }
+                    }
+                }
 
-    const totalEntries = Object.keys(entries).length;
-    document.getElementById('tc').textContent = totalEntries;
-    document.getElementById('lp').textContent = latestPeriod || '-';
-    document.getElementById('su').textContent = `${totalEntries}/${MAX_STORAGE}`;
+                // Double Logic
+                if (ix < ls.length - 2) {
+                    const prevPrevNum = String(ls[ix+2][_f2[0]]||ls[ix+2][_f2[1]]||ls[ix+2][_f2[2]]||ls[ix+2][_f2[3]]||"?");
+                    if (prevPrevNum !== '?' && prevNum !== '?') {
+                        const d1 = parseInt(prevPrevNum.slice(-1));
+                        const d2 = parseInt(prevNum.slice(-1));
+                        const key = `${d1}-${d2}`;
+                        doublePred = doubleLogic[key] || '-';
+                        if (doublePred !== '-') {
+                            doubleTotal++;
+                            if (doublePred === actualSize) {
+                                doubleStatus = 'WIN ✓';
+                                doubleClass = 'win';
+                                doubleWin++;
+                            } else {
+                                doubleStatus = 'MISS ✗';
+                                doubleClass = 'miss';
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Single Prediction
+            const tdsp=document.createElement("td");
+            tdsp.className="pred-cell pred-single";
+            tdsp.textContent=singlePred;
+
+            // Single Status
+            const tdss=document.createElement("td");
+            tdss.className=`status-cell ${singleClass}`;
+            tdss.textContent=singleStatus;
+
+            // Double Prediction
+            const tddp=document.createElement("td");
+            tddp.className="pred-cell pred-double";
+            tddp.textContent=doublePred;
+
+            // Double Status
+            const tdds=document.createElement("td");
+            tdds.className=`status-cell ${doubleClass}`;
+            tdds.textContent=doubleStatus;
+
+            tr.appendChild(tdp);tr.appendChild(tdn);tr.appendChild(tds);tr.appendChild(tdc);
+            tr.appendChild(tdsp);tr.appendChild(tdss);tr.appendChild(tddp);tr.appendChild(tdds);
+            tb.appendChild(tr);
+        });
+
+        // Update Stats
+        const singleRate = singleTotal > 0 ? Math.round((singleWin / singleTotal) * 100) : 0;
+        const doubleRate = doubleTotal > 0 ? Math.round((doubleWin / doubleTotal) * 100) : 0;
+        
+        document.getElementById('singleWinRate').textContent = `${singleRate}%`;
+        document.getElementById('doubleWinRate').textContent = `${doubleRate}%`;
+        document.getElementById('lp').textContent = latestPeriod || '-';
+        document.getElementById('tc').textContent = ls.length;
 
     }catch(e){
-    const _em=_d('5b204552524f52205d');
-    document.getElementById("tb").innerHTML=`<tr><td colspan="5" class="loading">${_em}</td></tr>`;
+        const _em=_d('5b204552524f52205d');
+        document.getElementById("tb").innerHTML=`<tr><td colspan="8" class="loading">${_em}</td></tr>`;
     }
     };
 
